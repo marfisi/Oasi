@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	
+	<persistence-unit name="DB2AS400" transaction-type="RESOURCE_LOCAL">
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_AlberoMerc</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_Articoli</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_Barcode</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_Clienti</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_Fornitori</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_Giacenze</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_Listini</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_Marchi</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_Movimenti</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvAS_Trasferimenti</class>
+		<class>it.cascino.oasi.dbmsqlsrv.model.MsvOA_Clienti</class>
+		<properties>
+			<property name="hibernate.connection.url" value="jdbc:as400://10.0.21.20/cas_dat;transaction isolation=none" />
+			<property name="hibernate.connection.driver_class" value="com.ibm.as400.access.AS400JDBCDriver" />
+			<property name="hibernate.connection.username" value="JAVAPGM" />
+			<property name="hibernate.connection.password" value="J4V4PGM" />
+			<property name="hibernate.connection.pool_size" value="1" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DB2400Dialect" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.generate_statistics" value="false" />
+			<property name="hibernate.use_sql_comments" value="false" />
+		</properties>
+	</persistence-unit>
+	
+	<persistence-unit name="Postgresql" transaction-type="RESOURCE_LOCAL">
+		<properties>
+			<property name="hibernate.connection.url" value="jdbc:postgresql://10.0.21.32:5432/cascino_db" />
+			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+			<property name="hibernate.connection.username" value="cascino_user_db" />
+			<property name="hibernate.connection.password" value="cascino" />
+			<property name="hibernate.connection.pool_size" value="1" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.generate_statistics" value="false" />
+			<property name="hibernate.use_sql_comments" value="false" />
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="MySql" transaction-type="RESOURCE_LOCAL">
+		<properties>
+			<property name="hibernate.connection.url" value="jdbc:mysql://10.0.25.14:3306/contmymb" />
+			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
+			<property name="hibernate.connection.username" value="CONT_MYMB" />
+			<property name="hibernate.connection.password" value="CONT_MYMB" />
+			<property name="hibernate.connection.pool_size" value="1" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.generate_statistics" value="false" />
+			<property name="hibernate.use_sql_comments" value="false" />
+		</properties>
+	</persistence-unit>
+	
+		<persistence-unit name="MSsqlSrv" transaction-type="RESOURCE_LOCAL">
+		<properties>
+			<property name="hibernate.connection.url" value="jdbc:sqlserver://10.0.21.129\OASI\IDEA:1433;databaseName=SCAMBIODATI" />
+			<property name="hibernate.connection.driver_class" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+			<property name="hibernate.connection.username" value="scambio" />
+			<property name="hibernate.connection.password" value="C4sc1n0&amp;" />
+			<property name="hibernate.connection.pool_size" value="1" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.generate_statistics" value="false" />
+			<property name="hibernate.use_sql_comments" value="false" />
+			<property name="hibernate.default_schema" value="dbo" />
+		</properties>
+	</persistence-unit>
+	
+</persistence>
