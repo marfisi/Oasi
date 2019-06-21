@@ -104,7 +104,26 @@ public class AsScocr0fDaoMng implements AsScocr0fDao, Serializable{
 		}
 		return o;
 	}
-
+	
+	public AsScocr0f getDaScdatScnusScdep(Integer scdat, Integer scnus, Integer scdep){
+		AsScocr0f o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("AsScocr0f.findByScdatScnusScdep");
+				query.setParameter("scdat", scdat);
+				query.setParameter("scnus", scnus);
+				query.setParameter("scdep", scdep);
+				o = (AsScocr0f)query.getSingleResult();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
 	public void close(){
 		res.close();
 		log.info("chiuso");

@@ -12,7 +12,8 @@ import javax.persistence.*;
 @NamedQueries({
 	@NamedQuery(name = "MsvOA_PrimaNota_Tes.findAll", query = "SELECT o FROM OA_PrimaNota_Tes o WHERE o.tipoOperazione != 'ELB' order by o.nReg asc"),
 	@NamedQuery(name = "MsvOA_PrimaNota_Tes.findByNReg", query = "SELECT o FROM OA_PrimaNota_Tes o WHERE  o.tipoOperazione != 'ELB' and o.nReg = :nReg"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Tes.findByRegIva", query = "SELECT o FROM OA_PrimaNota_Tes o WHERE  o.tipoOperazione != 'ELB' and o.regIva = :regIva order by o.nReg asc")
+	@NamedQuery(name = "MsvOA_PrimaNota_Tes.findByRegIva", query = "SELECT o FROM OA_PrimaNota_Tes o WHERE  o.tipoOperazione != 'ELB' and o.regIva = :regIva order by o.nReg asc"),
+	@NamedQuery(name = "MsvOA_PrimaNota_Tes.findByCausale", query = "SELECT o FROM OA_PrimaNota_Tes o WHERE  o.tipoOperazione != 'ELB' and o.causale = :causale order by o.nReg asc")
 })
 public class MsvOA_PrimaNota_Tes implements Serializable{
 	private static final long serialVersionUID = 1L;

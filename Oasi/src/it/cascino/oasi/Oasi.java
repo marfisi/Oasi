@@ -9,12 +9,15 @@ import it.cascino.oasi.dbas.managmentbean.AsScocr0fDaoMng;
 import it.cascino.oasi.dbas.dao.AsAafor0fDao;
 import it.cascino.oasi.dbas.dao.AsAlmer0fDao;
 import it.cascino.oasi.dbas.dao.AsAncab0fDao;
+import it.cascino.oasi.dbas.dao.AsAnma20fDao;
 import it.cascino.oasi.dbas.managmentbean.AsAafor0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsAlmer0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsAncab0fDaoMng;
+import it.cascino.oasi.dbas.managmentbean.AsAnma20fDaoMng;
 import it.cascino.oasi.dbas.model.AsAafor0f;
 import it.cascino.oasi.dbas.model.AsAlmer0f;
 import it.cascino.oasi.dbas.model.AsAncab0f;
+import it.cascino.oasi.dbas.model.AsAnma20f;
 import it.cascino.oasi.dbas.dao.AsAnmag0fDao;
 import it.cascino.oasi.dbas.dao.AsArdep0fDao;
 import it.cascino.oasi.dbas.dao.AsBolem0fDao;
@@ -188,6 +191,9 @@ public class Oasi{
 	private AsAnmag0fDao asAnmag0fDao = new AsAnmag0fDaoMng();
 	private List<AsAnmag0f> asAnmag0fLs;
 
+	private AsAnma20fDao asAnma20fDao = new AsAnma20fDaoMng();
+//	private List<AsAnma20f> asAnma20fLs;
+
 	private AsAafor0fDao asAafor0fDao = new AsAafor0fDaoMng();
 //	private List<AsAafor0f> asAafor0fLs;
 
@@ -349,10 +355,13 @@ public class Oasi{
 		
 		initTrans();
 		
-		// elaboraFatture(); // TODO
+//		 elaboraFatture(); // TODO
 
 //		elaboraCrediti(); // TODO
 
+//		elaboraPagamenti(); // TODO
+
+		
 		String argomenti = "";
 		AsOasic0f cmd = null;
 		Iterator<AsOasic0f> iter_cmd = null;
@@ -524,6 +533,7 @@ public class Oasi{
 		asForni00fDao.close();
 		asFisca00fDao.close();
 		asAnmag0fDao.close();
+		asAnma20fDao.close();
 		asTabel0fDao.close();
 		asTabe20fDao.close();
 		asAafor0fDao.close();
@@ -911,11 +921,11 @@ public class Oasi{
 			cldind = StringUtils.upperCase(StringUtils.trim(msvOA_Clienti.getIndirizzo()));
 			if(StringUtils.length(cldind) > 30){
 				String civico = StringUtils.substring(cldind, StringUtils.lastIndexOf(cldind, " ") + 1);
-				cldind = StringUtils.join(StringUtils.left(cldind, 29 - StringUtils.length(civico)), " ", civico);	
+				cldind = StringUtils.join(StringUtils.left(cldind, 29 - StringUtils.length(civico)), " ", civico);
 			}
 			
 			clccap = StringUtils.trim(msvOA_Clienti.getCap());
-			cldloc = StringUtils.upperCase(StringUtils.trim(msvOA_Clienti.getLocalita()));
+			cldloc = StringUtils.left(StringUtils.upperCase(StringUtils.trim(msvOA_Clienti.getLocalita())), 25);
 			clcprv = StringUtils.upperCase(StringUtils.trim(msvOA_Clienti.getProvincia()));
 			clcfis = StringUtils.upperCase(StringUtils.trim(msvOA_Clienti.getCodiceFiscale()));
 			
@@ -1396,10 +1406,11 @@ public class Oasi{
 				}
 			}
 			
-			flagArtIngrosso = 0;
-			if((Integer.compare(asAnmag0f.getMdepi(), 1) == 0) || (Integer.compare(asAnmag0f.getMdepi(), 3) == 0)){
-				flagArtIngrosso = 1;
-			}
+//			flagArtIngrosso = 0;
+//			if((Integer.compare(asAnmag0f.getMdepi(), 1) == 0) || (Integer.compare(asAnmag0f.getMdepi(), 3) == 0)){
+//				flagArtIngrosso = 1;
+//			}
+			flagArtIngrosso = 1;
 			
 			codIva = StringUtils.trim(asAnmag0f.getMciva());
 			
@@ -3297,6 +3308,8 @@ public class Oasi{
 		elaboraFatture();
 
 		// elaboraCrediti();
+		
+		//elaboraPagamenti();
 
 		strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -3717,7 +3730,7 @@ public class Oasi{
 				notaCredito = true;
 				
 				// controllo se e' abbuono
-				if(StringUtils.equals(msvOA_MovimentiRighe.getCodArticoloOasi(), "G0XLX")){	// articoplo abbuono
+				if(StringUtils.equals(msvOA_MovimentiRighe.getCodArticoloOasi(), "G0XLX")){	// articolo abbuono
 					abbuono = true;
 				}
 			}
@@ -3754,18 +3767,21 @@ public class Oasi{
 				ftifa = "S";
 			}
 			
-			fcopa = "899";	//popolo scmca0f
-//			String fcopaTxt = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
-//			if(StringUtils.containsOnly(fcopaTxt, "0123456789")){
-//				fcopa = StringUtils.leftPad(fcopaTxt, 3, "0");	
-//			}else{	// e' un codice oasi, devo fare transcodifica
-//				fcopaTxt = transPagamenti(fcopaTxt, "oasi2as");
-//				if(StringUtils.isBlank(fcopaTxt)){
-//					log.error("Codice: " + msvOA_PrimaNota_Tes.getfPagamento() + " non gestito");
-//					fcopaTxt = "1";	// contanti
-//				}
-//				fcopa = StringUtils.leftPad(fcopaTxt, 3, "0");
-//			}
+			String fcopaTxt = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
+			if(StringUtils.containsOnly(fcopaTxt, "0123456789")){
+				fcopa = StringUtils.leftPad(fcopaTxt, 3, "0");	
+			}else{	// e' un codice oasi, devo fare transcodifica
+				fcopaTxt = transPagamenti(fcopaTxt, "oasi2as");
+				if(StringUtils.isBlank(fcopaTxt)){
+					log.error("Codice: " + msvOA_PrimaNota_Tes.getfPagamento() + " non gestito");
+					fcopaTxt = "1";	// contanti
+				}
+				fcopa = StringUtils.leftPad(fcopaTxt, 3, "0");
+				
+				if(StringUtils.equals(fcopa, "001")){
+					fcopa = "899";	// il pagamento viene inserito in scmca0f
+				}
+			}
 			
 			fimpf = new BigDecimal(0);
 			
@@ -4098,9 +4114,8 @@ public class Oasi{
 				telefoniaContratto = true;
 			}
 			
-			Boolean acconto = false;
-			if(StringUtils.equals(StringUtils.left(causale, 3), "ACL")){
-				acconto = true;
+			if(StringUtils.equals(StringUtils.left(causale, 2), "AC")){
+				continue;	// viene successivamente elaborata in elaboraPagamenti
 			}
 			
 			MsvOA_MovimentiTestate msvOA_MovimentiTestate = msvOA_MovimentiTestateDao.getDaIdPntNReg(msvOA_PrimaNota_Tes.getnReg());
@@ -4204,7 +4219,6 @@ public class Oasi{
 			importoAcconto = importoAcconto.setScale(2, BigDecimal.ROUND_HALF_UP);
 			if(importoAcconto.compareTo(new BigDecimal(0)) > 0){
 				scims = scims.add(importoAcconto);
-				acconto = true;
 			}
 			
 			scute = "";
@@ -4289,7 +4303,7 @@ public class Oasi{
 				fnnur = mtnumBD.intValue();
 				fncag =  StringUtils.left(tcomminit, 2);
 				
-				fnifi = scims;
+				fnifi = scims.subtract(importoAcconto);
 				
 				fnnup = StringUtils.right(StringUtils.upperCase(StringUtils.trim(msvOA_MovimentiTestate.getNotaFZ())), 15);
 				fndep = scdep;				
@@ -4326,143 +4340,8 @@ public class Oasi{
 				scnuf = fnnum;
 			}
 			
-			if(acconto){
-				Integer cadar = 0;
-				Integer canum = 0;
-				Integer carig = 0;
-				Integer cadad = 0;
-				Integer cadap = 0;
-				String canup = "";
-				Integer canrp = 0;
-				String canud = "";
-				String cacre = "";
-				String cadav = "";
-				BigDecimal caimp = new BigDecimal(0);
-				String cacon = "";
-				String cadmo = "";
-				
-				cadar = 0;
-				String cadarTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_PrimaNota_Tes.getDataReg());
-				cadar = Integer.parseInt(cadarTxt);
-				
-				canum = 0;
-				canum = asCcmca0fDao.getUltimoCanum(cadar).intValue();
-				canum = canum + 1;
-							
-				cadad = cadar;	
-				cadap = Integer.parseInt(StringUtils.join(StringUtils.left(cadarTxt, 4), "0101"));
-				canup = StringUtils.leftPad(scnum.toString(), 6, "0");
-				canrp = 0;
-				canud = StringUtils.leftPad(scnum.toString(), 6, "0");
-				caimp = importoAcconto; // scims;
-
-				cadmo = StringUtils.left(asClien00f.getCldrso(), 25);
-				
-				carig = 1;
-				cadav = "D";
-				
-				cacre = "";
-				cacon = "";
-				asTabel0f = asTabel0fDao.getDaTnotaTcoel("DEC", StringUtils.join(" ", StringUtils.leftPad(scdep.toString(), 2, "0")));
-				tcomm = StringUtils.trim(asTabel0f.getTcomm());
-				Boolean contanti = true;	// TODO
-				if(contanti){
-					cacre = StringUtils.substring(tcomm, 60, 62);
-					cacon = StringUtils.substring(tcomm, 0, 10);
-				}else{	// pos
-					switch("00930"){		// TODO
-						// cassa 1
-						case "00930":	// termini
-						case "00933":	// lascari
-						case "00935":	// bagheria
-						case "00937":	// brolo
-						case "00939":	// enna
-							cacre = StringUtils.substring(tcomm, 62, 64);
-							cacon = StringUtils.substring(tcomm, 30, 40);
-							break;
-						// cassa 2
-						case "00931":	// termini
-						case "00934":	// lascari
-						case "00936":	// bagheria
-						case "00938":	// brolo
-							cacre = StringUtils.substring(tcomm, 64, 66);
-							cacon = StringUtils.substring(tcomm, 40, 50);
-							break;
-						// cassa 3
-						case "00932":	// termini				
-							cacre = StringUtils.substring(tcomm, 66, 68);
-							cacon = StringUtils.substring(tcomm, 50, 60);
-							break;
-						default:
-							break;
-					}
-				}
-				
-				
-				AsCcmca0fPKey idC = new AsCcmca0fPKey();
-				idC.setCadar(cadar);
-				idC.setCanum(canum);
-				idC.setCarig(carig);
-				AsCcmca0f asCcmca0f = new AsCcmca0f();
-				asCcmca0f.setId(idC);
-				asCcmca0f.setCadad(cadad);
-				asCcmca0f.setCadap(cadap);
-				asCcmca0f.setCanup(canup);
-				asCcmca0f.setCanrp(canrp);
-				asCcmca0f.setCanud(canud);
-				asCcmca0f.setCacre(cacre);
-				asCcmca0f.setCadav(cadav);
-				asCcmca0f.setCaimp(caimp);
-				asCcmca0f.setCacon(cacon);
-				asCcmca0f.setCadmo(cadmo);
-				
-				AsCcmca0f asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
-				if(asCcmca0fTmp == null){	// nuova quindi insert
-					if(!(asCcmca0fDao.salva(asCcmca0f))){
-						chiudi();
-					}
-				}else{	// gia' presente, quindi update
-					if(!(asCcmca0fDao.aggiorna(asCcmca0f))){
-						chiudi();
-					}
-				}
-				
-				//sccoc = 99999;		// TODO cambiare con codice cliente corretto
-				if(telefoniaContratto){
-					sccoc = 12888;		// cliente Wind-Tre					
-				}
-				
-				carig = 2;
-				cadav = "A";
-				cacon = StringUtils.join("C", "   ", StringUtils.leftPad(sccoc.toString(), 6, "0"));
-				
-				idC = new AsCcmca0fPKey();
-				idC.setCadar(cadar);
-				idC.setCanum(canum);
-				idC.setCarig(carig);
-				asCcmca0f = new AsCcmca0f();
-				asCcmca0f.setId(idC);
-				asCcmca0f.setCadad(cadad);
-				asCcmca0f.setCadap(cadap);
-				asCcmca0f.setCanup(canup);
-				asCcmca0f.setCanrp(canrp);
-				asCcmca0f.setCanud(canud);
-				asCcmca0f.setCacre(cacre);
-				asCcmca0f.setCadav(cadav);
-				asCcmca0f.setCaimp(caimp);
-				asCcmca0f.setCacon(cacon);
-				asCcmca0f.setCadmo(cadmo);
-				
-				asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
-				if(asCcmca0fTmp == null){	// nuova quindi insert
-					if(!(asCcmca0fDao.salva(asCcmca0f))){
-						chiudi();
-					}
-				}else{	// gia' presente, quindi update
-					if(!(asCcmca0fDao.aggiorna(asCcmca0f))){
-						chiudi();
-					}
-				}
+			if(telefoniaContratto){
+				sccoc = 12888;		// cliente Wind-Tre
 			}
 			
 			scnot = StringUtils.left(msvOA_PrimaNota_Tes.getProtocollo(), 25);
@@ -4505,6 +4384,251 @@ public class Oasi{
 		}
 		
 		log.info("]" + "elaboraCrediti");
+	}
+
+	private void elaboraPagamenti(){
+		log.info("[" + "elaboraPagamenti");
+		
+		MsvOA_PrimaNota_Tes msvOA_PrimaNota_Tes = new MsvOA_PrimaNota_Tes();
+
+		// msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesDao.getDaRegIva("03");
+
+		msvOA_PrimaNota_TesLs = new ArrayList<MsvOA_PrimaNota_Tes>();
+		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("PACA"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACL1"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACCF"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACL2"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACL4"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACL5"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INL1"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INCF"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INL2"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INL4"));
+//		msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INL5"));
+
+		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
+		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
+		strTimestampAs400 = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400, "."), " "), "-"), ":");
+		
+		Iterator<MsvOA_PrimaNota_Tes> iter_msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesLs.iterator();
+		iter_msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesLs.iterator();
+		while(iter_msvOA_PrimaNota_TesLs.hasNext()){
+			msvOA_PrimaNota_Tes = iter_msvOA_PrimaNota_TesLs.next();
+			
+			String fPagamento = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
+			
+			Boolean telefoniaContratto = false;
+			if(StringUtils.equals(fPagamento, "WW") || StringUtils.equals(fPagamento, "W3") || StringUtils.equals(fPagamento, "WT") || StringUtils.equals(fPagamento, "WV")){
+				telefoniaContratto = true;
+			}
+			
+			Integer cadar = 0;
+			Integer canum = 0;
+			Integer carig = 0;
+			Integer cadad = 0;
+			Integer cadap = 0;
+			String canup = "";
+			Integer canrp = 0;
+			String canud = "";
+			String cacre = "";
+			String cadav = "";
+			BigDecimal caimp = new BigDecimal(0);
+			String cacon = "";
+			String cadmo = "";
+			
+			cadar = 0;
+			String cadarTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_PrimaNota_Tes.getDataReg());
+			cadar = Integer.parseInt(cadarTxt);
+			
+			canum = 0;
+			canum = asCcmca0fDao.getUltimoCanum(cadar).intValue();
+			canum = canum + 1;
+			
+			Integer scdep = 0;
+			if(!(StringUtils.equals(msvOA_PrimaNota_Tes.getSezionale(), "00"))){
+				scdep = Integer.parseInt(transDeposito(StringUtils.leftPad(msvOA_PrimaNota_Tes.getSezionale(), 3, "0"), "oasi2as"));
+			}
+						
+//			canup = "";
+//			Integer scnus = Integer.parseInt(StringUtils.left(msvOA_PrimaNota_Tes.getDocumento(), 6));
+//			Integer scdep = Integer.parseInt(transDeposito(StringUtils.leftPad(msvOA_PrimaNota_Tes.getSezionale(), 3, "0"), "oasi2as"));
+//			String scnot = StringUtils.left(msvOA_PrimaNota_Tes.getProtocollo(), 25);
+//			AsScocr0f asScocr0f = asScocr0fDao.getDaScnusScdepScnot(scnus, scdep, scnot);
+//			if(asScocr0f != null){
+//				canup = StringUtils.leftPad(asScocr0f.getId().getScnum().toString(), 6, "0");
+//			}
+//			canud = canup;
+			
+			canrp = 0;
+			
+			MsvOA_PrimaNota_Righe msvOA_PrimaNota_Righe = new MsvOA_PrimaNota_Righe();
+
+			msvOA_PrimaNota_RigheLs = msvOA_PrimaNota_RigheDao.getDaNReg(msvOA_PrimaNota_Tes.getnReg());
+			
+			Iterator<MsvOA_PrimaNota_Righe> iter_msvOA_PrimaNota_RigheLs = msvOA_PrimaNota_RigheLs.iterator();
+			iter_msvOA_PrimaNota_RigheLs = msvOA_PrimaNota_RigheLs.iterator();
+			Integer numeroGiro = 0;
+			while(iter_msvOA_PrimaNota_RigheLs.hasNext()){
+				msvOA_PrimaNota_Righe = iter_msvOA_PrimaNota_RigheLs.next();
+				
+				if((StringUtils.equals(msvOA_PrimaNota_Righe.getTipoConto(), "G") && StringUtils.equals(StringUtils.trim(msvOA_PrimaNota_Righe.getCliFor()), "02290")) ||
+					(StringUtils.equals(msvOA_PrimaNota_Righe.getTipoConto(), "G") && (msvOA_PrimaNota_Righe.getAvere().compareTo(new BigDecimal(0)) > 0))){						
+					msvOA_PrimaNota_Righe.setTipoOperazione("ELB");
+					msvOA_PrimaNota_RigheDao.aggiorna(msvOA_PrimaNota_Righe);
+					continue;
+				}
+				
+				caimp = new BigDecimal(0);
+				
+				if(StringUtils.equals(msvOA_PrimaNota_Righe.getTipoConto(), "C")){
+					AsClien00f asClien00f = asClien00fDao.getDaClccli(new BigDecimal(msvOA_PrimaNota_Righe.getCliFor()));
+					cadmo = StringUtils.left(asClien00f.getCldrso(), 25);
+					
+					String nota1 = StringUtils.trim(msvOA_PrimaNota_Righe.getNota1());
+					String data = StringUtils.right(nota1, 10);
+					data = StringUtils.join(StringUtils.right(data, 4), StringUtils.substring(data, 3, 5), StringUtils.left(data, 2));
+					
+					cadad =  Integer.parseInt(data);	
+					cadap = Integer.parseInt(StringUtils.join(StringUtils.left(data, 4), "0101"));
+					
+					String documento =  StringUtils.normalizeSpace(nota1);
+					documento =  StringUtils.substringBefore(documento, " del");
+					documento =  StringUtils.substringAfterLast(documento, ".");
+					documento =  StringUtils.substringAfterLast(documento, " ");
+					documento =  StringUtils.left(documento, 6);
+					
+					if(Integer.compare(scdep, 0) == 0){
+						String depo = StringUtils.substringBetween(nota1, "m", "e");
+						if(StringUtils.isNotBlank(depo)){
+							scdep = Integer.parseInt(transDeposito(StringUtils.leftPad(depo, 3, "0"), "oasi2as"));
+						}
+					}
+					// se entro qui e' perche' e' una fattura e per sapere il deposito vado a cercare direttamente la fattura
+					if(Integer.compare(scdep, 0) == 0){
+						documento = msvOA_PrimaNota_Tes.getDocumento();
+						Integer fdatd = Integer.parseInt(data);
+						Integer fnumd = Integer.parseInt(documento);
+						BigDecimal fcocl = asClien00f.getClccli();
+						AsFatem0f asFatem0f = asFatem0fDao.getDaFdatdFnumdFcocl(fdatd, fnumd, fcocl);
+						if(asFatem0f == null){
+							log.error("Fattura non trovata: " + fdatd + ", " + fnumd + ", " + fcocl);
+						}else{
+							scdep = asFatem0f.getFndep().intValue();
+						}
+					}					
+					
+					canup = "";
+					AsScocr0f asScocr0f = asScocr0fDao.getDaScdatScnusScdep(Integer.parseInt(data), Integer.parseInt(documento), scdep);
+					if(asScocr0f != null){
+						canup = StringUtils.leftPad(asScocr0f.getId().getScnum().toString(), 6, "0");
+					}
+					canud = canup;
+				}
+			
+				numeroGiro++;
+
+				carig = numeroGiro;
+				
+				caimp = caimp.add(msvOA_PrimaNota_Righe.getDare());
+				caimp = caimp.add(msvOA_PrimaNota_Righe.getAvere());
+				
+				if(msvOA_PrimaNota_Righe.getDare().compareTo(new BigDecimal(0)) > 0){
+					cadav = "D";
+					cacre = "";
+					cacon = "";
+//					Integer scdep = Integer.parseInt(transDeposito(StringUtils.leftPad(msvOA_PrimaNota_Tes.getSezionale(), 3, "0"), "oasi2as"));
+					AsTabel0f asTabel0f = asTabel0fDao.getDaTnotaTcoel("DEC", StringUtils.join(" ", StringUtils.leftPad(scdep.toString(), 2, "0")));
+					String tcomm = StringUtils.trim(asTabel0f.getTcomm());
+					
+					switch(StringUtils.trim(msvOA_PrimaNota_Righe.getCliFor())){ //,"00930"){
+						// cassa corrispettivi
+						case "00900":	// termini
+						case "00910":	// lascari
+						case "00915":	// bagheria
+						case "00920":	// brolo
+						case "00922":	// enna
+							cacre = StringUtils.substring(tcomm, 60, 62);
+							cacon = StringUtils.substring(tcomm, 0, 10);
+							break;
+						// cassa 1
+						case "00930":	// termini
+						case "00933":	// lascari
+						case "00935":	// bagheria
+						case "00937":	// brolo
+						case "00939":	// enna
+							cacre = StringUtils.substring(tcomm, 62, 64);
+							cacon = StringUtils.substring(tcomm, 30, 40);
+							break;
+						// cassa 2
+						case "00931":	// termini
+						case "00934":	// lascari
+						case "00936":	// bagheria
+						case "00938":	// brolo
+							cacre = StringUtils.substring(tcomm, 64, 66);
+							cacon = StringUtils.substring(tcomm, 40, 50);
+							break;
+						// cassa 3
+						case "00932":	// termini				
+							cacre = StringUtils.substring(tcomm, 66, 68);
+							cacon = StringUtils.substring(tcomm, 50, 60);
+							break;
+						default:
+							break;
+					}
+				}else if(msvOA_PrimaNota_Righe.getAvere().compareTo(new BigDecimal(0)) > 0){
+					cadav = "A";
+					cacre = "IE";
+					cacon = StringUtils.join("C", "   ", StringUtils.leftPad(StringUtils.trim(msvOA_PrimaNota_Righe.getCliFor()), 6, "0"));
+					
+					if(telefoniaContratto){
+						Integer cli = 12888;		// cliente Wind-Tre
+						cacon = StringUtils.join("C", "   ", StringUtils.leftPad(cli.toString(), 6, "0"));
+					}
+				}else{
+					log.error("Non e' possibile ne dare e ne avere");
+				}
+									
+				AsCcmca0fPKey idC = new AsCcmca0fPKey();
+				idC.setCadar(cadar);
+				idC.setCanum(canum);
+				idC.setCarig(carig);
+				AsCcmca0f asCcmca0f = new AsCcmca0f();
+				asCcmca0f.setId(idC);
+				asCcmca0f.setCadad(cadad);
+				asCcmca0f.setCadap(cadap);
+				asCcmca0f.setCanup(canup);
+				asCcmca0f.setCanrp(canrp);
+				asCcmca0f.setCanud(canud);
+				asCcmca0f.setCacre(cacre);
+				asCcmca0f.setCadav(cadav);
+				asCcmca0f.setCaimp(caimp);
+				asCcmca0f.setCacon(cacon);
+				asCcmca0f.setCadmo(cadmo);
+				
+				AsCcmca0f asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
+				if(asCcmca0fTmp == null){	// nuova quindi insert
+					if(!(asCcmca0fDao.salva(asCcmca0f))){
+						chiudi();
+					}
+				}else{	// gia' presente, quindi update
+					if(!(asCcmca0fDao.aggiorna(asCcmca0f))){
+						chiudi();
+					}
+				}
+				
+				// al posto di eliminare metto tipoOperazione = 'ELB'	(elaborata)
+				msvOA_PrimaNota_Righe.setTipoOperazione("ELB");
+				msvOA_PrimaNota_RigheDao.aggiorna(msvOA_PrimaNota_Righe);
+			}
+			
+			// elimina dalla tabella scritta da oasi
+			// msvOA_PrimaNota_TesDao.elimina(msvOA_PrimaNota_Tes);
+			// al posto di eliminare metto tipoOperazione = 'ELB'	(elaborata)
+			msvOA_PrimaNota_Tes.setTipoOperazione("ELB");
+			msvOA_PrimaNota_TesDao.aggiorna(msvOA_PrimaNota_Tes);
+		}
+		
+		log.info("]" + "elaboraPagamenti");
 	}
 
 	private void initTrans(){

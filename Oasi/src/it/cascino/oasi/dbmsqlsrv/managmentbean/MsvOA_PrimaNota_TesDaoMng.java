@@ -120,6 +120,25 @@ public class MsvOA_PrimaNota_TesDaoMng implements MsvOA_PrimaNota_TesDao, Serial
 		return o;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<MsvOA_PrimaNota_Tes> getDaCausale(String causale){
+		List<MsvOA_PrimaNota_Tes> o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("MsvOA_PrimaNota_Tes.findByCausale");
+				query.setParameter("causale", causale);
+				o = (List<MsvOA_PrimaNota_Tes>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 //	public void svuotaTabella(){
 //		try{
 //			try{

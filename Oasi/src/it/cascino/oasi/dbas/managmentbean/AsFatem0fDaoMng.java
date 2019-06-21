@@ -1,6 +1,7 @@
 package it.cascino.oasi.dbas.managmentbean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import it.cascino.oasi.dbas.model.AsFatem0f;
 import it.cascino.oasi.utils.Resources;
@@ -94,6 +95,26 @@ public class AsFatem0fDaoMng implements AsFatem0fDao, Serializable{
 				query.setParameter("fdatd", fdatd);
 				query.setParameter("fnura", fnura);
 				query.setParameter("fnumd", fnumd);
+				o = (AsFatem0f)query.getSingleResult();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
+	public AsFatem0f getDaFdatdFnumdFcocl(Integer fdatd, Integer fnumd, BigDecimal fcocl){
+		AsFatem0f o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("AsFatem0f.findByFdatdFnumdFcocl");
+				query.setParameter("fdatd", fdatd);
+				query.setParameter("fnumd", fnumd);
+				query.setParameter("fcocl", fcocl);
 				o = (AsFatem0f)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;

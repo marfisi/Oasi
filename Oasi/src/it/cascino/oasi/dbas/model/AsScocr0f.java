@@ -12,7 +12,8 @@ import it.cascino.oasi.dbas.model.pkey.AsScocr0fPKey;
 @Entity(name = "Scocr0f")
 @NamedQueries({
 	@NamedQuery(name = "AsScocr0f.findAll", query = "SELECT o FROM Scocr0f o"),
-	@NamedQuery(name = "AsScocr0f.findById", query = "SELECT o FROM Scocr0f o WHERE o.id.scdat = :scdat and o.id.scnuz = :scnuz and o.id.scnum = :scnum")
+	@NamedQuery(name = "AsScocr0f.findById", query = "SELECT o FROM Scocr0f o WHERE o.id.scdat = :scdat and o.id.scnuz = :scnuz and o.id.scnum = :scnum"),
+	@NamedQuery(name = "AsScocr0f.findByScdatScnusScdep", query = "SELECT o FROM Scocr0f o WHERE o.id.scdat = :scdat and o.scnus = :scnus and o.scdep = :scdep")
 })
 public class AsScocr0f implements Serializable{
 	private static final long serialVersionUID = 1L;

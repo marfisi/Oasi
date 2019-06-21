@@ -12,6 +12,8 @@ public interface AsScocr0fDao{
 //	void elimina(AsScocr0f o);
 	
 	AsScocr0f getDaId(Integer scdat, Integer scnuz, Integer scnum);
-	
+
+	AsScocr0f getDaScdatScnusScdep(Integer scdat, Integer scnus, Integer scdep);
+
 	void close();
 }
