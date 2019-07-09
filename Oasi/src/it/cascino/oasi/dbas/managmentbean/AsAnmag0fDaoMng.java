@@ -104,77 +104,116 @@ public class AsAnmag0fDaoMng implements AsAnmag0fDao, Serializable{
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<AsAnmag0f> getArticoliIngrosso(){
-		List<AsAnmag0f> o = null;
-		try{
-			try{
-				utx.begin();
-				Query query = em.createNamedQuery("AsAnmag0f.findAllIngrosso");
-				o = (List<AsAnmag0f>)query.getResultList();
-			}catch(NoResultException e){
-				o = null;
-			}
-			utx.commit();
-		}catch(Exception e){
-			log.fatal(e.toString());
-		}
-		return o;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<AsAnmag0f> getArticoliAttivi(){
-		List<AsAnmag0f> o = null;
-		try{
-			try{
-				utx.begin();
-				Query query = em.createNamedQuery("AsAnmag0f.findAttivi");
-				o = (List<AsAnmag0f>)query.getResultList();
-			}catch(NoResultException e){
-				o = null;
-			}
-			utx.commit();
-		}catch(Exception e){
-			log.fatal(e.toString());
-		}
-		return o;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<AsAnmag0f> getArticoliAnnulatiMaMovimentatiDal(String dataPartenza){
-		List<AsAnmag0f> o = null;
-		try{
-			try{
-				utx.begin();
-//				String sql1 = "select * from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= 20160101)) except (select * from anmag0f where mcoda in (select dcoda from (select dcoda, sum(dgiac) gia from ardep0f where dcode in (2, 5, 6, 8, 9) group by dcoda) gicenz where gia = 0 and dcoda not in (select vcoda from movma0f where vdatr >= 20160101 and vndep in (2, 5, 6, 8, 9))))) t1";
-//				String sql2 = "select * from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= 20160101)) ) t1";
-//				String sql3 = "select atama, mcoda, mdesc, mumis, mpeu1, msc11, mconf, mdepi, madiv, magru, masot, mafam, mastf, mast1, march, model, mcofo, mcoaf, mciva from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= :datapart)) ) t1";
-//				String sql4 = "select * from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= :datapart)) ) t1";
-//				String sql5 = "select atama, mcoda, mdesc, mumis, mpeu1, 	msc11, mconf, mdepi, madiv, magru, masot, mafam, mastf, mast1, march, model, mcofo, mcoaf, mciva from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= :datapart)) ) t1";
-//				String sql6 = "select * from anmag0f a where atama = (' ')";
-				String sql = "select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= :datapart)";
-				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
-				query.setParameter("datapart", dataPartenza);
-				o = (List<AsAnmag0f>)query.getResultList();
-			}catch(NoResultException e){
-				o = null;
-			}
-			utx.commit();
-		}catch(Exception e){
-			log.fatal(e.toString());
-		}
-		return o;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<AsAnmag0f> getArticoliDaNonPassare(String dataPartenza, String depositi){
-		List<AsAnmag0f> o = null;
-		try{
-			try{
-				utx.begin();
-				String sql = "select * from anmag0f where atama in (' ', 'A') except (select * from anmag0f where atama in (' ', 'A') and mdepi in (1, 3)) except (select * from anmag0f where mcoda in (select dcoda from ardep0f where mdepi in (1, 3) and dcode in (" + depositi + ") and dgiac <> 0)) except (select * from anmag0f where mcoda in (select mtcod from movtr0f where mtdpa in (" + depositi + ") and mtutr = 'OA'))";
-				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
+//	@SuppressWarnings("unchecked")
+//	public List<AsAnmag0f> getArticoliIngrosso(){
+//		List<AsAnmag0f> o = null;
+//		try{
+//			try{
+//				utx.begin();
+//				Query query = em.createNamedQuery("AsAnmag0f.findAllIngrosso");
+//				o = (List<AsAnmag0f>)query.getResultList();
+//			}catch(NoResultException e){
+//				o = null;
+//			}
+//			utx.commit();
+//		}catch(Exception e){
+//			log.fatal(e.toString());
+//		}
+//		return o;
+//	}
+//	
+//	@SuppressWarnings("unchecked")
+//	public List<AsAnmag0f> getArticoliAttivi(){
+//		List<AsAnmag0f> o = null;
+//		try{
+//			try{
+//				utx.begin();
+//				Query query = em.createNamedQuery("AsAnmag0f.findAttivi");
+//				o = (List<AsAnmag0f>)query.getResultList();
+//			}catch(NoResultException e){
+//				o = null;
+//			}
+//			utx.commit();
+//		}catch(Exception e){
+//			log.fatal(e.toString());
+//		}
+//		return o;
+//	}
+//	
+//	@SuppressWarnings("unchecked")
+//	public List<AsAnmag0f> getArticoliAnnulatiMaMovimentatiDal(String dataPartenza){
+//		List<AsAnmag0f> o = null;
+//		try{
+//			try{
+//				utx.begin();
+////				String sql1 = "select * from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= 20160101)) except (select * from anmag0f where mcoda in (select dcoda from (select dcoda, sum(dgiac) gia from ardep0f where dcode in (2, 5, 6, 8, 9) group by dcoda) gicenz where gia = 0 and dcoda not in (select vcoda from movma0f where vdatr >= 20160101 and vndep in (2, 5, 6, 8, 9))))) t1";
+////				String sql2 = "select * from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= 20160101)) ) t1";
+////				String sql3 = "select atama, mcoda, mdesc, mumis, mpeu1, msc11, mconf, mdepi, madiv, magru, masot, mafam, mastf, mast1, march, model, mcofo, mcoaf, mciva from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= :datapart)) ) t1";
+////				String sql4 = "select * from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= :datapart)) ) t1";
+////				String sql5 = "select atama, mcoda, mdesc, mumis, mpeu1, 	msc11, mconf, mdepi, madiv, magru, masot, mafam, mastf, mast1, march, model, mcofo, mcoaf, mciva from ((select * from anmag0f where atama = (' ')) union (select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= :datapart)) ) t1";
+////				String sql6 = "select * from anmag0f a where atama = (' ')";
+//				String sql = "select * from anmag0f where atama = ('A') and mcoda in (select vcoda from movma0f where vdatr >= :datapart)";
+//				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
 //				query.setParameter("datapart", dataPartenza);
+//				o = (List<AsAnmag0f>)query.getResultList();
+//			}catch(NoResultException e){
+//				o = null;
+//			}
+//			utx.commit();
+//		}catch(Exception e){
+//			log.fatal(e.toString());
+//		}
+//		return o;
+//	}
+//	
+//	@SuppressWarnings("unchecked")
+//	public List<AsAnmag0f> getArticoliDaNonPassare(String dataPartenza, String depositi){
+//		List<AsAnmag0f> o = null;
+//		try{
+//			try{
+//				utx.begin();
+//				String sql = "select * from anmag0f where atama in (' ', 'A') except (select * from anmag0f where atama in (' ', 'A') and mdepi in (1, 3)) except (select * from anmag0f where mcoda in (select dcoda from ardep0f where mdepi in (1, 3) and dcode in (" + depositi + ") and dgiac <> 0)) except (select * from anmag0f where mcoda in (select mtcod from movtr0f where mtdpa in (" + depositi + ") and mtutr = 'OA'))";
+//				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
+////				query.setParameter("datapart", dataPartenza);
+//				o = (List<AsAnmag0f>)query.getResultList();
+//			}catch(NoResultException e){
+//				o = null;
+//			}
+//			utx.commit();
+//		}catch(Exception e){
+//			log.fatal(e.toString());
+//		}
+//		return o;
+//	}
+//	
+//	public AsAnmag0f getArticoloDaNonPassare(String codArticolo, String dataPartenza, String depositi){
+//		AsAnmag0f o = null;
+//		try{
+//			try{
+//				utx.begin();
+//				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda = :codArticolo except (select * from anmag0f where atama in (' ', 'A') and mdepi in (1, 3)) except (select * from anmag0f where mcoda in (select dcoda from ardep0f where mdepi in (1, 3) and dcode in (" + depositi + ") and dgiac <> 0)) except (select * from anmag0f where mcoda in (select mtcod from movtr0f where mtdpa in (" + depositi + ") and mtutr = 'OA'))";
+//				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
+//				query.setParameter("codArticolo", codArticolo);
+////				query.setParameter("datapart", dataPartenza);
+//				o = (AsAnmag0f)query.getSingleResult();
+//			}catch(NoResultException e){
+//				o = null;
+//			}
+//			utx.commit();
+//		}catch(Exception e){
+//			log.fatal(e.toString());
+//		}
+//		return o;
+//	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AsAnmag0f> getArticoliDaAS400aOasi(){
+		List<AsAnmag0f> o = null;
+		try{
+			try{
+				utx.begin();
+				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda in (select m2cod from anma20f where m2oas = 'O')";
+				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
 				o = (List<AsAnmag0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
@@ -186,15 +225,14 @@ public class AsAnmag0fDaoMng implements AsAnmag0fDao, Serializable{
 		return o;
 	}
 	
-	public AsAnmag0f getArticoloDaNonPassare(String codArticolo, String dataPartenza, String depositi){
+	public AsAnmag0f getArticoliDaAS400aOasi(String mcoda){
 		AsAnmag0f o = null;
 		try{
 			try{
 				utx.begin();
-				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda = :codArticolo except (select * from anmag0f where atama in (' ', 'A') and mdepi in (1, 3)) except (select * from anmag0f where mcoda in (select dcoda from ardep0f where mdepi in (1, 3) and dcode in (" + depositi + ") and dgiac <> 0)) except (select * from anmag0f where mcoda in (select mtcod from movtr0f where mtdpa in (" + depositi + ") and mtutr = 'OA'))";
+				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda = :mcoda and mcoda in (select m2cod from anma20f where m2oas = 'O')";
 				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
-				query.setParameter("codArticolo", codArticolo);
-//				query.setParameter("datapart", dataPartenza);
+				query.setParameter("mcoda", mcoda);
 				o = (AsAnmag0f)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;

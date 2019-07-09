@@ -102,6 +102,25 @@ public class MsvOA_PrimaNota_RigheDaoMng implements MsvOA_PrimaNota_RigheDao, Se
 		return o;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<MsvOA_PrimaNota_Righe> getDaNRegElaborate(String nReg){
+		List<MsvOA_PrimaNota_Righe> o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("MsvOA_PrimaNota_Righe.findByNRegElaborate");
+				query.setParameter("nReg", nReg);
+				o = (List<MsvOA_PrimaNota_Righe>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public MsvOA_PrimaNota_Righe getDaId(String nReg, String nRiga){
 		MsvOA_PrimaNota_Righe o = null;
 		try{

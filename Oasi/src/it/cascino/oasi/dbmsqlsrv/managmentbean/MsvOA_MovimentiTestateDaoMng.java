@@ -103,8 +103,8 @@ public class MsvOA_MovimentiTestateDaoMng implements MsvOA_MovimentiTestateDao, 
 		try{
 			try{
 				utx.begin();
-//				Query query = em.createNamedQuery("MsvOA_MovimentiTestate.findFatture"); @NamedQuery(name = "MsvOA_MovimentiTestate.findFatture", query = "SELECT o FROM OA_MovimentiTestate o WHERE o.tipoOperazione = 'ELB' and o.causaleOasi in ('CORC', 'RSCL') and o.documAccomp = 1 order by o.dataReg, o.idUnivocoTes")
-				String sql = "SELECT * FROM OA_MovimentiTestate o WHERE o.tipoOperazione = 'ELB' and o.causaleOasi in (" + causali + ") and o.documAccomp = 1 order by o.dataReg, o.idUnivocoTes";
+//				Query query = em.createNamedQuery("MsvOA_MovimentiTestate.findFatture"); @NamedQuery(name = "MsvOA_MovimentiTestate.findFatture", query = "SELECT o FROM OA_MovimentiTestate o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.causaleOasi in ('CORC', 'RSCL') and o.documAccomp = 1 order by o.dataReg, o.idUnivocoTes")
+				String sql = "SELECT * FROM OA_MovimentiTestate o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.causaleOasi in (" + causali + ") and o.documAccomp = 1 order by o.dataReg, o.idUnivocoTes";
 				Query query = em.createNativeQuery(sql, MsvOA_MovimentiTestate.class);
 //				query.setParameter("causali", causali);
 				o = (List<MsvOA_MovimentiTestate>)query.getResultList();

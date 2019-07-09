@@ -11,11 +11,11 @@ import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvOA_MovimentiRighePKey;
 */
 @Entity(name="OA_MovimentiRighe")
 @NamedQueries({
-	@NamedQuery(name = "MsvOA_MovimentiRighe.findAll", query = "SELECT o FROM OA_MovimentiRighe o WHERE o.tipoOperazione != 'ELB' order by o.id.idUnivocoTes, o.id.idUnivocoRiga"),
+	@NamedQuery(name = "MsvOA_MovimentiRighe.findAll", query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.id.idUnivocoTes, o.id.idUnivocoRiga"),
 	@NamedQuery(name = "MsvOA_MovimentiRighe.findByIdUnivocoTes", query = "SELECT o FROM OA_MovimentiRighe o WHERE o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"),
-	@NamedQuery(name = "MsvOA_MovimentiRighe.findByIdUnivocoTesNonElaborate", query = "SELECT o FROM OA_MovimentiRighe o WHERE o.tipoOperazione != 'ELB' and o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"),
-	@NamedQuery(name = "MsvOA_MovimentiRighe.findByIdUnivocoTesElaborate", query = "SELECT o FROM OA_MovimentiRighe o WHERE o.tipoOperazione = 'ELB' and o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"),
-	@NamedQuery(name = "MsvOA_MovimentiRighe.findByIdUnivocoTesIdUnivocoRiga", query = "SELECT o FROM OA_MovimentiRighe o WHERE o.tipoOperazione != 'ELB' and o.id.idUnivocoTes = :idUnivocoTes and o.id.idUnivocoRiga = :idUnivocoRiga")
+	@NamedQuery(name = "MsvOA_MovimentiRighe.findByIdUnivocoTesNonElaborate", query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"),
+	@NamedQuery(name = "MsvOA_MovimentiRighe.findByIdUnivocoTesElaborate", query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"),
+	@NamedQuery(name = "MsvOA_MovimentiRighe.findByIdUnivocoTesIdUnivocoRiga", query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes and o.id.idUnivocoRiga = :idUnivocoRiga")
 })
 public class MsvOA_MovimentiRighe implements Serializable{
 	private static final long serialVersionUID = 1L;

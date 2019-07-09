@@ -11,7 +11,7 @@ import javax.persistence.*;
 */
 @Entity(name="OA_MovimentiTestate")
 @NamedQueries({
-	@NamedQuery(name = "MsvOA_MovimentiTestate.findAll", query = "SELECT o FROM OA_MovimentiTestate o WHERE o.tipoOperazione != 'ELB' order by o.dataReg, o.idUnivocoTes"),
+	@NamedQuery(name = "MsvOA_MovimentiTestate.findAll", query = "SELECT o FROM OA_MovimentiTestate o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.dataReg, o.idUnivocoTes"),
 	@NamedQuery(name = "MsvOA_MovimentiTestate.findByIdUnivocoTes", query = "SELECT o FROM OA_MovimentiTestate o WHERE o.idUnivocoTes = :idUnivocoTes"),
 	@NamedQuery(name = "MsvOA_MovimentiTestate.findByIdPntNReg", query = "SELECT o FROM OA_MovimentiTestate o WHERE o.idPntNReg = :idPntNReg")
 })

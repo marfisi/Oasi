@@ -11,9 +11,9 @@ import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvOA_PrimaNota_IvaPKey;
 */
 @Entity(name="OA_PrimaNota_Iva")
 @NamedQueries({
-	@NamedQuery(name = "MsvOA_PrimaNota_Iva.findAll", query = "SELECT o FROM OA_PrimaNota_Iva o WHERE o.tipoOperazione != 'ELB' order by o.id.nReg,  o.id.nRiga"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Iva.findByNReg", query = "SELECT o FROM OA_PrimaNota_Iva o WHERE o.tipoOperazione != 'ELB' and o.id.nReg = :nReg order by o.id.nRiga"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Iva.findByNRegNriga", query = "SELECT o FROM OA_PrimaNota_Iva o WHERE o.tipoOperazione != 'ELB' and o.id.nReg = :nReg and o.id.nRiga = :nRiga")
+	@NamedQuery(name = "MsvOA_PrimaNota_Iva.findAll", query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.id.nReg,  o.id.nRiga"),
+	@NamedQuery(name = "MsvOA_PrimaNota_Iva.findByNReg", query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg order by o.id.nRiga"),
+	@NamedQuery(name = "MsvOA_PrimaNota_Iva.findByNRegNriga", query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg and o.id.nRiga = :nRiga")
 })
 public class MsvOA_PrimaNota_Iva implements Serializable{
 	private static final long serialVersionUID = 1L;

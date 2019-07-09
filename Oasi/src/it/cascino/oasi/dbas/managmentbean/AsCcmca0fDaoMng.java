@@ -22,20 +22,20 @@ public class AsCcmca0fDaoMng implements AsCcmca0fDao, Serializable{
 	
 	@SuppressWarnings("unchecked")
 	public List<AsCcmca0f> getAll(){
-		List<AsCcmca0f> cod = null;
+		List<AsCcmca0f> o = null;
 		try{
 			try{
 				utx.begin();
 				Query query = em.createNamedQuery("AsCcmca0f.findAll");
-				cod = (List<AsCcmca0f>)query.getResultList();
+				o = (List<AsCcmca0f>)query.getResultList();
 			}catch(NoResultException e){
-				cod = null;
+				o = null;
 			}
 			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
-		return cod;
+		return o;
 	}
 	
 	public Boolean salva(AsCcmca0f o){
@@ -70,21 +70,20 @@ public class AsCcmca0fDaoMng implements AsCcmca0fDao, Serializable{
 		return true;
 	}
 	
-//	public void elimina(AsCcmca0f oElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				AsCcmca0f o = em.find(AsCcmca0f.class, oElimina.getVcoda());
-//				log.info("elimina: " + o.toString());
-//				em.remove(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
+	public void elimina(AsCcmca0f oElimina){
+		try{
+			try{
+				utx.begin();
+				AsCcmca0f o = em.find(AsCcmca0f.class, oElimina.getId());
+				log.info("elimina: " + o.toString());
+				em.remove(o);
+			}finally{
+				utx.commit();
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+	}
 	
 	public AsCcmca0f getDaId(Integer cadar, Integer canum, Integer carig){
 		AsCcmca0f o = null;
@@ -115,6 +114,45 @@ public class AsCcmca0fDaoMng implements AsCcmca0fDao, Serializable{
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("cadar", cadar);
 				o = (BigDecimal)query.getSingleResult();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
+//	public Integer delByCadarCanup(Integer cadar, String canup){ 	@NamedQuery(name = "AsCcmca0f.delByCadarCanup", query = "DELETE FROM Ccmca0f o WHERE o.id.cadar = :cadar and o.canup = :canup")
+//		Integer o = -1;
+//		try{
+//			try{
+//				utx.begin();
+//				Query query = em.createNamedQuery("AsCcmca0f.delByCadarCanup");
+//				query.setParameter("cadar", cadar);
+//				query.setParameter("canup", canup);
+//				o = query.executeUpdate();
+//			}catch(NoResultException e){
+//				o = -1;
+//			}
+//			utx.commit();
+//		}catch(Exception e){
+//			log.fatal(e.toString());
+//		}
+//		return o;
+//	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AsCcmca0f> getDaCadarCanup(Integer cadar, String canup){
+		List<AsCcmca0f> o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("AsCcmca0f.findByCadarCanup");
+				query.setParameter("cadar", cadar);
+				query.setParameter("canup", canup);
+				o = (List<AsCcmca0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}

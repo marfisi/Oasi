@@ -110,7 +110,9 @@ public class AsScocr0fDaoMng implements AsScocr0fDao, Serializable{
 		try{
 			try{
 				utx.begin();
-				Query query = em.createNamedQuery("AsScocr0f.findByScdatScnusScdep");
+				// Query query = em.createNamedQuery("AsScocr0f.findByScdatScnusScdep"); @NamedQuery(name = "AsScocr0f.findByScdatScnusScdep", query = "SELECT o FROM Scocr0f o WHERE o.id.scdat = :scdat and o.scnus = :scnus and o.scdep = :scdep")
+				String sql = "SELECT * FROM Scocr0f o WHERE o.scdat = :scdat and o.scnus = :scnus and o.scdep = :scdep order by o.scnum desc limit 1";
+				Query query = em.createNativeQuery(sql, AsScocr0f.class);
 				query.setParameter("scdat", scdat);
 				query.setParameter("scnus", scnus);
 				query.setParameter("scdep", scdep);

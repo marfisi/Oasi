@@ -14,15 +14,19 @@ public interface AsAnmag0fDao{
 
 	AsAnmag0f getArticoloDaMcoda(String mcoda);
 	
-	List<AsAnmag0f> getArticoliIngrosso();
-
-	List<AsAnmag0f> getArticoliAttivi();
+//	List<AsAnmag0f> getArticoliIngrosso();
+//
+//	List<AsAnmag0f> getArticoliAttivi();
+//	
+//	List<AsAnmag0f> getArticoliAnnulatiMaMovimentatiDal(String dataPartenza);
+//
+//	List<AsAnmag0f> getArticoliDaNonPassare(String dataPartenza, String depositi);
+//
+//	AsAnmag0f getArticoloDaNonPassare(String codArticolo, String dataPartenza, String depositi);
 	
-	List<AsAnmag0f> getArticoliAnnulatiMaMovimentatiDal(String dataPartenza);
-
-	List<AsAnmag0f> getArticoliDaNonPassare(String dataPartenza, String depositi);
-
-	AsAnmag0f getArticoloDaNonPassare(String codArticolo, String dataPartenza, String depositi);
+	List<AsAnmag0f> getArticoliDaAS400aOasi();
+	
+	AsAnmag0f getArticoliDaAS400aOasi(String mcoda);
 
 	Integer aggiornaCampiMancanti();
 	

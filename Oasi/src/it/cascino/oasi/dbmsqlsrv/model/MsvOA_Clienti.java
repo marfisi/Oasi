@@ -10,9 +10,9 @@ import javax.persistence.*;
 */
 @Entity(name="OA_Clienti")
 @NamedQueries({
-	@NamedQuery(name = "MsvOA_Clienti.findAll", query = "SELECT o FROM OA_Clienti o WHERE o.tipoOperazione != 'ELB' and o.codice != '' order by o.codice asc"),
-	@NamedQuery(name = "MsvOA_Clienti.findByCodice", query = "SELECT o FROM OA_Clienti o WHERE o.tipoOperazione != 'ELB' and o.codice = :codice"),
-	@NamedQuery(name = "MsvOA_Clienti.svuota", query = "DELETE FROM OA_Clienti o WHERE o.tipoOperazione = 'ELB' and o.codice != ''")
+	@NamedQuery(name = "MsvOA_Clienti.findAll", query = "SELECT o FROM OA_Clienti o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.codice != '' order by o.codice asc"),
+	@NamedQuery(name = "MsvOA_Clienti.findByCodice", query = "SELECT o FROM OA_Clienti o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.codice = :codice"),
+	@NamedQuery(name = "MsvOA_Clienti.svuota", query = "DELETE FROM OA_Clienti o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.codice != ''")
 })
 public class MsvOA_Clienti implements Serializable{
 	private static final long serialVersionUID = 1L;

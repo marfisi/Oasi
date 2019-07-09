@@ -11,9 +11,10 @@ import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvOA_PrimaNota_RighePKey;
 */
 @Entity(name="OA_PrimaNota_Righe")
 @NamedQueries({
-	@NamedQuery(name = "MsvOA_PrimaNota_Righe.findAll", query = "SELECT o FROM OA_PrimaNota_Righe o WHERE o.tipoOperazione != 'ELB' order by o.id.nReg,  o.id.nRiga"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Righe.findById", query = "SELECT o FROM OA_PrimaNota_Righe o WHERE o.tipoOperazione != 'ELB' and o.id.nReg = :nReg and o.id.nRiga = :nRiga"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Righe.findByNReg", query = "SELECT o FROM OA_PrimaNota_Righe o WHERE o.tipoOperazione != 'ELB' and o.id.nReg = :nReg order by o.id.nRiga")
+	@NamedQuery(name = "MsvOA_PrimaNota_Righe.findAll", query = "SELECT o FROM OA_PrimaNota_Righe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.id.nReg,  o.id.nRiga"),
+	@NamedQuery(name = "MsvOA_PrimaNota_Righe.findById", query = "SELECT o FROM OA_PrimaNota_Righe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg and o.id.nRiga = :nRiga"),
+	@NamedQuery(name = "MsvOA_PrimaNota_Righe.findByNReg", query = "SELECT o FROM OA_PrimaNota_Righe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg order by o.id.nRiga"),
+	@NamedQuery(name = "MsvOA_PrimaNota_Righe.findByNRegElaborate", query = "SELECT o FROM OA_PrimaNota_Righe o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg order by o.id.nRiga")
 })
 public class MsvOA_PrimaNota_Righe implements Serializable{
 	private static final long serialVersionUID = 1L;

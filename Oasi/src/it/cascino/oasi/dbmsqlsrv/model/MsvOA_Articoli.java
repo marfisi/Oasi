@@ -9,10 +9,10 @@ import javax.persistence.*;
 */
 @Entity(name="OA_Articoli")
 @NamedQueries({
-	@NamedQuery(name = "MsvOA_Articoli.findAll", query = "SELECT o FROM OA_Articoli o WHERE o.tipoOperazione != 'ELB' and o.codBreveOasi != '' order by o.codBreveOasi asc"),
-	@NamedQuery(name = "MsvOA_Articoli.findByCodBreveOasi", query = "SELECT o FROM OA_Articoli o WHERE o.tipoOperazione != 'ELB' and o.codBreveOasi = :codBreveOasi"),
-	@NamedQuery(name = "MsvOA_Articoli.findByCodArticoloCascino", query = "SELECT o FROM OA_Articoli o WHERE o.tipoOperazione != 'ELB' and o.codArticoloCascino = :codArticoloCascino"),
-	@NamedQuery(name = "MsvOA_Articoli.svuota", query = "DELETE FROM OA_Articoli o WHERE o.tipoOperazione = 'ELB' and o.codBreveOasi != ''")
+	@NamedQuery(name = "MsvOA_Articoli.findAll", query = "SELECT o FROM OA_Articoli o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.codBreveOasi != '' order by o.codBreveOasi asc"),
+	@NamedQuery(name = "MsvOA_Articoli.findByCodBreveOasi", query = "SELECT o FROM OA_Articoli o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.codBreveOasi = :codBreveOasi"),
+	@NamedQuery(name = "MsvOA_Articoli.findByCodArticoloCascino", query = "SELECT o FROM OA_Articoli o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.codArticoloCascino = :codArticoloCascino"),
+	@NamedQuery(name = "MsvOA_Articoli.svuota", query = "DELETE FROM OA_Articoli o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.codBreveOasi != ''")
 })
 public class MsvOA_Articoli implements Serializable{
 	private static final long serialVersionUID = 1L;

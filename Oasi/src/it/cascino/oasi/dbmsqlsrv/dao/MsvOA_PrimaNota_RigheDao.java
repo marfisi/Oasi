@@ -14,6 +14,8 @@ public interface MsvOA_PrimaNota_RigheDao{
 	
 	List<MsvOA_PrimaNota_Righe> getDaNReg(String nReg);
 
+	List<MsvOA_PrimaNota_Righe> getDaNRegElaborate(String nReg);
+
 	MsvOA_PrimaNota_Righe getDaId(String nReg, String nRiga);
 
 //	void svuotaTabella();
