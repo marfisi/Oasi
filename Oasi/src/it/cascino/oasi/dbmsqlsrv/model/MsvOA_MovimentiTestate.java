@@ -44,6 +44,7 @@ public class MsvOA_MovimentiTestate implements Serializable{
 	private String nMovDdt;
 	private BigDecimal valTrasporto;
 	private String notaFZ;
+	private String notaFN;
 	private String tipoOperazione;
 
 	public MsvOA_MovimentiTestate(){
@@ -209,6 +210,14 @@ public class MsvOA_MovimentiTestate implements Serializable{
 	public void setNotaFZ(String notaFZ){
 		this.notaFZ = notaFZ;
 	}
+	
+	public String getNotaFN(){
+		return notaFN;
+	}
+
+	public void setNotaFN(String notaFN){
+		this.notaFN = notaFN;
+	}
 
 	public String getTipoOperazione(){
 		return tipoOperazione;
@@ -239,6 +248,7 @@ public class MsvOA_MovimentiTestate implements Serializable{
 		result = prime * result + ((ipaIdDocumento == null) ? 0 : ipaIdDocumento.hashCode());
 		result = prime * result + ((nMovDdt == null) ? 0 : nMovDdt.hashCode());
 		result = prime * result + ((notaFZ == null) ? 0 : notaFZ.hashCode());
+		result = prime * result + ((notaFN == null) ? 0 : notaFN.hashCode());
 		result = prime * result + ((nroDoc == null) ? 0 : nroDoc.hashCode());
 		result = prime * result + ((tipoOperazione == null) ? 0 : tipoOperazione.hashCode());
 		result = prime * result + ((tipoPrezzo == null) ? 0 : tipoPrezzo.hashCode());
@@ -260,6 +270,6 @@ public class MsvOA_MovimentiTestate implements Serializable{
 
 	@Override
 	public String toString(){
-		return "MsvOA_MovimentiTestate [idUnivocoTes=" + idUnivocoTes + ", dataReg=" + dataReg + ", causaleOasi=" + causaleOasi + ", tipoPrezzo=" + tipoPrezzo + ", documAccomp=" + documAccomp + ", codMag=" + codMag + ", codCliFor=" + codCliFor + ", idPntNReg=" + idPntNReg + ", codIvaTes=" + codIvaTes + ", nroDoc=" + nroDoc + ", dataDoc=" + dataDoc + ", ipaCodiceCIG=" + ipaCodiceCIG + ", ipaCodiceCUP=" + ipaCodiceCUP + ", ipaCodiceCommessa=" + ipaCodiceCommessa + ", ipaIdDocumento=" + ipaIdDocumento + ", ipaDataDocumento=" + ipaDataDocumento + ", codPagamento=" + codPagamento + ", nMovDdt=" + nMovDdt + ", valTrasporto=" + valTrasporto + ", notaFZ=" + notaFZ + ", tipoOperazione=" + tipoOperazione + "]";
+		return "MsvOA_MovimentiTestate [idUnivocoTes=" + idUnivocoTes + ", dataReg=" + dataReg + ", causaleOasi=" + causaleOasi + ", tipoPrezzo=" + tipoPrezzo + ", documAccomp=" + documAccomp + ", codMag=" + codMag + ", codCliFor=" + codCliFor + ", idPntNReg=" + idPntNReg + ", codIvaTes=" + codIvaTes + ", nroDoc=" + nroDoc + ", dataDoc=" + dataDoc + ", ipaCodiceCIG=" + ipaCodiceCIG + ", ipaCodiceCUP=" + ipaCodiceCUP + ", ipaCodiceCommessa=" + ipaCodiceCommessa + ", ipaIdDocumento=" + ipaIdDocumento + ", ipaDataDocumento=" + ipaDataDocumento + ", codPagamento=" + codPagamento + ", nMovDdt=" + nMovDdt + ", valTrasporto=" + valTrasporto + ", notaFZ=" + notaFZ + ", notaFN=" + notaFN + ", tipoOperazione=" + tipoOperazione + "]";
 	}
 }

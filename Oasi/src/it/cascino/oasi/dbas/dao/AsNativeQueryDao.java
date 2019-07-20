@@ -15,6 +15,8 @@ public interface AsNativeQueryDao{
 	List<Object[]> getArdepArren(String articolo, String depIngrosso);
 	
 	List<AsMovtr0f> getMovtrDaIngrossoAexpert(String depIngrosso, String depExpert, Integer data, Integer ora);
+	
+	List<Object[]> getStoricoMovimenti();
 
 	void close();
 }
