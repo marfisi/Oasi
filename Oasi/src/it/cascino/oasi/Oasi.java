@@ -19,6 +19,7 @@ import it.cascino.oasi.dbas.model.AsAlmer0f;
 import it.cascino.oasi.dbas.model.AsAncab0f;
 import it.cascino.oasi.dbas.dao.AsAnmag0fDao;
 import it.cascino.oasi.dbas.dao.AsArdep0fDao;
+import it.cascino.oasi.dbas.dao.AsBofor0fDao;
 import it.cascino.oasi.dbas.dao.AsBolem0fDao;
 import it.cascino.oasi.dbas.dao.AsCcmca0fDao;
 import it.cascino.oasi.dbas.dao.AsClien00fDao;
@@ -36,6 +37,7 @@ import it.cascino.oasi.dbas.dao.AsTabel0fDao;
 import it.cascino.oasi.dbas.dao.AsTabge00fDao;
 import it.cascino.oasi.dbas.managmentbean.AsAnmag0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsArdep0fDaoMng;
+import it.cascino.oasi.dbas.managmentbean.AsBofor0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsBolem0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsCcmca0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsClien00fDaoMng;
@@ -53,6 +55,7 @@ import it.cascino.oasi.dbas.managmentbean.AsTabel0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsTabge00fDaoMng;
 import it.cascino.oasi.dbas.model.AsAnmag0f;
 import it.cascino.oasi.dbas.model.AsArdep0f;
+import it.cascino.oasi.dbas.model.AsBofor0f;
 import it.cascino.oasi.dbas.model.AsBolem0f;
 import it.cascino.oasi.dbas.model.AsCcmca0f;
 import it.cascino.oasi.dbas.model.AsClien00f;
@@ -71,6 +74,7 @@ import it.cascino.oasi.dbas.model.AsTabe20f;
 import it.cascino.oasi.dbas.model.AsTabel0f;
 import it.cascino.oasi.dbas.model.pkey.AsAlmer0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsArdep0fPKey;
+import it.cascino.oasi.dbas.model.pkey.AsBofor0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsBolem0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsCcmca0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsFatem0fPKey;
@@ -154,8 +158,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
@@ -203,7 +211,7 @@ public class Oasi{
 //	private List<AsTabe20f> asTabe20fLs;
 
 	private AsMovma0fDao asMovma0fDao = new AsMovma0fDaoMng();
-	private List<AsMovma0f> asMovma0fLs;
+//	private List<AsMovma0f> asMovma0fLs;
 
 	private AsMovtr0fDao asMovtr0fDao = new AsMovtr0fDaoMng();
 	private List<AsMovtr0f> asMovtr0fLs;
@@ -231,6 +239,9 @@ public class Oasi{
 	
 	private AsBolem0fDao asBolem0fDao = new AsBolem0fDaoMng();
 //	private List<AsBolem0f> asBolem0fLs;
+	
+	private AsBofor0fDao asBofor0fDao = new AsBofor0fDaoMng();
+//	private List<AsBofor0f> asBofor0fLs;
 	
 	private AsFatem0fDao asFatem0fDao = new AsFatem0fDaoMng();
 //	private List<AsFatem0f> asFatem0fLs;
@@ -312,14 +323,14 @@ public class Oasi{
 
 	// variabili
 	private String funzione = "";
-	private String dataPartenza = "";
+//	private String dataPartenza = "";
 	private Boolean as2oasi = false;
 	private Boolean oasi2as = false;
 	private Boolean soloAggiornati = false;
 	private Boolean primoAvvio;
 	private String depositiExpert = "";
 	private String depositiIngrosso = "1, 3";
-	private String depositiTutti = "";
+//	private String depositiTutti = "";
 	private ArrayList<String> codiciMarchiLs = null;
 	private String tipoOperazione = "";
 	
@@ -352,10 +363,10 @@ public class Oasi{
 		cmdLs =  new ArrayList<>();
 		
 		// sono per le config
-		cmdLs.add(asOasic0fDao.getDaOaidtr(20));	// dataPartenza
+//		cmdLs.add(asOasic0fDao.getDaOaidtr(20));	// dataPartenza
 		cmdLs.add(asOasic0fDao.getDaOaidtr(4));	// depositiExpert
-		cmdLs.add(asOasic0fDao.getDaOaidtr(5));	// depositiTutti
-				
+//		cmdLs.add(asOasic0fDao.getDaOaidtr(5));	// depositiTutti
+		
 		primoAvvio = true;
 		
 		initTranscodifica();
@@ -387,15 +398,16 @@ public class Oasi{
 					}else if(args[numArg].compareTo("-config") == 0){
 						funzione = "";
 						numArg++;
-						if(args[numArg].compareTo("-dataPartenza") == 0){
-							numArg++;
-							dataPartenza = args[numArg];
-						}else if(args[numArg].compareTo("-depositiExpert") == 0){
+//						if(args[numArg].compareTo("-dataPartenza") == 0){
+//							numArg++;
+//							dataPartenza = args[numArg];
+//						}else
+						if(args[numArg].compareTo("-depositiExpert") == 0){
 							numArg++;
 							depositiExpert = StringUtils.replace(args[numArg], "|", ", ");
-						}else if(args[numArg].compareTo("-depositiTutti") == 0){
-							numArg++;
-							depositiTutti = StringUtils.replace(args[numArg], "|", ", ");
+//						}else if(args[numArg].compareTo("-depositiTutti") == 0){
+//							numArg++;
+//							depositiTutti = StringUtils.replace(args[numArg], "|", ", ");
 						}else if(args[numArg].compareTo("stopProgramma") == 0){
 							stringBuilder = new StringBuilder();
 							stringBuilder.append("stoppato" + " " + "stoppato");
@@ -546,6 +558,7 @@ public class Oasi{
 		asOaard0fDao.close();
 		asPrzac0fDao.close();
 		asBolem0fDao.close();
+		asBofor0fDao.close();
 		asFatem0fDao.close();
 		asScocr0fDao.close();
 		asFinaz0fDao.close();
@@ -2742,6 +2755,11 @@ public class Oasi{
 		
 		msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getAll();
 		
+		// solo alcuni movimenti
+//		msvOA_MovimentiTestateLs.clear();
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00095230"));// CARF
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00054883"));// RIVN
+		
 		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
 		strTimestampAs400 = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400, "."), " "), "-"), ":");
@@ -2776,12 +2794,20 @@ public class Oasi{
 			String causaleOasi = msvOA_MovimentiTestate.getCausaleOasi();
 			Integer tipoDocumento = msvOA_MovimentiTestate.getDocumAccomp();
 			
+			// causali da mettere in elaborate, ma che non saranno gestite
+			if(StringUtils.equals(causaleOasi, "RIFS") || StringUtils.equals(causaleOasi, "RIFV") || StringUtils.equals(causaleOasi, "RVTF") || StringUtils.equals(causaleOasi, "ACFF")){
+				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiTestate.getTipoOperazione(), 2));
+				msvOA_MovimentiTestate.setTipoOperazione(tipoOperazione);
+				msvOA_MovimentiTestateDao.aggiorna(msvOA_MovimentiTestate);
+				continue;
+			}
+			
 			vcaus = transCausaliMag(causaleOasi, "oasi2as");
 			if(StringUtils.isBlank(vcaus)){
-				log.error("Codice: " + causaleOasi + " non gestito");
 				continue;		// non e' tra le causali contemplate
 			}
 			
+			vcaus = "";
 			if(StringUtils.equals(causaleOasi, "CORC") || StringUtils.equals(causaleOasi, "VEND") || StringUtils.equals(causaleOasi, "VEDD") || StringUtils.equals(causaleOasi, "VENO")){
 				if(Integer.compare(tipoDocumento, 2) == 0){
 					vcaus = "G";
@@ -2815,11 +2841,11 @@ public class Oasi{
 					vcaus = "";
 				}
 			}
-			if(StringUtils.equals(causaleOasi, "CARF")){
-				if(Integer.compare(tipoDocumento, 1) == 0){
+			if(StringUtils.equals(causaleOasi, "CARF") || StringUtils.equals(causaleOasi, "CFOR")){
+				if(Integer.compare(tipoDocumento, 0) == 0){
 					vcaus = "B";
 				}else if(Integer.compare(tipoDocumento, -1) == 0){
-					vcaus = "B";		// cosa e' con -1?			
+					vcaus = "B";
 				}else{
 					log.error("Codice: " + tipoDocumento + " non gestito");
 					vcaus = "";
@@ -2833,16 +2859,9 @@ public class Oasi{
 					vcaus = "";
 				}
 			}
-			if(StringUtils.equals(causaleOasi, "ACFF")){
-				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiTestate.getTipoOperazione(), 2));
-				msvOA_MovimentiTestate.setTipoOperazione(tipoOperazione);
-				msvOA_MovimentiTestateDao.aggiorna(msvOA_MovimentiTestate);
-				// documento d'acconto non movimenta magazzino, quindi continuo
-				continue;
-			}
 			
 			if(StringUtils.isBlank(vcaus)){
-				log.info("vcaus non gestita");
+				log.error("Codice: " + causaleOasi + " non gestito");
 				continue;
 			}
 			
@@ -2928,6 +2947,27 @@ public class Oasi{
 				}
 			}else if(StringUtils.equals(caus, "S")){
 				AsTabel0f asTabel0f = asTabel0fDao.getDaTnotaTcoel("NUZ", "S00");
+				String tcomm = StringUtils.trim(asTabel0f.getTcomm());
+				String tcommmtnum = StringUtils.left(tcomm, 5);
+				String tcommmtdat = StringUtils.substring(tcomm, 5, 11);
+				String tcommmtnuz = StringUtils.right(tcomm, 2);
+				
+				BigDecimal mtnumBD = new BigDecimal(tcommmtnum);
+				mtnumBD = mtnumBD.add(new BigDecimal(1));
+				
+				tcommmtnum = StringUtils.leftPad(mtnumBD.toString(), 5, "0");
+				tcommmtdat = new SimpleDateFormat("ddMMyy").format(msvOA_MovimentiTestate.getDataReg());
+				
+				vnumd = mtnumBD.intValue();
+				
+				tcomm = StringUtils.join(tcommmtnum, tcommmtdat, tcommmtnuz);
+				
+				asTabel0f.setTcomm(tcomm);
+				if(!(asTabel0fDao.aggiorna(asTabel0f))){
+					chiudi();
+				}
+			}else if(StringUtils.equals(caus, "B")){
+				AsTabel0f asTabel0f = asTabel0fDao.getDaTnotaTcoel("NUZ", StringUtils.join("A", StringUtils.leftPad(vndep.toString(), 2, "0")));
 				String tcomm = StringUtils.trim(asTabel0f.getTcomm());
 				String tcommmtnum = StringUtils.left(tcomm, 5);
 				String tcommmtdat = StringUtils.substring(tcomm, 5, 11);
@@ -3188,10 +3228,11 @@ public class Oasi{
 					idard.setDcode(dcode);
 					asArdep0f = new AsArdep0f();
 					asArdep0f.setId(idard);
-					asArdep0f.setDgiac((new BigDecimal(0)).subtract(vquan));
 					asArdep0f.setDgdif(new BigDecimal(0));
+					BigDecimal qta = new BigDecimal(0);
 					switch(caus){
 						case "B":
+							qta = qta.add(vquan);
 							asArdep0f.setDatuc(datTxt);
 							asArdep0f.setDatus("0");
 							break;
@@ -3200,6 +3241,7 @@ public class Oasi{
 						case "E":
 						case "M":
 						case "S":
+							qta = qta.subtract(vquan);
 							asArdep0f.setDatuc("0");
 							asArdep0f.setDatus(datTxt);
 							break;
@@ -3207,9 +3249,11 @@ public class Oasi{
 							log.error(caus + " non gestita");
 							break;
 					}
+					asArdep0f.setDgiac(qta);
 					asArdep0f.setDatin("0");
 					asArdep0f.setDscmi(new BigDecimal(0));
 					asArdep0f.setDscma(new BigDecimal(0));
+					asArdep0f.setDamma(new BigDecimal(0));
 					if(!(asArdep0fDao.salva(asArdep0f))){
 						chiudi();
 					}
@@ -3315,7 +3359,6 @@ public class Oasi{
 					if(!(asBolem0fDao.salva(asBolem0f))){
 						chiudi();
 					}
-
 				}else{	// gia' presente, quindi update
 					// non modifico i valori che non ricevo definiti
 					asBolem0f.setBfatt(asBolem0fTmp.getBfatt());
@@ -3323,6 +3366,74 @@ public class Oasi{
 						chiudi();
 					}
 				}
+				
+				asMovma0fDao.aggiornaVcomm(vdatr, vcaus, vnura, vnumd, "000000000FF0F000000F4040");
+			}else if(StringUtils.equals(caus, "B")){
+				Integer bfdat = vdatr;
+				Integer bfnuz = vnura;
+				Integer bfnum = vnumd;
+				BigDecimal bfcof = new BigDecimal(vcocf);
+				BigDecimal bfftr = new BigDecimal(0);
+
+				String bfpag = "001";
+				String bfpagTxt = StringUtils.trim(msvOA_MovimentiTestate.getCodPagamento());
+				if(StringUtils.containsOnly(bfpagTxt, "0123456789")){
+					bfpag = StringUtils.leftPad(bfpagTxt, 3, "0");	
+				}else{	// e' un codice oasi, devo fare transcodifica
+					bfpagTxt = transPagamenti(bfpagTxt, "oasi2as");
+					if(StringUtils.isBlank(bfpagTxt)){
+						log.error("Codice: " + msvOA_MovimentiTestate.getCodPagamento() + " non gestito");
+						bfpagTxt = "1";	// contanti
+					}
+					bfpag = StringUtils.leftPad(bfpagTxt, 3, "0");
+				}
+				
+				String bfcau = vcaus;
+				Integer bfdep = vndep;
+				Integer bfdbf = vdatr;
+				
+				String bfnbf = StringUtils.left(msvOA_MovimentiTestate.getNroDoc(), 50);
+				if(StringUtils.length(bfnbf) > 12){
+					bfnbf = StringUtils.substring(bfnbf, 5);
+					if(StringUtils.length(bfnbf) > 12){
+						bfnbf = StringUtils.left(bfnbf, 12);
+					}
+				}
+				
+				String bfnom = "OASI";
+				String bfute = utente;
+				String bfnot = StringUtils.left(msvOA_MovimentiTestate.getNroDoc(), 50);				
+				
+				AsBofor0fPKey id = new AsBofor0fPKey();
+				id.setBfdat(bfdat);
+				id.setBfnuz(bfnuz);
+				id.setBfnum(bfnum);
+				AsBofor0f asBofor0f = new AsBofor0f();
+				asBofor0f.setId(id);
+				asBofor0f.setBfcof(bfcof);
+				asBofor0f.setBfftr(bfftr);
+				asBofor0f.setBfpag(bfpag);
+				asBofor0f.setBfcau(bfcau);
+				asBofor0f.setBfdep(bfdep);
+				asBofor0f.setBfdbf(bfdbf);
+				asBofor0f.setBfnbf(bfnbf);
+				asBofor0f.setBfnom(bfnom);
+				asBofor0f.setBfute(bfute);
+				asBofor0f.setBfnot(bfnot);				
+	
+				AsBofor0f asBofor0fTmp = asBofor0fDao.getDaId(bfdat, bfnuz, bfnum);
+				if(asBofor0fTmp == null){	// nuova quindi insert
+					if(!(asBofor0fDao.salva(asBofor0f))){
+						chiudi();
+					}
+				}else{	// gia' presente, quindi update
+					// non modifico i valori che non ricevo definiti
+					if(!(asBofor0fDao.aggiorna(asBofor0f))){
+						chiudi();
+					}
+				}
+				
+				asMovma0fDao.aggiornaVcomm(vdatr, vcaus, vnura, vnumd, "0000000FF0F0F0F0F0F04040");
 			}
 			
 			// elimina dalla tabella scritta da oasi
@@ -3332,6 +3443,10 @@ public class Oasi{
 			msvOA_MovimentiTestate.setTipoOperazione(tipoOperazione);
 			msvOA_MovimentiTestateDao.aggiorna(msvOA_MovimentiTestate);
 		}
+		
+		oasi2asMovimentiMagazzinoNonMovma();
+		
+		oasi2asMovimentiMagazzino2();
 		
 		elaboraFatture();
 		
@@ -3350,6 +3465,610 @@ public class Oasi{
 		stringBuilder.append("OK");
 		scriviRispostaInDb(cmd);
 		log.info("]" + "oasi2asMovimentiMagazzino");
+	}
+	
+	private void oasi2asMovimentiMagazzinoNonMovma(){
+		log.info("[" + "oasi2asMovimentiMagazzinoNonMovma");
+		
+		stringBuilder = new StringBuilder();
+		
+		MsvOA_MovimentiTestate msvOA_MovimentiTestate = new MsvOA_MovimentiTestate();
+		
+		msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getAll();
+		
+		// solo alcuni movimenti
+//		msvOA_MovimentiTestateLs.clear();
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00002511"));
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00004633"));
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00004136"));
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00006769"));
+		
+		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
+		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
+		strTimestampAs400 = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400, "."), " "), "-"), ":");
+		
+		Iterator<MsvOA_MovimentiTestate> iter_msvOA_MovimentiTestateLs = msvOA_MovimentiTestateLs.iterator();
+		iter_msvOA_MovimentiTestateLs = msvOA_MovimentiTestateLs.iterator();
+		while(iter_msvOA_MovimentiTestateLs.hasNext()){
+			msvOA_MovimentiTestate = iter_msvOA_MovimentiTestateLs.next();
+			
+			String vcaus = "";
+			
+			Integer mtdat = 0;
+			Integer mtnuz = 0;
+			Integer mtnum = 0;
+			Integer mtnur = 0;
+			String mtcod = "";
+			BigDecimal mtqua = new BigDecimal(0);
+			BigDecimal mtqri = new BigDecimal(0); 
+			Integer mtdpp = 0;
+			Integer mtdpa = 0; 
+			Integer mtime = 0;
+			String mtute = "";
+			String mtutr = "";
+			String mtsta = "";
+			Integer mtdar = 0;
+			Integer mtimr = 0;
+			String mtumi = "";
+			
+			String causaleOasi = msvOA_MovimentiTestate.getCausaleOasi();
+			Integer tipoDocumento = msvOA_MovimentiTestate.getDocumAccomp();
+			
+			vcaus = transCausaliMag(causaleOasi, "oasi2as");
+			if(StringUtils.isBlank(vcaus)){
+				continue;		// non e' tra le causali contemplate
+			}
+			
+			vcaus = "";
+			if(StringUtils.equals(causaleOasi, "SCMA") || StringUtils.equals(causaleOasi, "CAMA")){
+				if(Integer.compare(tipoDocumento, 1) == 0){
+					vcaus = "+";
+				}else if(Integer.compare(tipoDocumento, 0) == 0){
+					vcaus = "+";	
+				}else if(Integer.compare(tipoDocumento, -1) == 0){
+					vcaus = "+";		// cosa e' con -1?
+				}else{
+					log.error("Codice: " + tipoDocumento + " non gestito");
+					vcaus = "";
+				}
+			}
+
+//			if(StringUtils.equals(causaleOasi, "ACFF")){
+//				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiTestate.getTipoOperazione(), 2));
+//				msvOA_MovimentiTestate.setTipoOperazione(tipoOperazione);
+//				msvOA_MovimentiTestateDao.aggiorna(msvOA_MovimentiTestate);
+//				// documento d'acconto non movimenta magazzino, quindi continuo
+//				continue;
+//			}
+			
+			if(StringUtils.isBlank(vcaus)){
+				log.error("Codice: " + causaleOasi + " non gestito");
+				continue;
+			}
+			
+			String vdatrTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_MovimentiTestate.getDataReg());
+			mtdat = Integer.parseInt(vdatrTxt);
+			
+			mtute = msvOA_MovimentiTestate.getnMovDdt();
+
+			Boolean movtrDaInserire = false;
+			Boolean movtrDaAggiornare = false;
+			Boolean ardepDaScrivere = false;
+//			Boolean trasferimentoDaIngrosso = false;
+			
+			if(StringUtils.equals(causaleOasi, "SCMA")){
+				mtdpp = Integer.parseInt(transDeposito(StringUtils.trim(msvOA_MovimentiTestate.getCodMag()), "oasi2as"));
+				mtdpa = Integer.parseInt(transDeposito(StringUtils.trim(msvOA_MovimentiTestate.getCodCliFor()), "oasi2as"));
+				
+				movtrDaInserire = true;
+				if((Integer.compare(mtdpa, 1) == 0)||(Integer.compare(mtdpa, 3) == 0)){
+					movtrDaInserire = false;	// e' gia' stato creato a partire da OA_Tresferimenti 
+				}
+				movtrDaAggiornare = false;
+				ardepDaScrivere = true;
+			}else if(StringUtils.equals(causaleOasi, "CAMA")){
+				mtdpp = Integer.parseInt(transDeposito(StringUtils.trim(msvOA_MovimentiTestate.getCodCliFor()), "oasi2as"));
+				mtdpa = Integer.parseInt(transDeposito(StringUtils.trim(msvOA_MovimentiTestate.getCodMag()), "oasi2as"));
+				
+				movtrDaInserire = false;
+				movtrDaAggiornare = true;
+				ardepDaScrivere = true;
+				if((Integer.compare(mtdpp, 1) == 0)||(Integer.compare(mtdpp, 3) == 0)){
+					movtrDaAggiornare = false;	// e' gia' stato scritto su AS400
+					ardepDaScrivere = false;
+				}
+				if(StringUtils.contains(msvOA_MovimentiTestate.getNroDoc(), "/")){
+					mtute = StringUtils.split(msvOA_MovimentiTestate.getNroDoc(), "/")[1];
+				}
+			}else{
+				log.error("Codice: " + causaleOasi + " non gestito");
+				continue;
+			}
+			
+			if(movtrDaInserire){
+				AsTabel0f asTabel0f = asTabel0fDao.getDaTnotaTcoel("NUZ", StringUtils.join("T", StringUtils.leftPad(mtdpp.toString(), 2, "0")));
+				String tcomm = StringUtils.trim(asTabel0f.getTcomm());
+				String tcommmtnum = StringUtils.left(tcomm, 5);
+				String tcommmtdat = StringUtils.substring(tcomm, 5, 11);
+				String tcommmtnuz = StringUtils.right(tcomm, 2);
+				
+				BigDecimal mtnumBD = new BigDecimal(tcommmtnum);
+				mtnumBD = mtnumBD.add(new BigDecimal(1));
+				
+				tcommmtnum = StringUtils.leftPad(mtnumBD.toString(), 5, "0");
+				tcommmtdat = new SimpleDateFormat("ddMMyy").format(msvOA_MovimentiTestate.getDataReg());
+				
+				mtnuz = Integer.parseInt(tcommmtnuz);
+				mtnum = mtnumBD.intValue();
+				
+				tcomm = StringUtils.join(tcommmtnum, tcommmtdat, tcommmtnuz);
+				
+				asTabel0f.setTcomm(tcomm);
+				if(!(asTabel0fDao.aggiorna(asTabel0f))){
+					chiudi();
+				}
+			}
+			
+			mtime = 1;
+			
+			Integer dataNum = 0;
+			try{
+				DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+				Date dataMov = formatter.parse(mtdat.toString());
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(dataMov);
+				calendar.add(Calendar.MONTH, -3);
+				dataMov = calendar.getTime();
+				String dataTxt = formatter.format(dataMov);
+				dataNum = Integer.parseInt(dataTxt);
+			}catch(ParseException e){
+				log.error("eccezione in conversione data");
+				chiudi();
+			}
+			
+			MsvOA_MovimentiRighe msvOA_MovimentiRighe = new MsvOA_MovimentiRighe();
+			
+			msvOA_MovimentiRigheLs = msvOA_MovimentiRigheDao.getDaIdUnivocoTesNonElaborate(msvOA_MovimentiTestate.getIdUnivocoTes());
+			
+			Iterator<MsvOA_MovimentiRighe> iter_msvOA_MovimentiRigheLs = msvOA_MovimentiRigheLs.iterator();
+			iter_msvOA_MovimentiRigheLs = msvOA_MovimentiRigheLs.iterator();
+			while(iter_msvOA_MovimentiRigheLs.hasNext()){
+				msvOA_MovimentiRighe = iter_msvOA_MovimentiRigheLs.next();
+
+				mtnur = Integer.parseInt(StringUtils.removeStart(msvOA_MovimentiRighe.getId().getIdUnivocoRiga(), msvOA_MovimentiRighe.getId().getIdUnivocoTes()));
+				
+				mtcod = StringUtils.upperCase(StringUtils.trim(msvOA_MovimentiRighe.getCodArticoloCascino()));
+				if(StringUtils.isBlank(mtcod)){
+					mtcod = StringUtils.join("OA", StringUtils.trim(msvOA_MovimentiRighe.getCodArticoloOasi()));
+				}
+				
+				if(StringUtils.equals(causaleOasi, "SCMA")){
+					mtqua = msvOA_MovimentiRighe.getQta();
+					mtutr = "";
+					mtsta = "";
+					mtdar = 0;
+					mtimr = 0;
+				}else if(StringUtils.equals(causaleOasi, "CAMA")){
+					mtqri = msvOA_MovimentiRighe.getQta();
+					mtutr = StringUtils.trim(msvOA_MovimentiRighe.getCodOperatore());
+					mtdar = mtdat;
+					mtimr = 1;
+					
+					if(movtrDaAggiornare){
+						AsMovtr0f asMovtr0fTmp = asMovtr0fDao.getDaMtdatMtdppMtdpaMtuteMtcod(dataNum, mtdpp, mtdpa, mtute, mtcod);
+						if(asMovtr0fTmp == null){
+							log.error("non esiste il movtr: " + ">=" + dataNum + ", " + mtdpp + ", " + mtdpa + ", " + mtute + ", " + mtcod);
+							chiudi();
+						}
+						mtdat = asMovtr0fTmp.getId().getMtdat();
+						mtnuz = asMovtr0fTmp.getId().getMtnuz();
+						mtnum = asMovtr0fTmp.getId().getMtnum();
+						mtnur = asMovtr0fTmp.getId().getMtnur();
+						mtqua = asMovtr0fTmp.getMtqua();
+						if(mtqri.compareTo(mtqua) != 0){
+							log.warn("Qta attesa: " + mtqua + ", ricevuta: " + mtqri);
+							mtsta = "QE";	// quantità errata
+						}else{
+							mtsta = "OK";
+						}
+					}
+				}else{
+					log.error("Codice: " + causaleOasi + " non gestito");
+					continue;
+				}
+
+				mtumi = "";
+				AsAnmag0f asAnmag0f = asAnmag0fDao.getArticoloDaMcoda(mtcod);
+				if(asAnmag0f != null){
+					mtumi = asAnmag0f.getMumis();
+				}else{
+					mtumi = "PZ";
+					log.error(mtcod + " non e' in anmag0f, non e' possibile");
+				}
+				
+				if(movtrDaInserire || movtrDaAggiornare){
+					AsMovtr0fPKey id = new AsMovtr0fPKey();
+					id.setMtdat(mtdat);
+					id.setMtnuz(mtnuz);
+					id.setMtnum(mtnum);
+					id.setMtnur(mtnur);
+					AsMovtr0f asMovtr0f = new AsMovtr0f();
+					asMovtr0f.setId(id);
+					asMovtr0f.setMtcod(mtcod);
+					asMovtr0f.setMtqua(mtqua);
+					asMovtr0f.setMtqri(mtqri);
+					asMovtr0f.setMtdpp(mtdpp);
+					asMovtr0f.setMtdpa(mtdpa);
+					asMovtr0f.setMtime(mtime);
+					asMovtr0f.setMtute(mtute);
+					asMovtr0f.setMtutr(mtutr);
+					asMovtr0f.setMtsta(mtsta);
+					asMovtr0f.setMtdar(mtdar);
+					asMovtr0f.setMtimr(mtimr);
+					asMovtr0f.setMtumi(mtumi);
+					
+					AsMovtr0f asMovtr0fTmp = asMovtr0fDao.getDaId(mtdat, mtnuz, mtnum, mtnur);
+					if(asMovtr0fTmp == null){	// nuova quindi insert
+//						log.info("salva: " + asMovtr0f.toString());
+						if(!(asMovtr0fDao.salva(asMovtr0f))){
+							chiudi();
+						}
+					}else{	// gia' presente, quindi update
+						// non modifico i valori che non ricevo definiti
+	//					asMovtr0f.setClcpor(asMovtr0fTmp.getClcpor());
+						if(!(asMovtr0fDao.aggiorna(asMovtr0f))){
+							chiudi();
+						}
+					}
+				}
+			
+				// gestione ardep0f
+				if(ardepDaScrivere){
+					String datTxt = new SimpleDateFormat("ddMMyy").format(msvOA_MovimentiTestate.getDataReg());
+					if(StringUtils.equals(causaleOasi, "SCMA")){
+						AsArdep0f asArdep0f = asArdep0fDao.getDaDcodaAndDcode(mtcod, mtdpp);
+						if(asArdep0f == null){	// nuova quindi insert
+							String dcoda = mtcod;
+							Integer dcode = mtdpp;
+							AsArdep0fPKey idard = new AsArdep0fPKey();
+							idard.setDcoda(dcoda);
+							idard.setDcode(dcode);
+							asArdep0f = new AsArdep0f();
+							asArdep0f.setId(idard);
+							asArdep0f.setDgiac((new BigDecimal(0)).subtract(mtqua));
+							asArdep0f.setDgdif(new BigDecimal(0));
+							asArdep0f.setDatuc("0");
+							asArdep0f.setDatus(datTxt);
+							asArdep0f.setDatin("0");
+							asArdep0f.setDscmi(new BigDecimal(0));
+							asArdep0f.setDscma(new BigDecimal(0));
+							asArdep0f.setDamma(new BigDecimal(0));
+							if(!(asArdep0fDao.salva(asArdep0f))){
+								chiudi();
+							}
+						}else{	// gia' presente, quindi update
+							BigDecimal qta = asArdep0f.getDgiac();
+							qta = qta.subtract(mtqua);
+							asArdep0f.setDatuc(asArdep0f.getDatuc());
+							asArdep0f.setDatus(datTxt);
+									
+							asArdep0f.setDgiac(qta);
+							if(!(asArdep0fDao.aggiorna(asArdep0f))){
+								chiudi();
+							}
+						}
+					}else if(StringUtils.equals(causaleOasi, "CAMA")){
+						AsArdep0f asArdep0f = asArdep0fDao.getDaDcodaAndDcode(mtcod, mtdpa);
+						if(asArdep0f == null){	// nuova quindi insert
+							String dcoda = mtcod;
+							Integer dcode = mtdpa;
+							AsArdep0fPKey idard = new AsArdep0fPKey();
+							idard.setDcoda(dcoda);
+							idard.setDcode(dcode);
+							asArdep0f = new AsArdep0f();
+							asArdep0f.setId(idard);
+							asArdep0f.setDgiac((new BigDecimal(0)).add(mtqri));
+							asArdep0f.setDgdif(new BigDecimal(0));
+							asArdep0f.setDatuc("0");
+							asArdep0f.setDatus(datTxt);
+							asArdep0f.setDatin("0");
+							asArdep0f.setDscmi(new BigDecimal(0));
+							asArdep0f.setDscma(new BigDecimal(0));
+							asArdep0f.setDamma(new BigDecimal(0));
+							if(!(asArdep0fDao.salva(asArdep0f))){
+								chiudi();
+							}
+						}else{	// gia' presente, quindi update
+							BigDecimal qta = asArdep0f.getDgiac();
+							qta = qta.add(mtqri);
+							asArdep0f.setDatuc(asArdep0f.getDatuc());
+							asArdep0f.setDatus(datTxt);
+									
+							asArdep0f.setDgiac(qta);
+							if(!(asArdep0fDao.aggiorna(asArdep0f))){
+								chiudi();
+							}
+						}	
+					}else{
+						log.error("Codice: " + causaleOasi + " non gestito");
+						continue;
+					}
+				}
+				
+				// al posto di eliminare metto tipoOperazione = '*XY'	(elaborata)
+				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiRighe.getTipoOperazione(), 2));
+				msvOA_MovimentiRighe.setTipoOperazione(tipoOperazione);
+				msvOA_MovimentiRigheDao.aggiorna(msvOA_MovimentiRighe);
+			}			
+			
+			// al posto di eliminare metto tipoOperazione = '*XY'	(elaborata)
+			tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiTestate.getTipoOperazione(), 2));
+			msvOA_MovimentiTestate.setTipoOperazione(tipoOperazione);
+			msvOA_MovimentiTestateDao.aggiorna(msvOA_MovimentiTestate);
+		}
+		
+		log.info("]" + "oasi2asMovimentiMagazzinoNonMovma");
+	}
+	
+	private void oasi2asMovimentiMagazzino2(){
+		log.info("[" + "oasi2asMovimentiMagazzino2");
+		
+		stringBuilder = new StringBuilder();
+		
+		MsvOA_MovimentiTestate msvOA_MovimentiTestate = new MsvOA_MovimentiTestate();
+		
+		msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getAll();
+		
+		// solo alcuni movimenti
+//		msvOA_MovimentiTestateLs.clear();
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00054579"));// RIVP
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00054883"));// RIVN
+		
+		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
+		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
+		strTimestampAs400 = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400, "."), " "), "-"), ":");
+		
+		Iterator<MsvOA_MovimentiTestate> iter_msvOA_MovimentiTestateLs = msvOA_MovimentiTestateLs.iterator();
+		iter_msvOA_MovimentiTestateLs = msvOA_MovimentiTestateLs.iterator();
+		while(iter_msvOA_MovimentiTestateLs.hasNext()){
+			msvOA_MovimentiTestate = iter_msvOA_MovimentiTestateLs.next();
+			
+			Integer vdatr = 0;
+			String vcaus = "";
+			Integer vnura = 0;
+			Integer vnumd = 0;
+			Integer vprog = 0;
+			String vcoda = "";
+			String vdesc = "";
+			BigDecimal vquan = new BigDecimal(0);
+			BigDecimal vprez = new BigDecimal(0);
+			BigDecimal vsco1 = new BigDecimal(0);
+			BigDecimal vsco2 = new BigDecimal(0);
+			BigDecimal vsco3 = new BigDecimal(0);
+			BigDecimal vcost = new BigDecimal(0);
+			String vciva = "";
+			Integer vtime = 0;
+			Integer vcocf = 0;
+			Integer vndep = 0;
+			String vstgi = "";
+			String atamov = "";
+			
+			BigDecimal segnoQty = new BigDecimal(1);
+			
+			String causaleOasi = msvOA_MovimentiTestate.getCausaleOasi();
+			Integer tipoDocumento = msvOA_MovimentiTestate.getDocumAccomp();
+			
+			vcaus = transCausaliMag(causaleOasi, "oasi2as");
+			if(StringUtils.isBlank(vcaus)){
+				continue;		// non e' tra le causali contemplate
+			}
+			
+			vcaus = "";
+			if(StringUtils.equals(causaleOasi, "RIVP") || StringUtils.equals(causaleOasi, "RIVN")){
+				if(Integer.compare(tipoDocumento, 1) == 0){
+					vcaus = "V";
+				}else if(Integer.compare(tipoDocumento, 0) == 0){
+					vcaus = "V";	
+				}else if(Integer.compare(tipoDocumento, -1) == 0){
+					vcaus = "V";
+				}else{
+					log.error("Codice: " + tipoDocumento + " non gestito");
+					vcaus = "";
+				}
+			}
+			if(StringUtils.equals(causaleOasi, "CACB") || StringUtils.equals(causaleOasi, "SCCB")){
+				if(Integer.compare(tipoDocumento, 1) == 0){
+					vcaus = "G";
+				}else if(Integer.compare(tipoDocumento, 0) == 0){
+					vcaus = "G";	
+				}else if(Integer.compare(tipoDocumento, -1) == 0){
+					vcaus = "G";
+				}else{
+					log.error("Codice: " + tipoDocumento + " non gestito");
+					vcaus = "";
+				}
+			}
+			
+			if(StringUtils.isBlank(vcaus)){
+				log.error("Codice: " + causaleOasi + " non gestito");
+				continue;
+			}
+			
+			String vdatrTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_MovimentiTestate.getDataReg());
+			vdatr = Integer.parseInt(vdatrTxt);
+			
+			vndep = Integer.parseInt(transDeposito(StringUtils.trim(msvOA_MovimentiTestate.getCodCliFor()), "oasi2as"));
+			
+			vcaus = StringUtils.join(vcaus, StringUtils.leftPad(vndep.toString(), 1, "0"));
+			
+			String caus = StringUtils.left(vcaus, 1);
+			
+			vnura = 1;
+			
+			if(StringUtils.equals(causaleOasi, "RIVP")){
+				vnumd = Integer.parseInt(msvOA_MovimentiTestate.getnMovDdt());
+				vnumd = vnumd + 90000;
+			}else if(StringUtils.equals(causaleOasi, "RIVN")){
+				vnumd = Integer.parseInt(msvOA_MovimentiTestate.getnMovDdt());
+			}else if(StringUtils.equals(causaleOasi, "CACB")){
+				vnumd = Integer.parseInt(msvOA_MovimentiTestate.getnMovDdt());
+				vnumd = vnumd + 90000;
+			}else if(StringUtils.equals(causaleOasi, "SCCB")){
+				vnumd = Integer.parseInt(msvOA_MovimentiTestate.getnMovDdt());
+			}else{
+				log.error("Codice: " + causaleOasi + " non gestito");
+				continue;
+			}
+
+			vtime = 1;
+			
+			MsvOA_MovimentiRighe msvOA_MovimentiRighe = new MsvOA_MovimentiRighe();
+			
+			msvOA_MovimentiRigheLs = msvOA_MovimentiRigheDao.getDaIdUnivocoTesNonElaborate(msvOA_MovimentiTestate.getIdUnivocoTes());
+			
+			Iterator<MsvOA_MovimentiRighe> iter_msvOA_MovimentiRigheLs = msvOA_MovimentiRigheLs.iterator();
+			iter_msvOA_MovimentiRigheLs = msvOA_MovimentiRigheLs.iterator();
+			while(iter_msvOA_MovimentiRigheLs.hasNext()){
+				msvOA_MovimentiRighe = iter_msvOA_MovimentiRigheLs.next();
+				
+				vprog = Integer.parseInt(StringUtils.removeStart(msvOA_MovimentiRighe.getId().getIdUnivocoRiga(), msvOA_MovimentiRighe.getId().getIdUnivocoTes()));
+				
+				vcoda = StringUtils.upperCase(StringUtils.trim(msvOA_MovimentiRighe.getCodArticoloCascino()));
+				if(StringUtils.isBlank(vcoda)){
+					vcoda = StringUtils.join("OA", StringUtils.trim(msvOA_MovimentiRighe.getCodArticoloOasi()));
+				}
+				
+				AsAnmag0f asAnmag0f = asAnmag0fDao.getArticoloDaMcoda(vcoda);
+				if(asAnmag0f != null){
+					vdesc = asAnmag0f.getMdesc();
+				}else{
+					log.warn(vcoda + " non presente in anmag");	
+					vdesc = "NON ANCORA CODIFICATO";
+				}
+				
+				if(StringUtils.equals(causaleOasi, "RIVP")){
+					segnoQty = new BigDecimal(-1);
+				}else if(StringUtils.equals(causaleOasi, "RIVN")){
+					segnoQty = new BigDecimal(1);
+				}else if(StringUtils.equals(causaleOasi, "CACB")){
+					segnoQty = new BigDecimal(-1);
+				}else if(StringUtils.equals(causaleOasi, "SCCB")){
+					segnoQty = new BigDecimal(1);
+				}else{
+					log.error("Codice: " + causaleOasi + " non gestito");
+					continue;
+				}
+				
+				vprez = new BigDecimal(0);
+				vcost = new BigDecimal(0);
+
+				vquan = msvOA_MovimentiRighe.getQta().multiply(segnoQty);
+
+				if(vquan.compareTo(new BigDecimal(0)) != 0){
+					AsMovma0fPKey id = new AsMovma0fPKey();
+					id.setVdatr(vdatr);
+					id.setVcaus(vcaus);
+					id.setVnura(vnura);
+					id.setVnumd(vnumd);
+					id.setVprog(vprog);
+					AsMovma0f asMovma0f = new AsMovma0f();
+					asMovma0f.setId(id);
+					asMovma0f.setVcoda(vcoda);
+					asMovma0f.setVdesc(vdesc);
+					asMovma0f.setVquan(vquan);
+					asMovma0f.setVprez(vprez);
+					asMovma0f.setVsco1(vsco1);
+					asMovma0f.setVsco2(vsco2);
+					asMovma0f.setVsco3(vsco3);
+					asMovma0f.setVcost(vcost);
+					asMovma0f.setVciva(vciva);
+					asMovma0f.setVtime(vtime);
+					asMovma0f.setVcocf(vcocf);
+					asMovma0f.setVndep(vndep);
+					asMovma0f.setVstgi(vstgi);
+					asMovma0f.setAtamov(atamov);
+		
+					AsMovma0f asMovma0fTmp = asMovma0fDao.getDaId(vdatr, vcaus, vnura, vnumd, vprog);
+					if(asMovma0fTmp == null){	// nuova quindi insert
+						if(!(asMovma0fDao.salva(asMovma0f))){
+							chiudi();
+						}
+					}else{	// gia' presente, quindi update
+						if(!(asMovma0fDao.aggiorna(asMovma0f))){
+							chiudi();
+						}
+					}
+				
+					// gestione ardep0f
+					AsArdep0f asArdep0f = asArdep0fDao.getDaDcodaAndDcode(vcoda, vndep);
+					if(asArdep0f == null){	// nuova quindi insert
+						String dcoda = vcoda;
+						Integer dcode = vndep;
+						AsArdep0fPKey idard = new AsArdep0fPKey();
+						idard.setDcoda(dcoda);
+						idard.setDcode(dcode);
+						asArdep0f = new AsArdep0f();
+						asArdep0f.setId(idard);
+						asArdep0f.setDgdif(new BigDecimal(0));
+						asArdep0f.setDatuc("0");
+						asArdep0f.setDatus("0");
+						asArdep0f.setDatin("0");
+						asArdep0f.setDscmi(new BigDecimal(0));
+						asArdep0f.setDscma(new BigDecimal(0));
+						asArdep0f.setDamma(new BigDecimal(0));
+						switch(caus){
+							case "V":
+								asArdep0f.setDgiac((new BigDecimal(0)).subtract(vquan));
+								asArdep0f.setDamma((new BigDecimal(0)).add(vquan));
+								break;
+							case "G":
+								asArdep0f.setDgiac((new BigDecimal(0)).subtract(vquan));
+								break;
+							default:
+								log.error(caus + " non gestita");
+								break;
+						}
+						if(!(asArdep0fDao.salva(asArdep0f))){
+							chiudi();
+						}
+					}else{	// gia' presente, quindi update
+						BigDecimal qta = asArdep0f.getDgiac();
+						switch(caus){
+							case "V":
+								qta = qta.subtract(vquan);
+								asArdep0f.setDgiac(qta);
+								qta = asArdep0f.getDamma();
+								qta = qta.add(vquan);
+								asArdep0f.setDamma(qta);
+								break;
+							case "G":
+								qta = qta.subtract(vquan);
+								asArdep0f.setDgiac(qta);
+								break;
+							default:
+								log.error(caus + " non gestita");
+								break;
+						}
+						if(!(asArdep0fDao.aggiorna(asArdep0f))){
+							chiudi();
+						}
+					}
+				}
+				
+				// al posto di eliminare metto tipoOperazione = '*XY'	(elaborata)
+				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiRighe.getTipoOperazione(), 2));
+				msvOA_MovimentiRighe.setTipoOperazione(tipoOperazione);
+				msvOA_MovimentiRigheDao.aggiorna(msvOA_MovimentiRighe);
+			}
+			
+			// al posto di eliminare metto tipoOperazione = '*XY'	(elaborata)
+			tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiTestate.getTipoOperazione(), 2));
+			msvOA_MovimentiTestate.setTipoOperazione(tipoOperazione);
+			msvOA_MovimentiTestateDao.aggiorna(msvOA_MovimentiTestate);
+		}
+		
+		log.info("]" + "oasi2asMovimentiMagazzino2");
 	}
 	
 	private void as2oasiTrasferimenti(Boolean soloAggiornati, AsOasic0f cmd){
@@ -3576,7 +4295,7 @@ public class Oasi{
 			
 			AsMovtr0f asMovtr0fTmp = asMovtr0fDao.getDaId(mtdat, mtnuz, mtnum, mtnur);
 			if(asMovtr0fTmp == null){	// nuova quindi insert
-				log.info("salva: " + asMovtr0f.toString());
+//				log.info("salva: " + asMovtr0f.toString());
 				if(!(asMovtr0fDao.salva(asMovtr0f))){
 					chiudi();
 				}
@@ -4159,9 +4878,12 @@ public class Oasi{
 				telefoniaContratto = true;
 			}
 			
-//			if(StringUtils.equals(StringUtils.left(causale, 2), "AC")){
-//				continue;	// viene successivamente elaborata in elaboraPagamenti
-//			}
+			if(StringUtils.equals(StringUtils.left(causale, 3), "NCC")){
+				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_PrimaNota_Tes.getTipoOperazione(), 2));
+				msvOA_PrimaNota_Tes.setTipoOperazione(tipoOperazione);
+				msvOA_PrimaNota_TesDao.aggiorna(msvOA_PrimaNota_Tes);
+				continue;
+			}
 			
 //			MsvOA_MovimentiTestate msvOA_MovimentiTestate = msvOA_MovimentiTestateDao.getDaIdPntNReg(msvOA_PrimaNota_Tes.getnReg());
 			

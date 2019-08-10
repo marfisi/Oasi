@@ -106,6 +106,51 @@ public class AsMovtr0fDaoMng implements AsMovtr0fDao, Serializable{
 		return o;
 	}
 	
+//	public AsMovtr0f getDaMtdatMtdppMtute(Integer mtdat, Integer mtdpp, String mtute){
+//		AsMovtr0f o = null;
+//		try{
+//			try{
+//				utx.begin();
+//				Query query = em.createNamedQuery("AsMovtr0f.findByMtdatMtdppMtute");
+//				query.setParameter("mtdat", mtdat);
+//				query.setParameter("mtdpp", mtdpp);
+//				query.setParameter("mtute", mtute);
+//				o = (AsMovtr0f)query.getSingleResult();
+//			}catch(NoResultException e){
+//				o = null;
+//			}
+//			utx.commit();
+//		}catch(Exception e){
+//			log.fatal(e.toString());
+//		}
+//		return o;
+//	}
+	
+	public AsMovtr0f getDaMtdatMtdppMtdpaMtuteMtcod(Integer mtdat, Integer mtdpp, Integer mtdpa, String mtute, String mtcod){
+		AsMovtr0f o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("AsMovtr0f.findByMtdatMtdppMtdpaMtuteMtcod");
+				query.setParameter("mtdat", mtdat);
+				query.setParameter("mtdpp", mtdpp);
+				query.setParameter("mtdpa", mtdpa);
+				query.setParameter("mtute", mtute);
+				query.setParameter("mtcod", mtcod);
+				// o = (AsMovtr0f)query.getSingleResult();	// con getResultList().get(0), simulo la select con "limit 1"
+				o = (AsMovtr0f)query.getResultList().get(0);
+			}catch(NoResultException e){
+				o = null;
+			}catch(IndexOutOfBoundsException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public void close(){
 		res.close();
 		log.info("chiuso");

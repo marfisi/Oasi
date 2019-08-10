@@ -148,6 +148,29 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 		return o;
 	}
 	
+	
+	public Integer aggiornaVcomm(Integer vdatr, String vcaus, Integer vnura, Integer vnumd, String vcomm){
+		Integer o = null;
+		try{
+			try{
+				utx.begin();
+				String sql = "update movma0f set vcomm = X'" + vcomm + "' where vdatr = :vdatr and vcaus = :vcaus and vnura = :vnura and vnumd = :vnumd";
+				Query query = em.createNativeQuery(sql);
+				query.setParameter("vdatr", vdatr);
+				query.setParameter("vcaus", vcaus);
+				query.setParameter("vnura", vnura);
+				query.setParameter("vnumd", vnumd);
+				o = query.executeUpdate();
+			}catch(NoResultException e){
+				o = -1;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public void close(){
 		res.close();
 		log.info("chiuso");

@@ -12,7 +12,9 @@ import it.cascino.oasi.dbas.model.pkey.AsMovtr0fPKey;
 @Entity(name = "Movtr0f")
 @NamedQueries({
 	@NamedQuery(name = "AsMovtr0f.findAll", query = "SELECT o FROM Movtr0f o"),
-	@NamedQuery(name = "AsMovtr0f.findById", query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat = :mtdat and o.id.mtnuz = :mtnuz and o.id.mtnum = :mtnum and o.id.mtnur = :mtnur")
+	@NamedQuery(name = "AsMovtr0f.findById", query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat = :mtdat and o.id.mtnuz = :mtnuz and o.id.mtnum = :mtnum and o.id.mtnur = :mtnur"),
+	@NamedQuery(name = "AsMovtr0f.findByMtdatMtdpaMtute", query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat = :mtdat and o.mtdpp = :mtdpp and o.mtute = :mtute"),
+	@NamedQuery(name = "AsMovtr0f.findByMtdatMtdppMtdpaMtuteMtcod", query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat >= :mtdat and o.mtdpp = :mtdpp and o.mtdpa = :mtdpa and o.mtute = :mtute and o.mtcod = :mtcod and o.mtsta = '' order by o.id.mtnur asc")
 })
 public class AsMovtr0f implements Serializable{
 	private static final long serialVersionUID = 1L;

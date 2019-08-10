@@ -18,6 +18,8 @@ public interface AsMovma0fDao{
 	BigDecimal getUltimoCostoArticolo(String vcoda);
 
 	List<AsMovma0f> getDaVcoda(String vcoda, String dataPartenza, String depositi);
+	
+	Integer aggiornaVcomm(Integer vdatr, String vcaus, Integer vnura, Integer vnumd, String vcomm);
 
 	void close();
 }

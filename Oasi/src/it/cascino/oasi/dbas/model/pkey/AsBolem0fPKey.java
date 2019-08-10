@@ -14,17 +14,6 @@ public class AsBolem0fPKey implements Serializable{
 	public AsBolem0fPKey(){
 	}
 
-	public AsBolem0fPKey(Integer bdatd, Integer bnura, Integer bnumd){
-		super();
-		this.bdatd = bdatd;
-		this.bnura = bnura;
-		this.bnumd = bnumd;
-	}
-
-	public Integer getFdatd(){
-		return bdatd;
-	}
-
 	public Integer getBdatd(){
 		return bdatd;
 	}

@@ -13,5 +13,9 @@ public interface AsMovtr0fDao{
 	
 	AsMovtr0f getDaId(Integer mtdat, Integer mtnuz, Integer mtnum, Integer mtnur);
 	
+	// AsMovtr0f getDaMtdatMtdppMtute(Integer mtdat, Integer mtdpp, String mtute);
+	
+	AsMovtr0f getDaMtdatMtdppMtdpaMtuteMtcod(Integer mtdat, Integer mtdpp, Integer mtdpa, String mtute, String mtcod);
+	
 	void close();
 }

@@ -28,6 +28,7 @@ public class AsArdep0f implements Serializable{
 	private String datin;
 	private BigDecimal dscmi;
 	private BigDecimal dscma;
+	private BigDecimal damma;
 	
 	public AsArdep0f(){
 	}
@@ -95,6 +96,14 @@ public class AsArdep0f implements Serializable{
 	public void setDscma(BigDecimal dscma){
 		this.dscma = dscma;
 	}
+	
+	public BigDecimal getDamma(){
+		return damma;
+	}
+
+	public void setDamma(BigDecimal damma){
+		this.damma = damma;
+	}
 
 	@Override
 	public int hashCode(){
@@ -107,6 +116,7 @@ public class AsArdep0f implements Serializable{
 		result = prime * result + ((dgiac == null) ? 0 : dgiac.hashCode());
 		result = prime * result + ((dscma == null) ? 0 : dscma.hashCode());
 		result = prime * result + ((dscmi == null) ? 0 : dscmi.hashCode());
+		result = prime * result + ((damma == null) ? 0 : damma.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -125,6 +135,6 @@ public class AsArdep0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsArdep0f [id=" + id + ", dgiac=" + dgiac + ", dgdif=" + dgdif + ", datuc=" + datuc + ", datus=" + datus + ", datin=" + datin + ", dscmi=" + dscmi + ", dscma=" + dscma + "]";
+		return "AsArdep0f [id=" + id + ", dgiac=" + dgiac + ", dgdif=" + dgdif + ", datuc=" + datuc + ", datus=" + datus + ", datin=" + datin + ", dscmi=" + dscmi + ", dscma=" + dscma + ", damma=" + damma + "]";
 	}
 }
