@@ -89,6 +89,24 @@ public class AsBolem0fDaoMng implements AsBolem0fDao, Serializable{
 		return o;
 	}
 	
+	public AsBolem0f getDaBnote(String bnote){
+		AsBolem0f o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("AsBolem0f.findByBnote");
+				query.setParameter("bnote", bnote);
+				o = (AsBolem0f)query.getSingleResult();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public void close(){
 		res.close();
 		log.info("chiuso");

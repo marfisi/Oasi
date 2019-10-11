@@ -1,6 +1,7 @@
 package it.cascino.oasi.dbas.managmentbean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -85,6 +86,27 @@ public class AsBofor0fDaoMng implements AsBofor0fDao, Serializable{
 			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
+	public AsBofor0f getDaBfdatBfcofBfnbf(Integer bfdat, BigDecimal bfcof, String bfnbf){
+		AsBofor0f o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("AsBofor0f.findByBfdatBfcofBfnbf");
+				query.setParameter("bfdat", bfdat);
+				query.setParameter("bfcof", bfcof);
+				query.setParameter("bfnbf", bfnbf);
+				o = (AsBofor0f)query.getSingleResult();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+			throw e;
 		}
 		return o;
 	}

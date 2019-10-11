@@ -19,6 +19,8 @@ public interface MsvOA_MovimentiTestateDao{
 	List<MsvOA_MovimentiTestate> getDaIdUnivocoTes(String idUnivocoTes);
 
 	MsvOA_MovimentiTestate getDaIdPntNReg(String idPntNReg);
+	
+	List<MsvOA_MovimentiTestate> getTestateConRigheAggiornate();
 
 	void close();
 }

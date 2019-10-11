@@ -11,6 +11,8 @@ public interface AsBolem0fDao{
 	Boolean aggiorna(AsBolem0f o);
 
 	AsBolem0f getDaId(Integer bdatd, Integer bnura, Integer bnumd);
+	
+	AsBolem0f getDaBnote(String bnote);
 
 	void close();
 }

@@ -139,6 +139,25 @@ public class MsvOA_PrimaNota_TesDaoMng implements MsvOA_PrimaNota_TesDao, Serial
 		return o;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<MsvOA_PrimaNota_Tes> getDaCausali(String causali){
+		List<MsvOA_PrimaNota_Tes> o = null;
+		try{
+			try{
+				utx.begin();
+				String sql = "SELECT * FROM OA_PrimaNota_Tes o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.causale in (" + causali + ") order by o.dataReg, o.sezionale, o.documento";
+				Query query = em.createNativeQuery(sql, MsvOA_PrimaNota_Tes.class);
+				o = (List<MsvOA_PrimaNota_Tes>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 //	public void svuotaTabella(){
 //		try{
 //			try{

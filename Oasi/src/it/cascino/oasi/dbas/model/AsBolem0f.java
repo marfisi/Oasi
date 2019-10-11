@@ -12,7 +12,8 @@ import it.cascino.oasi.dbas.model.pkey.AsBolem0fPKey;
 @Entity(name = "Bolem0f")
 @NamedQueries({
 	@NamedQuery(name = "AsBolem0f.findAll", query = "SELECT o FROM Bolem0f o"),
-	@NamedQuery(name = "AsBolem0f.findById", query = "SELECT o FROM Bolem0f o WHERE o.id.bdatd = :bdatd and o.id.bnura = :bnura and o.id.bnumd = :bnumd")
+	@NamedQuery(name = "AsBolem0f.findById", query = "SELECT o FROM Bolem0f o WHERE o.id.bdatd = :bdatd and o.id.bnura = :bnura and o.id.bnumd = :bnumd"),
+	@NamedQuery(name = "AsBolem0f.findByBnote", query = "SELECT o FROM Bolem0f o WHERE o.bnote = :bnote")
 })
 public class AsBolem0f implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -33,6 +34,7 @@ public class AsBolem0f implements Serializable{
 	private String bprot;
 	private BigDecimal bdpro;
 	private String bragg;
+	private String bnote;
 	
 	public AsBolem0f(){
 	}
@@ -157,6 +159,14 @@ public class AsBolem0f implements Serializable{
 		this.bragg = bragg;
 	}
 
+	public String getBnote(){
+		return bnote;
+	}
+
+	public void setBnote(String bnote){
+		this.bnote = bnote;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -170,8 +180,10 @@ public class AsBolem0f implements Serializable{
 		result = prime * result + ((bdpro == null) ? 0 : bdpro.hashCode());
 		result = prime * result + ((bfatt == null) ? 0 : bfatt.hashCode());
 		result = prime * result + ((bimpb == null) ? 0 : bimpb.hashCode());
+		result = prime * result + ((bnote == null) ? 0 : bnote.hashCode());
 		result = prime * result + ((bpaga == null) ? 0 : bpaga.hashCode());
 		result = prime * result + ((bprot == null) ? 0 : bprot.hashCode());
+		result = prime * result + ((bragg == null) ? 0 : bragg.hashCode());
 		result = prime * result + ((btide == null) ? 0 : btide.hashCode());
 		result = prime * result + ((buten == null) ? 0 : buten.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -192,6 +204,6 @@ public class AsBolem0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsBolem0f [id=" + id + ", btide=" + btide + ", bcodi=" + bcodi + ", bcaus=" + bcaus + ", bimpb=" + bimpb + ", bfatt=" + bfatt + ", bpaga=" + bpaga + ", bcatr=" + bcatr + ", bcons=" + bcons + ", buten=" + buten + ", bccup=" + bccup + ", bccig=" + bccig + ", bprot=" + bprot + ", bdpro=" + bdpro + ", bragg=" + bragg + "]";
+		return "AsBolem0f [id=" + id + ", btide=" + btide + ", bcodi=" + bcodi + ", bcaus=" + bcaus + ", bimpb=" + bimpb + ", bfatt=" + bfatt + ", bpaga=" + bpaga + ", bcatr=" + bcatr + ", bcons=" + bcons + ", buten=" + buten + ", bccup=" + bccup + ", bccig=" + bccig + ", bprot=" + bprot + ", bdpro=" + bdpro + ", bragg=" + bragg + ", bnote=" + bnote + "]";
 	}
 }

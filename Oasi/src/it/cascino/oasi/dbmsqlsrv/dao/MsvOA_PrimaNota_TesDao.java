@@ -17,6 +17,8 @@ public interface MsvOA_PrimaNota_TesDao{
 	List<MsvOA_PrimaNota_Tes> getDaRegIva(String regIva);
 
 	List<MsvOA_PrimaNota_Tes> getDaCausale(String causale);
+	
+	List<MsvOA_PrimaNota_Tes> getDaCausali(String causali);
 
 	//	void svuotaTabella();
 	

@@ -171,6 +171,26 @@ public class AsNativeQueryDaoMng implements AsNativeQueryDao, Serializable{
 		return o;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> getChiusuraCassaSede(Integer mcdac){
+		List<Object[]> o = null;
+		try{
+			try{
+				utx.begin();
+				String sql = "select (mcscc + mcrtc) cassa, (mcscp - mcrtc) pos from mocac0f where mcnuc = 101 and mcdac = :mcdac";
+				Query query = em.createNativeQuery(sql);
+				query.setParameter("mcdac", mcdac);
+				o = (List<Object[]>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public void close(){
 		res.close();
 		log.info("chiuso");

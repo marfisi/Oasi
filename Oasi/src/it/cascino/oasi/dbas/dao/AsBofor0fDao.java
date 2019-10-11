@@ -1,5 +1,6 @@
 package it.cascino.oasi.dbas.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import it.cascino.oasi.dbas.model.AsBofor0f;
 
@@ -11,6 +12,8 @@ public interface AsBofor0fDao{
 	Boolean aggiorna(AsBofor0f o);
 
 	AsBofor0f getDaId(Integer bfdat, Integer bfnuz, Integer bfnum);
+	
+	AsBofor0f getDaBfdatBfcofBfnbf(Integer bfdat, BigDecimal bfcof, String bfnbf);
 
 	void close();
 }
