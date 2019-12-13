@@ -13,7 +13,8 @@ import it.cascino.oasi.dbas.model.pkey.AsBofor0fPKey;
 @NamedQueries({
 	@NamedQuery(name = "AsBofor0f.findAll", query = "SELECT o FROM Bofor0f o"),
 	@NamedQuery(name = "AsBofor0f.findById", query = "SELECT o FROM Bofor0f o WHERE o.id.bfdat = :bfdat and o.id.bfnuz = :bfnuz and o.id.bfnum = :bfnum"),
-	@NamedQuery(name = "AsBofor0f.findByBfdatBfcofBfnbf", query = "SELECT o FROM Bofor0f o WHERE o.id.bfdat = :bfdat and o.bfcof = :bfcof and o.bfnbf = :bfnbf")
+	@NamedQuery(name = "AsBofor0f.findByBfdatBfcofBfnbf", query = "SELECT o FROM Bofor0f o WHERE o.id.bfdat = :bfdat and o.bfcof = :bfcof and o.bfnbf = :bfnbf"),
+	@NamedQuery(name = "AsBofor0f.findByBfdatBfcofBfnbfBfnot", query = "SELECT o FROM Bofor0f o WHERE o.id.bfdat = :bfdat and o.bfcof = :bfcof and o.bfnbf = :bfnbf and o.bfnot = :bfnot")
 })
 public class AsBofor0f implements Serializable{
 	private static final long serialVersionUID = 1L;

@@ -13,7 +13,9 @@ public interface AsBofor0fDao{
 
 	AsBofor0f getDaId(Integer bfdat, Integer bfnuz, Integer bfnum);
 	
-	AsBofor0f getDaBfdatBfcofBfnbf(Integer bfdat, BigDecimal bfcof, String bfnbf);
+	List<AsBofor0f> getDaBfdatBfcofBfnbf(Integer bfdat, BigDecimal bfcof, String bfnbf);
+
+	List<AsBofor0f> getDaBfdatBfcofBfnbfBfnot(Integer bfdat, BigDecimal bfcof, String bfnbf, String bfnot);
 
 	void close();
 }

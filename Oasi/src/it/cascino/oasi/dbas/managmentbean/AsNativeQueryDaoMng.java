@@ -158,7 +158,8 @@ public class AsNativeQueryDaoMng implements AsNativeQueryDao, Serializable{
 		try{
 			try{
 				utx.begin();
-				String sql = "select vdatr, vtime, vcaus, vnura, vnumd, vprog, vndep, vcoda, vquan, vprez, vsco1, vsco2, vsco3, vcost, vciva, vcocf from movma0f where vndep in (2, 5, 6, 8, 9) and vdatr >= 20181201 and vdatr <= 20181231 and left(vcaus, 1) in ('B', 'G', 'D', 'M') and vcaus != 'B9' order by vdatr, vcaus, vnura, vnumd, vprog";
+				String sql = "select vdatr, vtime, vcaus, vnura, vnumd, vprog, vndep, vcoda, vquan, vprez, vsco1, vsco2, vsco3, vcost, vciva, vcocf from movma0f where vndep in (2, 5, 6, 8, 9) and vdatr >= 20180822 and vdatr <= 20180822 and left(vcaus, 1) in ('B', 'G', 'D', 'M', 'E') and vcaus != 'B9' order by vdatr, vcaus, vnura, vnumd, vprog";
+				// String sql = "select vdatr, vtime, vcaus, vnura, vnumd, vprog, vndep, vcoda, vquan, vprez, vsco1, vsco2, vsco3, vcost, vciva, vcocf from movma0f where vndep in (2, 5, 6, 8, 9) and vdatr >= 20190101 and vdatr <= 20190414 and left(vcaus, 1) in ('E') and vcaus != 'B9' order by vdatr, vcaus, vnura, vnumd, vprog";
 				Query query = em.createNativeQuery(sql);
 				o = (List<Object[]>)query.getResultList();
 			}catch(NoResultException e){

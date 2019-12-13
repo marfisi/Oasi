@@ -90,8 +90,9 @@ public class AsBofor0fDaoMng implements AsBofor0fDao, Serializable{
 		return o;
 	}
 	
-	public AsBofor0f getDaBfdatBfcofBfnbf(Integer bfdat, BigDecimal bfcof, String bfnbf){
-		AsBofor0f o = null;
+	@SuppressWarnings("unchecked")
+	public List<AsBofor0f> getDaBfdatBfcofBfnbf(Integer bfdat, BigDecimal bfcof, String bfnbf){
+		List<AsBofor0f> o = null;
 		try{
 			try{
 				utx.begin();
@@ -99,14 +100,35 @@ public class AsBofor0fDaoMng implements AsBofor0fDao, Serializable{
 				query.setParameter("bfdat", bfdat);
 				query.setParameter("bfcof", bfcof);
 				query.setParameter("bfnbf", bfnbf);
-				o = (AsBofor0f)query.getSingleResult();
+				o = (List<AsBofor0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
 			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
-			throw e;
+		}
+		return o;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AsBofor0f> getDaBfdatBfcofBfnbfBfnot(Integer bfdat, BigDecimal bfcof, String bfnbf, String bfnot){
+		List<AsBofor0f> o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("AsBofor0f.findByBfdatBfcofBfnbfBfnot");
+				query.setParameter("bfdat", bfdat);
+				query.setParameter("bfcof", bfcof);
+				query.setParameter("bfnbf", bfnbf);
+				query.setParameter("bfnot", bfnot);
+				o = (List<AsBofor0f>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
 		}
 		return o;
 	}

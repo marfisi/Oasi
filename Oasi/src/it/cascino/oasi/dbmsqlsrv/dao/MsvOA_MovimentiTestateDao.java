@@ -1,5 +1,6 @@
 package it.cascino.oasi.dbmsqlsrv.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 import it.cascino.oasi.dbmsqlsrv.model.MsvOA_MovimentiTestate;
 
@@ -21,6 +22,8 @@ public interface MsvOA_MovimentiTestateDao{
 	MsvOA_MovimentiTestate getDaIdPntNReg(String idPntNReg);
 	
 	List<MsvOA_MovimentiTestate> getTestateConRigheAggiornate();
+	
+	Timestamp getMaxDataReg();
 
 	void close();
 }
