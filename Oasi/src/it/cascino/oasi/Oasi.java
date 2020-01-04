@@ -94,6 +94,7 @@ import it.cascino.oasi.dbmsqlsrv.dao.MsvAS_ListiniDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvAS_MarchiDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvAS_MovimentiDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvAS_TrasferimentiDao;
+import it.cascino.oasi.dbmsqlsrv.dao.MsvNativeQueryDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_AnagLivelliDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_AnagMarchiDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_AnagSottofamDao;
@@ -115,6 +116,7 @@ import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvAS_ListiniDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvAS_MarchiDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvAS_MovimentiDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvAS_TrasferimentiDaoMng;
+import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvNativeQueryDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvOA_AnagLivelliDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvOA_AnagMarchiDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvOA_AnagSottofamDaoMng;
@@ -320,6 +322,8 @@ public class Oasi{
 
 	private MsvOA_PrimaNota_IvaDao msvOA_PrimaNota_IvaDao = new MsvOA_PrimaNota_IvaDaoMng();
 	private List<MsvOA_PrimaNota_Iva> msvOA_PrimaNota_IvaLs;
+	
+	private MsvNativeQueryDao msvNativeQueryDao = new MsvNativeQueryDaoMng();
 
 	// variabili
 	private String funzione = "";
@@ -587,11 +591,21 @@ public class Oasi{
 		msvOA_AnagLivelliDao.close();
 		msvOA_AnagSottofamDao.close();
 		msvOA_TrasferimentiDao.close();
+		Date dataMov = msvOA_MovimentiTestateDao.getMaxDataReg();
 		msvOA_MovimentiTestateDao.close();
 		msvOA_MovimentiRigheDao.close();
 		msvOA_PrimaNota_TesDao.close();
 		msvOA_PrimaNota_RigheDao.close();
 		msvOA_PrimaNota_IvaDao.close();
+
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dataMov);
+		calendar.add(Calendar.MONTH, -3);
+		dataMov = calendar.getTime();
+		String dataTxt = formatter.format(dataMov);
+		msvNativeQueryDao.rimuoviRigheVecchie(dataTxt);
+		msvNativeQueryDao.close();
 		
 		log.info("]" + "chiudi");
 		
@@ -5589,9 +5603,15 @@ public class Oasi{
 						// gift card
 						case "08010":
 						case "00350":
-								cacre = "IH";
-								cacon = "1620060100";
-								break;
+							cacre = "IH";
+							cacon = "1620060100";
+							break;
+						// bonus tv
+						case "00160":
+							cacre = "F1";
+							cacon = "1620005000";
+							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
+							break;
 						default:
 							daEliminare = true;
 							break;
@@ -5790,6 +5810,11 @@ public class Oasi{
 							cacre = StringUtils.substring(tcomm, 64, 66);
 							cacon = StringUtils.substring(tcomm, 40, 50);
 							break;
+						// pos cassa 3
+						case "00932":	// termini
+							cacre = StringUtils.substring(tcomm, 66, 68);
+							cacon = StringUtils.substring(tcomm, 50, 60);
+							break;
 						// resi rimborsi
 						case "00350":
 							cacre = "ER";
@@ -5799,6 +5824,12 @@ public class Oasi{
 						case "00381":
 							cacre = "IH";
 							cacon = "3210000200";
+							break;
+						// bonus tv
+						case "00160":
+							cacre = "F1";
+							cacon = "1620005000";
+							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							break;
 						default:
 							break;
