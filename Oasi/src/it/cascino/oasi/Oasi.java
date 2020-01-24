@@ -1910,15 +1910,11 @@ public class Oasi{
 			msvAS_MarchiDao.svuotaTabella();
 			log.info("svuotata tabella");
 		}
-
-//		AsTabe20f asTabe20f = new AsTabe20f();
-//		getArticoliPerOasi();		// setta asAnmag0fLs
-		// per ora prendo tutti i marchi, indipendentemente se sono negli articoli oasi o meno, ma dovrei fare il controllo
-//		asTabe20fLs = asTabe20fDao.getAll();
-//		Iterator<AsTabe20f> iter_asTabe20fLs = asTabe20fLs.iterator();
-//		iter_asTabe20fLs = asTabe20fLs.iterator();
-//		while(iter_asTabe20fLs.hasNext()){
-//			asTabe20f = iter_asTabe20fLs.next();
+		
+		AsOasic0f asOasic0f = asOasic0fDao.getDaOaidtr(27);	// 27 - dataSync as2oasi marchi 
+//		String ultimoSync = StringUtils.trim(asOasic0f.getOaris1());
+//		Integer dataSync = Integer.parseInt(StringUtils.left(ultimoSync, 8));
+//		Integer oraSync = Integer.parseInt(StringUtils.right(ultimoSync, 6));
 		
 		getArticoliPerOasi();		// setta asAnmag0fLs e codiciMarchiLs
 		
@@ -1940,6 +1936,14 @@ public class Oasi{
 			msvAS_Marchi.setDescrizione(descrizione);
 			
 			msvAS_MarchiDao.salva(msvAS_Marchi);
+		}
+		
+		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
+		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
+		strTimestampAs400 = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400, "."), " "), "-"), ":");
+		asOasic0f.setOaris1(strTimestampAs400);
+		if(!(asOasic0fDao.aggiorna(asOasic0f))){
+			chiudi();
 		}
 		
 		stringBuilder.append("OK");
@@ -3045,12 +3049,8 @@ public class Oasi{
 					chiudi();
 				}
 			}else if(StringUtils.equals(caus, "B")){
-//				String bfnbf = determinaBfnbf(msvOA_MovimentiTestate, vcaus);
-				String bfnbf = StringUtils.left(StringUtils.trim(msvOA_MovimentiTestate.getNroDoc()), 50);
-				if(StringUtils.equals(vcaus, "B9")){
-					bfnbf = msvOA_MovimentiTestate.getnMovDdt();
-				}
-
+				String bfnbf = StringUtils.left(StringUtils.join(causaleOasi, StringUtils.trim(msvOA_MovimentiTestate.getnMovDdt()), StringUtils.trim(msvOA_MovimentiTestate.getCodMag()), " ", StringUtils.trim(msvOA_MovimentiTestate.getNroDoc())), 50);
+				
 				String bfnot = StringUtils.left(StringUtils.trim(msvOA_MovimentiTestate.getNroDoc()), 50);
 				List<AsBofor0f> asBofor0fTmp = null;
 				
@@ -3520,12 +3520,8 @@ public class Oasi{
 				String bfdbfTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_MovimentiTestate.getDataDoc());
 				Integer bfdbf = Integer.parseInt(bfdbfTxt);
 				
-//				String bfnbf = determinaBfnbf(msvOA_MovimentiTestate, vcaus);
-				String bfnbf = StringUtils.left(StringUtils.trim(msvOA_MovimentiTestate.getNroDoc()), 50);
-				if(StringUtils.equals(vcaus, "B9")){
-					bfnbf = msvOA_MovimentiTestate.getnMovDdt();
-				}
-				
+				String bfnbf = StringUtils.left(StringUtils.join(causaleOasi, StringUtils.trim(msvOA_MovimentiTestate.getnMovDdt()), StringUtils.trim(msvOA_MovimentiTestate.getCodMag()), " ", StringUtils.trim(msvOA_MovimentiTestate.getNroDoc())), 50);
+								
 				String bfnom = "OASI";
 				String bfute = utente;
 				String bfnot = StringUtils.left(msvOA_MovimentiTestate.getNroDoc(), 50);
@@ -4999,6 +4995,8 @@ public class Oasi{
 				msvOA_PrimaNota_TesDao.aggiorna(msvOA_PrimaNota_Tes);
 				continue;
 			}
+			
+			log.info("Elaboro: " + msvOA_PrimaNota_Tes.getnReg());
 
 			Boolean fattura = false;
 			
@@ -6428,24 +6426,4 @@ public class Oasi{
 			}
 		}
 	}
-	
-//	private String determinaBfnbf(MsvOA_MovimentiTestate msvOA_MovimentiTestate, String vcaus){
-//		String bfnbf = StringUtils.left(StringUtils.trim(msvOA_MovimentiTestate.getNroDoc()), 50);
-//		if(StringUtils.length(bfnbf) > 12){
-//			// bfnbf = StringUtils.trim(StringUtils.substring(bfnbf, 5));
-//			for(int i = 0; i < 5; i++){
-//				if(StringUtils.length(bfnbf) <= 12){
-//					break;
-//				}
-//				bfnbf = StringUtils.trim(StringUtils.substring(bfnbf, 1));
-//			}			
-//			if(StringUtils.length(bfnbf) > 12){
-//				bfnbf = StringUtils.left(bfnbf, 12);
-//			}
-//		}
-//		if(StringUtils.equals(vcaus, "B9")){
-//			bfnbf = msvOA_MovimentiTestate.getnMovDdt();
-//		}
-//		return bfnbf;
-//	}
 }
