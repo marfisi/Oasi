@@ -13,8 +13,7 @@ import it.cascino.oasi.dbas.model.pkey.AsBofor0fPKey;
 @NamedQueries({
 	@NamedQuery(name = "AsBofor0f.findAll", query = "SELECT o FROM Bofor0f o"),
 	@NamedQuery(name = "AsBofor0f.findById", query = "SELECT o FROM Bofor0f o WHERE o.id.bfdat = :bfdat and o.id.bfnuz = :bfnuz and o.id.bfnum = :bfnum"),
-	@NamedQuery(name = "AsBofor0f.findByBfdatBfcofBfnbf", query = "SELECT o FROM Bofor0f o WHERE o.id.bfdat = :bfdat and o.bfcof = :bfcof and o.bfnbf = :bfnbf"),
-	@NamedQuery(name = "AsBofor0f.findByBfdatBfcofBfnbfBfnot", query = "SELECT o FROM Bofor0f o WHERE o.id.bfdat = :bfdat and o.bfcof = :bfcof and o.bfnbf = :bfnbf and o.bfnot = :bfnot")
+	@NamedQuery(name = "AsBofor0f.findByBfdatBfcofBfido", query = "SELECT o FROM Bofor0f o WHERE o.id.bfdat = :bfdat and o.bfcof = :bfcof and o.bfido = :bfido")
 })
 public class AsBofor0f implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -31,6 +30,7 @@ public class AsBofor0f implements Serializable{
 	private String bfnom;
 	private String bfute;
 	private String bfnot;
+	private String bfido;
 	
 	public AsBofor0f(){
 	}
@@ -123,6 +123,14 @@ public class AsBofor0f implements Serializable{
 		this.bfnot = bfnot;
 	}
 
+	public String getBfido(){
+		return bfido;
+	}
+
+	public void setBfido(String bfido){
+		this.bfido = bfido;
+	}
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -137,6 +145,7 @@ public class AsBofor0f implements Serializable{
 		result = prime * result + ((bfnot == null) ? 0 : bfnot.hashCode());
 		result = prime * result + ((bfpag == null) ? 0 : bfpag.hashCode());
 		result = prime * result + ((bfute == null) ? 0 : bfute.hashCode());
+		result = prime * result + ((bfido == null) ? 0 : bfido.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -155,6 +164,6 @@ public class AsBofor0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsBofor0f [id=" + id + ", bfcof=" + bfcof + ", bfftr=" + bfftr + ", bfpag=" + bfpag + ", bfcau=" + bfcau + ", bfdep=" + bfdep + ", bfdbf=" + bfdbf + ", bfnbf=" + bfnbf + ", bfnom=" + bfnom + ", bfute=" + bfute + ", bfnot=" + bfnot + "]";
+		return "AsBofor0f [id=" + id + ", bfcof=" + bfcof + ", bfftr=" + bfftr + ", bfpag=" + bfpag + ", bfcau=" + bfcau + ", bfdep=" + bfdep + ", bfdbf=" + bfdbf + ", bfnbf=" + bfnbf + ", bfnom=" + bfnom + ", bfute=" + bfute + ", bfnot=" + bfnot + ", bfido=" + bfido + "]";
 	}
 }

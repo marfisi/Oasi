@@ -3049,20 +3049,11 @@ public class Oasi{
 					chiudi();
 				}
 			}else if(StringUtils.equals(caus, "B")){
-				String bfnbf = StringUtils.left(StringUtils.join(causaleOasi, StringUtils.trim(msvOA_MovimentiTestate.getnMovDdt()), StringUtils.trim(msvOA_MovimentiTestate.getCodMag()), " ", StringUtils.trim(msvOA_MovimentiTestate.getNroDoc())), 50);
-				
-				String bfnot = StringUtils.left(StringUtils.trim(msvOA_MovimentiTestate.getNroDoc()), 50);
-				List<AsBofor0f> asBofor0fTmp = null;
-				
-				asBofor0fTmp = asBofor0fDao.getDaBfdatBfcofBfnbf(vdatr, new BigDecimal(vcocf), bfnbf);
+				String bfido = StringUtils.join(causaleOasi, "-", StringUtils.trim(msvOA_MovimentiTestate.getnMovDdt()), "-", StringUtils.trim(msvOA_MovimentiTestate.getCodMag()));
+				List<AsBofor0f> asBofor0fTmp = asBofor0fDao.getDaBfdatBfcofBfido(vdatr, new BigDecimal(vcocf), bfido);
 				if(asBofor0fTmp.size() > 1){
-					log.warn("Piu' di una bolla con lo stesso identificativo " + vdatr + " " + vcocf + " " + bfnbf);
-					// provo quindi a cercarla per bfnot
-					asBofor0fTmp = asBofor0fDao.getDaBfdatBfcofBfnbfBfnot(vdatr, new BigDecimal(vcocf), bfnbf, bfnot);
-					if(asBofor0fTmp.size() > 1){
-						log.error("Piu' di una bolla con lo stesso identificativo " + vdatr + " " + vcocf + " " + bfnbf+ " " + bfnot);						
-						chiudi();
-					}
+					log.error("Piu' di una bolla con lo stesso identificativo " + vdatr + " " + vcocf + " " + bfido);						
+					chiudi();
 				}
 	
 				if(asBofor0fTmp.isEmpty()){
@@ -3520,11 +3511,12 @@ public class Oasi{
 				String bfdbfTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_MovimentiTestate.getDataDoc());
 				Integer bfdbf = Integer.parseInt(bfdbfTxt);
 				
-				String bfnbf = StringUtils.left(StringUtils.join(causaleOasi, StringUtils.trim(msvOA_MovimentiTestate.getnMovDdt()), StringUtils.trim(msvOA_MovimentiTestate.getCodMag()), " ", StringUtils.trim(msvOA_MovimentiTestate.getNroDoc())), 50);
+				String bfnbf = StringUtils.left(StringUtils.trim(msvOA_MovimentiTestate.getNroDoc()), 50);
 								
 				String bfnom = "OASI";
 				String bfute = utente;
-				String bfnot = StringUtils.left(msvOA_MovimentiTestate.getNroDoc(), 50);
+				String bfnot = StringUtils.left(StringUtils.trim(msvOA_MovimentiTestate.getNroDoc()), 50);
+				String bfido = StringUtils.join(causaleOasi, "-", StringUtils.trim(msvOA_MovimentiTestate.getnMovDdt()), "-", StringUtils.trim(msvOA_MovimentiTestate.getCodMag()));
 				
 				AsBofor0fPKey id = new AsBofor0fPKey();
 				id.setBfdat(bfdat);
@@ -3541,7 +3533,8 @@ public class Oasi{
 				asBofor0f.setBfnbf(bfnbf);
 				asBofor0f.setBfnom(bfnom);
 				asBofor0f.setBfute(bfute);
-				asBofor0f.setBfnot(bfnot);				
+				asBofor0f.setBfnot(bfnot);
+				asBofor0f.setBfido(bfido);
 	
 				AsBofor0f asBofor0fTmp = asBofor0fDao.getDaId(bfdat, bfnuz, bfnum);
 				if(asBofor0fTmp == null){	// nuova quindi insert

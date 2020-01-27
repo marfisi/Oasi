@@ -10,12 +10,10 @@ public interface AsBofor0fDao{
 	Boolean salva(AsBofor0f o);
 	
 	Boolean aggiorna(AsBofor0f o);
-
+	
 	AsBofor0f getDaId(Integer bfdat, Integer bfnuz, Integer bfnum);
 	
-	List<AsBofor0f> getDaBfdatBfcofBfnbf(Integer bfdat, BigDecimal bfcof, String bfnbf);
-
-	List<AsBofor0f> getDaBfdatBfcofBfnbfBfnot(Integer bfdat, BigDecimal bfcof, String bfnbf, String bfnot);
+	List<AsBofor0f> getDaBfdatBfcofBfido(Integer bfdat, BigDecimal bfcof, String bfido);
 
 	void close();
 }
