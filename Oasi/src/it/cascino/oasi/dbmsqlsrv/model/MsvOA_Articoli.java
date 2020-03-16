@@ -36,12 +36,13 @@ public class MsvOA_Articoli implements Serializable{
 	private String codArticoloCascino;
 	private String codFornitore;
 	private String codArtFornitore;
+	private Integer kasanova;
 	private String tipoOperazione;
 
 	public MsvOA_Articoli(){
 	}
 	
-	public MsvOA_Articoli(String codBreveOasi, String codLungoOasi, String descrizione, String modello, String tipoArticolo, String codMarchio, String codSottofam, String unitaMs, String codIva, Integer annullato, String codArticoloCascino, String codFornitore, String codArtFornitore, String tipoOperazione){
+	public MsvOA_Articoli(String codBreveOasi, String codLungoOasi, String descrizione, String modello, String tipoArticolo, String codMarchio, String codSottofam, String unitaMs, String codIva, Integer annullato, String codArticoloCascino, String codFornitore, String codArtFornitore, Integer kasanova, String tipoOperazione){
 		super();
 		this.codBreveOasi = codBreveOasi;
 		this.codLungoOasi = codLungoOasi;
@@ -56,6 +57,7 @@ public class MsvOA_Articoli implements Serializable{
 		this.codArticoloCascino = codArticoloCascino;
 		this.codFornitore = codFornitore;
 		this.codArtFornitore = codArtFornitore;
+		this.kasanova = kasanova;
 		this.tipoOperazione = tipoOperazione;
 	}
 
@@ -164,6 +166,14 @@ public class MsvOA_Articoli implements Serializable{
 		this.codArtFornitore = codArtFornitore;
 	}
 
+	public Integer getKasanova(){
+		return kasanova;
+	}
+
+	public void setKasanova(Integer kasanova){
+		this.kasanova = kasanova;
+	}
+
 	public String getTipoOperazione(){
 		return tipoOperazione;
 	}
@@ -187,6 +197,7 @@ public class MsvOA_Articoli implements Serializable{
 		result = prime * result + ((modello == null) ? 0 : modello.hashCode());
 		result = prime * result + ((tipoArticolo == null) ? 0 : tipoArticolo.hashCode());
 		result = prime * result + ((tipoOperazione == null) ? 0 : tipoOperazione.hashCode());
+		result = prime * result + ((kasanova == null) ? 0 : kasanova.hashCode());
 		result = prime * result + ((unitaMs == null) ? 0 : unitaMs.hashCode());
 		return result;
 	}
@@ -205,6 +216,6 @@ public class MsvOA_Articoli implements Serializable{
 
 	@Override
 	public String toString(){
-		return "MsvOA_Articoli [codBreveOasi=" + codBreveOasi + ", codLungoOasi=" + codLungoOasi + ", descrizione=" + descrizione + ", modello=" + modello + ", tipoArticolo=" + tipoArticolo + ", codMarchio=" + codMarchio + ", codSottofam=" + codSottofam + ", unitaMs=" + unitaMs + ", codIva=" + codIva + ", annullato=" + annullato + ", codArticoloCascino=" + codArticoloCascino + ", codFornitore=" + codFornitore + ", codArtFornitore=" + codArtFornitore + ", tipoOperazione=" + tipoOperazione + "]";
+		return "MsvOA_Articoli [codBreveOasi=" + codBreveOasi + ", codLungoOasi=" + codLungoOasi + ", descrizione=" + descrizione + ", modello=" + modello + ", tipoArticolo=" + tipoArticolo + ", codMarchio=" + codMarchio + ", codSottofam=" + codSottofam + ", unitaMs=" + unitaMs + ", codIva=" + codIva + ", annullato=" + annullato + ", codArticoloCascino=" + codArticoloCascino + ", codFornitore=" + codFornitore + ", codArtFornitore=" + codArtFornitore + ", kasanova=" + kasanova + ", tipoOperazione=" + tipoOperazione + "]";
 	}
 }

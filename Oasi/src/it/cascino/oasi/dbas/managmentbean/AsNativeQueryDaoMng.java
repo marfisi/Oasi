@@ -137,7 +137,7 @@ public class AsNativeQueryDaoMng implements AsNativeQueryDao, Serializable{
 		try{
 			try{
 				utx.begin();
-				String sql = "select mtdat, mtnuz, mtnum, mtnur, mtcod, mtqua, mtqri, mtdpp, mtdpa, mtime, mtute, mtutr, mtsta, mtdar, mtimr, mtumi from movtr0f where mtdpp in (" + depIngrosso + ") and mtdpa in (" + depExpert + ") and (mtdat > :mtdat or (mtdat = :mtdat and mtime > :mtime)) and mtutr = 'OA' order by mtdat, mtnuz, mtnum, mtnur";
+				String sql = "select mtdat, mtnuz, mtnum, mtnur, mtcod, mtqua, mtqri, mtdpp, mtdpa, mtime, mtute, mtutr, mtsta, mtdar, mtimr, mtumi from movtr0f where mtdpp in (" + depIngrosso + ") and mtdpa in (" + depExpert + ") and (mtdat > :mtdat or (mtdat = :mtdat and mtime >= :mtime)) and mtutr = 'OA' order by mtdat, mtnuz, mtnum, mtnur";
 				Query query = em.createNativeQuery(sql, AsMovtr0f.class);
 				query.setParameter("mtdat", data);
 				query.setParameter("mtime", ora);

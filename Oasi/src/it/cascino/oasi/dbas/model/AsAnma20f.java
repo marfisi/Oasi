@@ -33,6 +33,7 @@ public class AsAnma20f implements Serializable{
 	private String m2cat;
 	private String m2aag;
 	private String m2oas;
+	private String m2kas;
 	
 	public AsAnma20f(){
 	}
@@ -126,6 +127,14 @@ public class AsAnma20f implements Serializable{
 		this.m2oas = m2oas;
 	}
 
+	public String getM2kas(){
+		return m2kas;
+	}
+
+	public void setM2kas(String m2kas){
+		this.m2kas = m2kas;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -141,7 +150,8 @@ public class AsAnma20f implements Serializable{
 		result = prime * result + ((m2st1 == null) ? 0 : m2st1.hashCode());
 		result = prime * result + ((m2stf == null) ? 0 : m2stf.hashCode());
 		result = prime * result + ((m2oas == null) ? 0 : m2oas.hashCode());
-			return result;
+		result = prime * result + ((m2kas == null) ? 0 : m2kas.hashCode());
+		return result;
 	}
 
 	@Override
@@ -158,6 +168,6 @@ public class AsAnma20f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsAnma20f [m2cod=" + m2cod + ", m2div=" + m2div + ", m2gru=" + m2gru + ", m2sot=" + m2sot + ", m2fam=" + m2fam + ", m2stf=" + m2stf + ", m2st1=" + m2st1 + ", m2b2b=" + m2b2b + ", m2cat=" + m2cat + ", m2aag=" + m2aag + ", m2oas=" + m2oas + "]";
+		return "AsAnma20f [m2cod=" + m2cod + ", m2div=" + m2div + ", m2gru=" + m2gru + ", m2sot=" + m2sot + ", m2fam=" + m2fam + ", m2stf=" + m2stf + ", m2st1=" + m2st1 + ", m2b2b=" + m2b2b + ", m2cat=" + m2cat + ", m2aag=" + m2aag + ", m2oas=" + m2oas + ", m2kas=" + m2kas + "]";
 	}
 }

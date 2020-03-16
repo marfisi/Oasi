@@ -17,6 +17,7 @@ import it.cascino.oasi.dbas.managmentbean.AsAnma20fDaoMng;
 import it.cascino.oasi.dbas.model.AsAafor0f;
 import it.cascino.oasi.dbas.model.AsAlmer0f;
 import it.cascino.oasi.dbas.model.AsAncab0f;
+import it.cascino.oasi.dbas.model.AsAnma20f;
 import it.cascino.oasi.dbas.dao.AsAnmag0fDao;
 import it.cascino.oasi.dbas.dao.AsArdep0fDao;
 import it.cascino.oasi.dbas.dao.AsBofor0fDao;
@@ -372,6 +373,7 @@ public class Oasi{
 //		cmdLs.add(asOasic0fDao.getDaOaidtr(5));	// depositiTutti
 		
 //		cmdLs.add(asOasic0fDao.getDaOaidtr(67));	// as2oasiMovimentiMagazzino
+//		cmdLs.add(asOasic0fDao.getDaOaidtr(68));	// as2oasiTrasferimenti
 
 //		cmdLs.add(asOasic0fDao.getDaOaidtr(117));	// oasi2asMovimentiMagazzino
 //		cmdLs.add(asOasic0fDao.getDaOaidtr(105));	// oasi2asArticoli
@@ -1860,6 +1862,14 @@ public class Oasi{
 						asAnmag0f.setMcoaf(asAnmag0fTmp.getMcoaf());
 					}
 					asAnmag0f.setMdesc(asAnmag0fTmp.getMdesc());
+					
+					if(StringUtils.isNotBlank(asAnmag0fTmp.getMarch())){
+						asAnmag0f.setMarch(asAnmag0fTmp.getMarch());
+					}
+					
+					if(StringUtils.isNotBlank(asAnmag0fTmp.getModel())){
+						asAnmag0f.setModel(asAnmag0fTmp.getModel());
+					}					
 				}
 				if(!(asAnmag0fDao.aggiorna(asAnmag0f))){
 					chiudi();
@@ -1873,6 +1883,55 @@ public class Oasi{
 			}else{
 				asOaanm0f.setMflag("S");
 				if(!(asOaanm0fDao.aggiorna(asOaanm0f))){
+					chiudi();
+				}
+			}
+			
+			// gestisco se l'articolo è kasanova
+			AsAnma20f asAnma20f = new AsAnma20f();
+			asAnma20f.setM2cod(mcoda);
+			asAnma20f.setM2div("");
+			asAnma20f.setM2gru("");
+			asAnma20f.setM2sot("");
+			asAnma20f.setM2fam("");
+			asAnma20f.setM2stf("");
+			asAnma20f.setM2st1("");
+			asAnma20f.setM2b2b("");
+			asAnma20f.setM2cat("");
+			asAnma20f.setM2aag("");
+			asAnma20f.setM2oas("");
+			asAnma20f.setM2kas("");
+			
+			String m2kas = "";
+			if(Integer.compare(msvOA_Articoli.getKasanova(), 1) == 0){
+				m2kas = "1";
+			}
+			asAnma20f.setM2kas(m2kas);
+
+			// se è kasanova, devo per forza avere il recod in anma2
+			// se non è kasanova: se il record in anma2 esiste devo mettere m2kas = ' ', se il record non c'è non devo fare nulla
+
+			AsAnma20f asAnma20fTmp = asAnma20fDao.getDaM2cod(mcoda);
+			if(asAnma20fTmp == null){	// nuova quindi insert
+				// se non è kasanova e il recod non esiste, non è necessario inserirlo
+				if(StringUtils.equals(m2kas, "1")){
+					if(!(asAnma20fDao.salva(asAnma20f))){
+						chiudi();
+					}					
+				}
+			}else{	// gia' presente, quindi update
+				// non modifico i valori che non ricevo definiti
+				asAnma20f.setM2div(asAnma20fTmp.getM2div());
+				asAnma20f.setM2gru(asAnma20fTmp.getM2gru());
+				asAnma20f.setM2sot(asAnma20fTmp.getM2sot());
+				asAnma20f.setM2fam(asAnma20fTmp.getM2fam());
+				asAnma20f.setM2stf(asAnma20fTmp.getM2stf());
+				asAnma20f.setM2st1(asAnma20fTmp.getM2st1());
+				asAnma20f.setM2b2b(asAnma20fTmp.getM2b2b());
+				asAnma20f.setM2cat(asAnma20fTmp.getM2cat());
+				asAnma20f.setM2aag(asAnma20fTmp.getM2aag());
+				asAnma20f.setM2oas(asAnma20fTmp.getM2oas());
+				if(!(asAnma20fDao.aggiorna(asAnma20f))){
 					chiudi();
 				}
 			}
@@ -2682,7 +2741,7 @@ public class Oasi{
 			
 			rdQta = (BigDecimal)asMov[8];
 			
-			rdCosto = (BigDecimal)asMov[13];
+			rdCosto = (BigDecimal)asMov[13];	// errore grave, non è stato considerato il sellout. si doveva nadare a prendere dalle tabelle flussi domex (dmxrs0f)
 			Support.arrotonda(rdCosto, 4);
 
 			rdCausale = StringUtils.left(StringUtils.trim(asMov[2].toString()), 1);
@@ -2793,7 +2852,7 @@ public class Oasi{
 
 		// solo alcuni movimenti
 //		msvOA_MovimentiTestateLs.clear();
-//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00424556"));
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C01752952"));
 		
 		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -4224,10 +4283,18 @@ public class Oasi{
 
 		asMovtr0fLs = asNativeQueryDao.getMovtrDaIngrossoAexpert(depositiIngrosso, depositiExpert, dataSync, oraSync);
 		
+		log.info("Trasferimenti successivi al: " + dataSync + " " + oraSync);
+		
+		// per evitare che tra l'inizio e la fine elaborazione (es. 3-4 minuti) venga salvato un trasferimento da as400, il timestamp lo rilevo subito
+		// capitava che ad esempio iniziava alle 16:00 l'elaborazione, nella select quindi prendevo tutti i trasferimenti prima delle 16, nel frattempo finivo l'elaborazione 
+		// alle 16:05 e prendevo il timestamp. Quindi la prossima volta avrei cercato tutti itrasferimenti successivi alle 16:05. In questo modo perdevo tutti i trasferimenti 
+		// salvati in As400 tra le 16:01 e le 16:05
+		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
+
 		if(asMovtr0fLs.size() > 0){
-			String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
+			String strTimestampAs400Mov =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 			// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
-			strTimestampAs400 = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400, "."), " "), "-"), ":");
+			strTimestampAs400Mov = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400Mov, "."), " "), "-"), ":");
 
 			AsMovtr0f asMovtr0f = new AsMovtr0f();
 			Iterator<AsMovtr0f> iter_asMovtr0fLs = asMovtr0fLs.iterator();
@@ -4278,15 +4345,14 @@ public class Oasi{
 				// una volta scritto in SqlSrv, scrivo in movtr, con stato OK e utente OASI
 				asMovtr0f.setMtsta("OK");
 				asMovtr0f.setMtutr("OASI");
-				asMovtr0f.setMtdar(Integer.parseInt(StringUtils.left(strTimestampAs400, 8)));
-				asMovtr0f.setMtimr(Integer.parseInt(StringUtils.left(StringUtils.right(strTimestampAs400, 6), 4)));
+				asMovtr0f.setMtdar(Integer.parseInt(StringUtils.left(strTimestampAs400Mov, 8)));
+				asMovtr0f.setMtimr(Integer.parseInt(StringUtils.left(StringUtils.right(strTimestampAs400Mov, 6), 4)));
 				if(!(asMovtr0fDao.aggiorna(asMovtr0f))){
 					chiudi();
 				}
 			}
 		}
 		
-		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
 		strTimestampAs400 = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400, "."), " "), "-"), ":");
 		asOasic0f.setOaris1(strTimestampAs400);
@@ -4466,7 +4532,7 @@ public class Oasi{
 	private void getArticoliPerOasi(){
 		log.info("[" + "getArticoliPerOasi");
 		
-		// setta la lista di artioli cascino che sono in oasi
+		// setta la lista di articoli cascino che sono in oasi
 		// ovvero
 		// tutti gli articoli attivi (atama = ' ')
 		// piu' gli annullati ma movimentati da dataPartenza
@@ -5152,6 +5218,7 @@ public class Oasi{
 				String fnnup = "";
 				Integer fndep = 0;
 				String fnute = "";
+				String fntab = "";
 				
 				fnifi = scims.subtract(importoAcconto);
 				
@@ -5221,8 +5288,13 @@ public class Oasi{
 					fncag =  StringUtils.left(tcomminit, 2);
 					
 					fnnup = "";
+					fntab = "";
 					if(msvOA_MovimentiTestate != null){
-						fnnup = StringUtils.right(StringUtils.upperCase(StringUtils.trim(msvOA_MovimentiTestate.getNotaFZ())), 15);
+						if(StringUtils.isNotBlank(msvOA_MovimentiTestate.getNotaFZ())){
+							String fnnupfntab = StringUtils.upperCase(StringUtils.normalizeSpace(msvOA_MovimentiTestate.getNotaFZ()));
+							fnnup = StringUtils.right(StringUtils.substringBefore(fnnupfntab, " "), 15);
+							fntab = StringUtils.left(StringUtils.substringAfterLast(fnnupfntab, " "), 4);
+						}
 					}
 					fndep = scdep;				
 					fnute = scute;
@@ -5242,6 +5314,7 @@ public class Oasi{
 					asFinaz0f.setFnnup(fnnup);
 					asFinaz0f.setFndep(fndep);
 					asFinaz0f.setFnute(fnute);
+					asFinaz0f.setFntab(fntab);
 					
 					AsFinaz0f asFinaz0fTmp = asFinaz0fDao.getDaId(fndat, fnnum);
 					if(asFinaz0fTmp == null){	// nuova quindi insert
@@ -6419,4 +6492,18 @@ public class Oasi{
 			}
 		}
 	}
+	
+//	private void funzioneTestDebug(){
+//		MsvOA_MovimentiTestate msvOA_MovimentiTestate = msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C01752726").get(0);
+//		String fnnup = "";
+//		String fntab = "";
+//		if(msvOA_MovimentiTestate != null){
+//			if(StringUtils.isNotBlank(msvOA_MovimentiTestate.getNotaFZ())){
+//				String fnnupfntab = StringUtils.upperCase(StringUtils.normalizeSpace(msvOA_MovimentiTestate.getNotaFZ()));
+//				fnnup = StringUtils.right(StringUtils.substringBefore(fnnupfntab, " "), 15);
+//				fntab = StringUtils.left(StringUtils.substringAfterLast(fnnupfntab, " "), 4);
+//				fnnupfntab = "";
+//			}
+//		}		
+//	}
 }

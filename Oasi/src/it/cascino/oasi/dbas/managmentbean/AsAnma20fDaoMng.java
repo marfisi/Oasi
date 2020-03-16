@@ -11,7 +11,6 @@ import it.cascino.oasi.dbas.dao.AsAnma20fDao;
 import it.cascino.oasi.dbas.model.AsAnma20f;
 import it.cascino.oasi.utils.Resources;
 
-
 public class AsAnma20fDaoMng implements AsAnma20fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
@@ -36,6 +35,39 @@ public class AsAnma20fDaoMng implements AsAnma20fDao, Serializable{
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public Boolean salva(AsAnma20f o){
+		try{
+			try{
+				utx.begin();
+				// precodice.setId(null);
+				log.info("salva: " + o.toString());
+				em.persist(o);
+			}finally{
+				utx.commit();
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+			return false;
+		}
+		return true;
+	}
+	
+	public Boolean aggiorna(AsAnma20f o){
+		try{
+			try{
+				utx.begin();
+				log.info("aggiorna: " + o.toString());
+				em.merge(o);
+			}finally{
+				utx.commit();
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+			return false;
+		}
+		return true;
 	}
 	
 	public AsAnma20f getDaM2cod(String m2cod){
