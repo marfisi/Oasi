@@ -19,6 +19,8 @@ public interface AsMovma0fDao{
 
 	List<AsMovma0f> getDaVcoda(String vcoda, String dataPartenza, String depositi);
 	
+	Integer aggiornaVimps(Integer vdatr, String vcaus, Integer vnura, Integer vnumd, BigDecimal vimps);
+	
 	Integer aggiornaVcomm(Integer vdatr, String vcaus, Integer vnura, Integer vnumd, String vcomm);
 
 	void close();

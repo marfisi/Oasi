@@ -2845,14 +2845,14 @@ public class Oasi{
 		
 		MsvOA_MovimentiTestate msvOA_MovimentiTestate = new MsvOA_MovimentiTestate();
 		
-		msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getAll();
+ 		msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getAll();
 		
 		// aggiungo i movimenti testate che sono già state elaborate, ma hanno movimenti righe in stato UPD
 		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.	getTestateConRigheAggiornate());
 
 		// solo alcuni movimenti
 //		msvOA_MovimentiTestateLs.clear();
-//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C01752952"));
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C01816039"));
 		
 		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -2868,20 +2868,32 @@ public class Oasi{
 			Integer vnura = 0;
 			Integer vnumd = 0;
 			Integer vprog = 0;
+			Integer vdain = 0;
+			Integer vorin = 0;
 			String vcoda = "";
 			String vdesc = "";
+			Integer vcocf = null;
+			Integer vricl = 0;
+			Integer vndep = 0;
 			BigDecimal vquan = new BigDecimal(0);
 			BigDecimal vprez = new BigDecimal(0);
 			BigDecimal vsco1 = new BigDecimal(0);
 			BigDecimal vsco2 = new BigDecimal(0);
 			BigDecimal vsco3 = new BigDecimal(0);
-			BigDecimal vcost = new BigDecimal(0);
+			BigDecimal vsco4 = new BigDecimal(0);
 			String vciva = "";
-			Integer vtime = 0;
-			Integer vcocf = null;
-			Integer vndep = 0;
-			String vstgi = "";
-			String atamov = "";
+			BigDecimal valiv = new BigDecimal(0);
+			BigDecimal vimps = new BigDecimal(0);
+			String vcocr = "";
+			String voven = "";
+			String vtcve = "";
+			BigDecimal vcost = new BigDecimal(0);
+			String vtpac = "";
+			String vvkit = "";
+			String vcusr = "";
+			String vcven = "";
+			String vidoa = "";
+			String vtimo = "";
 			
 			BigDecimal segnoQty = new BigDecimal(1);
 			
@@ -2920,6 +2932,8 @@ public class Oasi{
 					log.error("Codice: " + tipoDocumento + " non gestito");
 					vcaus = "";
 				}
+				
+				vtimo = "C";
 			}
 			if(StringUtils.equals(causaleOasi, "RSCL") || StringUtils.equals(causaleOasi, "RSCO")){
 				if(Integer.compare(tipoDocumento, 2) == 0){
@@ -2934,6 +2948,8 @@ public class Oasi{
 					log.error("Codice: " + tipoDocumento + " non gestito");
 					vcaus = "";
 				}
+				
+				vtimo = "C";
 			}
 			if(StringUtils.equals(causaleOasi, "RSCM")){
 				if(Integer.compare(tipoDocumento, 2) == 0){
@@ -2944,6 +2960,8 @@ public class Oasi{
 					log.error("Codice: " + tipoDocumento + " non gestito");
 					vcaus = "";
 				}
+				
+				vtimo = "C";
 			}
 			if(StringUtils.equals(causaleOasi, "CARF") || StringUtils.equals(causaleOasi, "CFOR")){
 				if(Integer.compare(tipoDocumento, 0) == 0){
@@ -2954,11 +2972,13 @@ public class Oasi{
 					log.error("Codice: " + tipoDocumento + " non gestito");
 					vcaus = "";
 				}
+				
+				vtimo = "F";
 			}
 			if(StringUtils.equals(causaleOasi, "RFOR") || StringUtils.equals(causaleOasi, "RSRF") || StringUtils.equals(causaleOasi, "RSFO") ||
 				StringUtils.equals(causaleOasi, "VENO") || StringUtils.equals(causaleOasi, "VENC")){
 				if(Integer.compare(tipoDocumento, 0) == 0){
-					vcaus = "B9";
+					vcaus = "B99";
 					segnoQty = new BigDecimal(-1);
 					
 					if(StringUtils.equals(causaleOasi, "VENO")){
@@ -2970,6 +2990,8 @@ public class Oasi{
 					log.error("Codice: " + tipoDocumento + " non gestito");
 					vcaus = "";
 				}
+				
+				vtimo = "F";
 			}
 			if(StringUtils.equals(causaleOasi, "SCIA")){
 				if(Integer.compare(tipoDocumento, -1) == 0){
@@ -2979,6 +3001,8 @@ public class Oasi{
 					log.error("Codice: " + tipoDocumento + " non gestito");
 					vcaus = "";
 				}
+				
+				vtimo = "A";
 			}
 			
 			if(StringUtils.isBlank(vcaus)){
@@ -2990,20 +3014,30 @@ public class Oasi{
 			
 			String vdatrTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_MovimentiTestate.getDataReg());
 			vdatr = Integer.parseInt(vdatrTxt);
-			
+			vdain = vdatr;
+			vorin = 1;
+
 			if(vcocf == null){
 				vcocf = Integer.parseInt(StringUtils.trim(msvOA_MovimentiTestate.getCodCliFor()));
 				if(Integer.compare(vcocf, 999999) == 0){
 					vcocf = 0;
-				}		
+				}
+				
+				if(StringUtils.equals(vcaus, "I")){
+					vricl = vcocf;
+					vcocf = 0;
+				}
 			}
 			
 			if(!(StringUtils.equals(vcaus, "S"))){
 				vndep = Integer.parseInt(transDeposito(msvOA_MovimentiTestate.getCodMag(), "oasi2as"));
-				vcaus = StringUtils.join(vcaus, StringUtils.leftPad(vndep.toString(), 1, "0"));
+				vcaus = StringUtils.join(vcaus, StringUtils.leftPad(vndep.toString(), 2, "0"));
 			}else if(StringUtils.equals(vcaus, "S")){
 				vndep = Integer.parseInt(transDeposito(StringUtils.trim(msvOA_MovimentiTestate.getCodCliFor()), "oasi2as"));
-				vcaus = "S0";
+				vcaus = "S00";
+			}
+			if(StringUtils.equals(StringUtils.left(vcaus, 3), "B99")){
+				vcaus = "B99";	// reso a fornitore
 			}
 			
 			String caus = StringUtils.left(vcaus, 1);
@@ -3017,30 +3051,51 @@ public class Oasi{
 			
 			// gestione amazon
 			if(StringUtils.equals(causaleOasi, "VEND") || StringUtils.equals(causaleOasi, "RSCM")){
-				if(StringUtils.equals(causaleOasi, "VEND")){
-					if(Integer.compare(tipoDocumento, 2) == 0){
-						vcaus = "HG";
-					}else if(Integer.compare(tipoDocumento, 1) == 0){
-						vcaus = "HC";
-						vnura = 91;
-					}
-					// caus rimane o G o D
-				}else if(StringUtils.equals(causaleOasi, "RSCM")){
-					if(Integer.compare(tipoDocumento, 2) == 0){
-						vcaus = "HG";
-					}else if(Integer.compare(tipoDocumento, 1) == 0){
-						vcaus = StringUtils.join("M", StringUtils.leftPad(vndep.toString(), 1, "0"));
-						vnura = 91;
-					}					
-					// caus rimane M
-				}
+				vnura = 91;
+			}
+//			if(StringUtils.equals(causaleOasi, "VEND") || StringUtils.equals(causaleOasi, "RSCM")){
+//				if(StringUtils.equals(causaleOasi, "VEND")){
+//					if(Integer.compare(tipoDocumento, 2) == 0){
+//						vcaus = "H0G";
+//					}else if(Integer.compare(tipoDocumento, 1) == 0){
+//						vcaus = "H0C";
+//						vnura = 91;
+//					}
+//					// caus rimane o G o D
+//				}else if(StringUtils.equals(causaleOasi, "RSCM")){
+//					if(Integer.compare(tipoDocumento, 2) == 0){
+//						vcaus = "H0G";
+//					}else if(Integer.compare(tipoDocumento, 1) == 0){
+//						vcaus = StringUtils.join("M", StringUtils.leftPad(vndep.toString(), 2, "0"));
+//						vnura = 91;
+//					}					
+//					// caus rimane M
+//				}
+//			}
+			
+			voven = "NG";
+			if(StringUtils.equals(causaleOasi, "VEDD")){
+				voven = "BE";
+			}
+			if(StringUtils.equals(causaleOasi, "VEND") || StringUtils.equals(causaleOasi, "RSCM")){
+				voven = "BM";
+			}
+			if(StringUtils.equalsIgnoreCase(msvOA_MovimentiTestate.getIpaCodiceCUP(), "social")){
+				voven = "BS";
 			}
 			
-			if(StringUtils.equals(vcaus, "B9")){
-				vcaus = "BA";	// acquisto enna
-			}else if(StringUtils.equals(StringUtils.left(vcaus, 2), "B9")){
-				vcaus = "B9";	// reso a fornitore
-			} 
+			vcocr = "";
+			String codPagamento = StringUtils.trim(msvOA_MovimentiTestate.getCodPagamento());
+			if(StringUtils.equals(codPagamento, "C00")){
+				vcocr = "C";
+				// potrebbe essere POS, ma non so come determinarlo
+			}else if(StringUtils.equals(codPagamento, "FAGI") || StringUtils.equals(codPagamento, "FCOI") || StringUtils.equals(codPagamento, "FINI") || StringUtils.equals(codPagamento, "FPAI")){
+				vcocr = "F";
+			}else if(StringUtils.equals(codPagamento, "WW") || StringUtils.equals(codPagamento, "W3") || StringUtils.equals(codPagamento, "WT") || StringUtils.equals(codPagamento, "WV")){
+				vcocr = "M";
+			}else if(StringUtils.isNotBlank(codPagamento)){
+				vcocr = "R";
+			}
 			
 			if(StringUtils.equals(caus, "G")){
 				String numDoc = StringUtils.left(msvOA_MovimentiTestate.getNroDoc(), 6);
@@ -3146,8 +3201,6 @@ public class Oasi{
 			
 			vprog = 0;
 
-			vtime = 1;
-			
 			Boolean prezzoIvato = false;
 			if(Integer.compare(msvOA_MovimentiTestate.getTipoPrezzo(), 1) == 0){
 				prezzoIvato = true;
@@ -3238,7 +3291,7 @@ public class Oasi{
 
 				if(primoRigo){
 					primoRigo = false;
-					utente = msvOA_MovimentiRighe.getCodOperatore();
+					utente = StringUtils.left(msvOA_MovimentiRighe.getCodOperatore(), 5);
 					importoDocumento = new BigDecimal(0);
 				}
 
@@ -3247,18 +3300,6 @@ public class Oasi{
 				vcoda = StringUtils.upperCase(StringUtils.trim(msvOA_MovimentiRighe.getCodArticoloCascino()));
 				if(StringUtils.isBlank(vcoda)){
 					vcoda = StringUtils.join("OA", StringUtils.trim(msvOA_MovimentiRighe.getCodArticoloOasi()));
-				}
-				
-				atamov = "";
-				AsAnmag0f asAnmag0f = asAnmag0fDao.getArticoloDaMcoda(vcoda);
-				if(asAnmag0f != null){
-					vdesc = asAnmag0f.getMdesc();
-					if(StringUtils.equals(asAnmag0f.getMckit(), "KT")){
-						atamov = "K";
-					}
-				}else{
-					log.warn(vcoda + " non presente in anmag");	
-					vdesc = "NON ANCORA CODIFICATO";
 				}
 				
 				if(StringUtils.equals(caus, "M")){
@@ -3270,6 +3311,7 @@ public class Oasi{
 				vsco1 = new BigDecimal(0);
 				vsco2 = new BigDecimal(0);
 				vsco3 = new BigDecimal(0);
+				vsco4 = new BigDecimal(0);
 				vcost = msvOA_MovimentiRighe.getCosto();
 				
 				if(StringUtils.equals(caus, "S")){
@@ -3315,12 +3357,11 @@ public class Oasi{
 					vciva = "22";
 				}
 				
+				valiv = new BigDecimal(asTabge00fDao.getAliquotaIva(vciva));
+				valiv = valiv.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
 				if(prezzoIvato && (!(StringUtils.equals(msvOA_MovimentiRighe.getCodArticoloCascino(), "/ACCO")))){
-					BigDecimal aliquotaIva = new BigDecimal(asTabge00fDao.getAliquotaIva(vciva));
-					aliquotaIva = aliquotaIva.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
-					
 					try{
-						vprez = vprez.divide((new BigDecimal(1)).add(aliquotaIva.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)), 4, BigDecimal.ROUND_HALF_UP);
+						vprez = vprez.divide((new BigDecimal(1)).add(valiv.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)), 4, BigDecimal.ROUND_HALF_UP);
 					}catch(ArithmeticException e){
 						log.error("calcolo vprez " + "vprez: " + vprez + ", vciva: " + vciva);
 					}
@@ -3333,14 +3374,42 @@ public class Oasi{
 					vciva = "88";
 				}
 				
-				// il costo e' gia' senza iva
+				vimps = new BigDecimal(0);
 				
+				if(StringUtils.equals(vtimo, "C")){
+					vtcve = "P";
+					vtpac = "";
+				}else if(StringUtils.equals(vtimo, "F")){
+					vtcve = "";
+					vtpac = "F";					
+				}else if(StringUtils.equals(vtimo, "A")){
+					vtcve = "";
+					vtpac = "";
+				}
+				
+				// il costo e' gia' senza iva
 				if(vcost.compareTo(new BigDecimal(-999999)) == 0){
 					log.warn("costo non definito, messo al prezzo");
 					vcost = vprez;	// margine 0
 				}
 				
-				vstgi = "F";
+				vvkit = "";
+				AsAnmag0f asAnmag0f = asAnmag0fDao.getArticoloDaMcoda(vcoda);
+				if(asAnmag0f != null){
+					vdesc = asAnmag0f.getMdesc();
+					if(StringUtils.equals(asAnmag0f.getMckit(), "KT")){
+						vvkit = "K";
+					}
+				}else{
+					log.warn(vcoda + " non presente in anmag");	
+					vdesc = "NON ANCORA CODIFICATO";
+				}
+				
+				vcusr = "JAVAP";
+				
+				vcven = StringUtils.left(msvOA_MovimentiRighe.getCodOperatore(), 5);
+				
+				vidoa = StringUtils.left(msvOA_MovimentiRighe.getId().getIdUnivocoTes(), 10);
 				
 				AsMovma0fPKey id = new AsMovma0fPKey();
 				id.setVdatr(vdatr);
@@ -3350,21 +3419,33 @@ public class Oasi{
 				id.setVprog(vprog);
 				AsMovma0f asMovma0f = new AsMovma0f();
 				asMovma0f.setId(id);
+				asMovma0f.setVdain(vdain);
+				asMovma0f.setVorin(vorin);
 				asMovma0f.setVcoda(vcoda);
 				asMovma0f.setVdesc(vdesc);
+				asMovma0f.setVcocf(vcocf);
+				asMovma0f.setVricl(vricl);
+				asMovma0f.setVndep(vndep);
 				asMovma0f.setVquan(vquan);
 				asMovma0f.setVprez(vprez);
 				asMovma0f.setVsco1(vsco1);
 				asMovma0f.setVsco2(vsco2);
 				asMovma0f.setVsco3(vsco3);
-				asMovma0f.setVcost(vcost);
+				asMovma0f.setVsco4(vsco4);
 				asMovma0f.setVciva(vciva);
-				asMovma0f.setVtime(vtime);
-				asMovma0f.setVcocf(vcocf);
-				asMovma0f.setVndep(vndep);
-				asMovma0f.setVstgi(vstgi);
-				asMovma0f.setAtamov(atamov);
-				
+				asMovma0f.setValiv(valiv);
+				asMovma0f.setVimps(vimps);
+				asMovma0f.setVcocr(vcocr);
+				asMovma0f.setVoven(voven);
+				asMovma0f.setVtcve(vtcve);
+				asMovma0f.setVcost(vcost);
+				asMovma0f.setVtpac(vtpac);
+				asMovma0f.setVvkit(vvkit);
+				asMovma0f.setVcusr(vcusr);
+				asMovma0f.setVcven(vcven);
+				asMovma0f.setVidoa(vidoa);
+				asMovma0f.setVtimo(vtimo);
+								
 				Boolean ardepDaAggiornare = true;
 				
 				AsMovma0f asMovma0fTmp = asMovma0fDao.getDaId(vdatr, vcaus, vnura, vnumd, vprog);
@@ -3543,7 +3624,7 @@ public class Oasi{
 					}
 				}
 				
-				asMovma0fDao.aggiornaVcomm(vdatr, vcaus, vnura, vnumd, "000000000FF0F000000F4040");
+				// asMovma0fDao.aggiornaVcomm(vdatr, vcaus, vnura, vnumd, "000000000FF0F000000F4040");
 			}else if(StringUtils.equals(caus, "B")){
 				Integer bfdat = vdatr;
 				Integer bfnuz = vnura;
@@ -3551,17 +3632,17 @@ public class Oasi{
 				BigDecimal bfcof = new BigDecimal(vcocf);
 				BigDecimal bfftr = new BigDecimal(0);
 
-				String bfpag = "001";
+				Integer bfpag = 1;
 				String bfpagTxt = StringUtils.trim(msvOA_MovimentiTestate.getCodPagamento());
 				if(StringUtils.containsOnly(bfpagTxt, "0123456789")){
-					bfpag = StringUtils.leftPad(bfpagTxt, 3, "0");	
+					bfpag = Integer.parseInt(bfpagTxt);
 				}else{	// e' un codice oasi, devo fare transcodifica
 					bfpagTxt = transPagamenti(bfpagTxt, "oasi2as");
 					if(StringUtils.isBlank(bfpagTxt)){
 						log.error("Codice: " + msvOA_MovimentiTestate.getCodPagamento() + " non gestito");
 						bfpagTxt = "1";	// contanti
 					}
-					bfpag = StringUtils.leftPad(bfpagTxt, 3, "0");
+					bfpag = Integer.parseInt(bfpagTxt);
 				}
 				
 				String bfcau = vcaus;
@@ -3607,8 +3688,11 @@ public class Oasi{
 					}
 				}
 				
-				asMovma0fDao.aggiornaVcomm(vdatr, vcaus, vnura, vnumd, "0000000FF0F0F0F0F0F04040");
+				// asMovma0fDao.aggiornaVcomm(vdatr, vcaus, vnura, vnumd, "0000000FF0F0F0F0F0F04040");
 			}
+			
+			vimps = importoDocumento.setScale(2, BigDecimal.ROUND_HALF_UP);
+			asMovma0fDao.aggiornaVimps(vdatr, vcaus, vnura, vnumd, vimps);
 			
 			// elimina dalla tabella scritta da oasi
 			// msvOA_MovimentiTestateDao.elimina(msvOA_MovimentiTestate);
@@ -4013,8 +4097,8 @@ public class Oasi{
 		
 		// solo alcuni movimenti
 //		msvOA_MovimentiTestateLs.clear();
-//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00054579"));// RIVP
-//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00054883"));// RIVN
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C01815248"));// RIVP
+//		msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C01815249"));// RIVN
 		
 		String strTimestampAs400 =  asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -4030,20 +4114,32 @@ public class Oasi{
 			Integer vnura = 0;
 			Integer vnumd = 0;
 			Integer vprog = 0;
+			Integer vdain = 0;
+			Integer vorin = 0;
 			String vcoda = "";
 			String vdesc = "";
+			Integer vcocf = 0;
+			Integer vricl = 0;
+			Integer vndep = 0;
 			BigDecimal vquan = new BigDecimal(0);
 			BigDecimal vprez = new BigDecimal(0);
 			BigDecimal vsco1 = new BigDecimal(0);
 			BigDecimal vsco2 = new BigDecimal(0);
 			BigDecimal vsco3 = new BigDecimal(0);
-			BigDecimal vcost = new BigDecimal(0);
+			BigDecimal vsco4 = new BigDecimal(0);
 			String vciva = "";
-			Integer vtime = 0;
-			Integer vcocf = 0;
-			Integer vndep = 0;
-			String vstgi = "";
-			String atamov = "";
+			BigDecimal valiv = new BigDecimal(0);
+			BigDecimal vimps = new BigDecimal(0);
+			String vcocr = "";
+			String voven = "";
+			String vtcve = "";
+			BigDecimal vcost = new BigDecimal(0);
+			String vtpac = "";
+			String vvkit = "";
+			String vcusr = "";
+			String vcven = "";
+			String vidoa = "";
+			String vtimo = "";
 			
 			BigDecimal segnoQty = new BigDecimal(1);
 			
@@ -4067,6 +4163,8 @@ public class Oasi{
 					log.error("Codice: " + tipoDocumento + " non gestito");
 					vcaus = "";
 				}
+				
+				vtimo = "A";
 			}
 			if(StringUtils.equals(causaleOasi, "CACB") || StringUtils.equals(causaleOasi, "SCCB")){
 				if(Integer.compare(tipoDocumento, 1) == 0){
@@ -4079,6 +4177,11 @@ public class Oasi{
 					log.error("Codice: " + tipoDocumento + " non gestito");
 					vcaus = "";
 				}
+				
+				vtimo = "C";
+				vcocr = "C";
+				voven = "NG";
+				vtcve = "P";
 			}
 			
 			if(StringUtils.isBlank(vcaus)){
@@ -4090,10 +4193,12 @@ public class Oasi{
 			
 			String vdatrTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_MovimentiTestate.getDataReg());
 			vdatr = Integer.parseInt(vdatrTxt);
+			vdain = vdatr;
+			vorin = 1;
 			
 			vndep = Integer.parseInt(transDeposito(StringUtils.trim(msvOA_MovimentiTestate.getCodCliFor()), "oasi2as"));
 			
-			vcaus = StringUtils.join(vcaus, StringUtils.leftPad(vndep.toString(), 1, "0"));
+			vcaus = StringUtils.join(vcaus, StringUtils.leftPad(vndep.toString(), 2, "0"));
 			
 			String caus = StringUtils.left(vcaus, 1);
 			
@@ -4113,8 +4218,6 @@ public class Oasi{
 				log.error("Codice: " + causaleOasi + " non gestito");
 				continue;
 			}
-
-			vtime = 1;
 			
 			MsvOA_MovimentiRighe msvOA_MovimentiRighe = new MsvOA_MovimentiRighe();
 			
@@ -4158,6 +4261,12 @@ public class Oasi{
 
 				vquan = msvOA_MovimentiRighe.getQta().multiply(segnoQty);
 
+				vcusr = "JAVAP";
+				
+				vcven = StringUtils.left(msvOA_MovimentiRighe.getCodOperatore(), 5);
+				
+				vidoa = StringUtils.left(msvOA_MovimentiRighe.getId().getIdUnivocoTes(), 10);
+				
 				if(vquan.compareTo(new BigDecimal(0)) != 0){
 					AsMovma0fPKey id = new AsMovma0fPKey();
 					id.setVdatr(vdatr);
@@ -4167,21 +4276,33 @@ public class Oasi{
 					id.setVprog(vprog);
 					AsMovma0f asMovma0f = new AsMovma0f();
 					asMovma0f.setId(id);
+					asMovma0f.setVdain(vdain);
+					asMovma0f.setVorin(vorin);
 					asMovma0f.setVcoda(vcoda);
 					asMovma0f.setVdesc(vdesc);
+					asMovma0f.setVcocf(vcocf);
+					asMovma0f.setVricl(vricl);
+					asMovma0f.setVndep(vndep);
 					asMovma0f.setVquan(vquan);
 					asMovma0f.setVprez(vprez);
 					asMovma0f.setVsco1(vsco1);
 					asMovma0f.setVsco2(vsco2);
 					asMovma0f.setVsco3(vsco3);
-					asMovma0f.setVcost(vcost);
+					asMovma0f.setVsco4(vsco4);
 					asMovma0f.setVciva(vciva);
-					asMovma0f.setVtime(vtime);
-					asMovma0f.setVcocf(vcocf);
-					asMovma0f.setVndep(vndep);
-					asMovma0f.setVstgi(vstgi);
-					asMovma0f.setAtamov(atamov);
-		
+					asMovma0f.setValiv(valiv);
+					asMovma0f.setVimps(vimps);
+					asMovma0f.setVcocr(vcocr);
+					asMovma0f.setVoven(voven);
+					asMovma0f.setVtcve(vtcve);
+					asMovma0f.setVcost(vcost);
+					asMovma0f.setVtpac(vtpac);
+					asMovma0f.setVvkit(vvkit);
+					asMovma0f.setVcusr(vcusr);
+					asMovma0f.setVcven(vcven);
+					asMovma0f.setVidoa(vidoa);
+					asMovma0f.setVtimo(vtimo);
+					
 					AsMovma0f asMovma0fTmp = asMovma0fDao.getDaId(vdatr, vcaus, vnura, vnumd, vprog);
 					if(asMovma0fTmp == null){	// nuova quindi insert
 						if(!(asMovma0fDao.salva(asMovma0f))){
@@ -4323,8 +4444,8 @@ public class Oasi{
 				codArticolo = StringUtils.trim(asMovtr0f.getMtcod());
 				qta = asMovtr0f.getMtqua();
 				
-				codMagPartenza = transDeposito(asMovtr0f.getMtdpp().toString(), "as2oasi");;
-				codMagDestinazione = transDeposito(asMovtr0f.getMtdpa().toString(), "as2oasi");;
+				codMagPartenza = transDeposito(asMovtr0f.getMtdpp().toString(), "as2oasi");
+				codMagDestinazione = transDeposito(asMovtr0f.getMtdpa().toString(), "as2oasi");
 				
 				nota = StringUtils.join(asMovtr0f.getMtute(), "-", asMovtr0f.getMtutr());
 				
@@ -4629,7 +4750,7 @@ public class Oasi{
 			BigDecimal fcocl = new BigDecimal(0);
 			BigDecimal fndep = new BigDecimal(0);
 			String ftifa = "";
-			String fcopa = "";
+			Integer fcopa = 0;
 			BigDecimal fimpf = new BigDecimal(0);
 			BigDecimal fmer1 = new BigDecimal(0);
 			BigDecimal fmer2 = new BigDecimal(0);
@@ -4667,6 +4788,7 @@ public class Oasi{
 			String futen = "";
 			String fcauc = "";
 			String fcapa = "";
+			String fccam = "";
 			
 			String causaleOasi = msvOA_MovimentiTestate.getCausaleOasi();
 			
@@ -4723,17 +4845,17 @@ public class Oasi{
 			
 			String fcopaTxt = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
 			if(StringUtils.containsOnly(fcopaTxt, "0123456789")){
-				fcopa = StringUtils.leftPad(fcopaTxt, 3, "0");	
+				fcopa = Integer.parseInt(fcopaTxt);
 			}else{	// e' un codice oasi, devo fare transcodifica
 				fcopaTxt = transPagamenti(fcopaTxt, "oasi2as");
 				if(StringUtils.isBlank(fcopaTxt)){
 					log.error("Codice: " + msvOA_PrimaNota_Tes.getfPagamento() + " non gestito");
 					fcopaTxt = "1";	// contanti
 				}
-				fcopa = StringUtils.leftPad(fcopaTxt, 3, "0");
+				fcopa = Integer.parseInt(fcopaTxt);
 				
-				if(StringUtils.equals(fcopa, "001")){
-					fcopa = "899";	// il pagamento viene inserito in scmca0f
+				if(Integer.compare(fcopa, 1) == 0){
+					fcopa = 899;	// il pagamento viene inserito in scmca0f
 				}
 			}
 			
@@ -4920,10 +5042,12 @@ public class Oasi{
 			fcauc = tcommcauc;
 			
 			fcapa = "";
-			if(StringUtils.equals(fcopa, "001")){
-				fcapa = "IG";				
+			if(Integer.compare(fcopa, 1) == 0){
+				fcapa = "IG";
 			}
 			
+			fccam = StringUtils.join("D", StringUtils.leftPad(transDeposito(msvOA_MovimentiTestate.getCodMag(), "oasi2as"), 2, "0"));
+
 			AsFatem0fPKey id = new AsFatem0fPKey();
 			id.setFdatd(fdatd);
 			id.setFnura(fnura);
@@ -4971,6 +5095,7 @@ public class Oasi{
 			asFatem0f.setFuten(futen);
 			asFatem0f.setFcauc(fcauc);
 			asFatem0f.setFcapa(fcapa);
+			asFatem0f.setFccam(fccam);
 
 			AsFatem0f asFatem0fTmp = asFatem0fDao.getDaId(fdatd, fnura, fnumd);
 			if(asFatem0fTmp == null){	// nuova quindi insert

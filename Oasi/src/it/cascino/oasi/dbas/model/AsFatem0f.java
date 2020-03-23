@@ -23,7 +23,7 @@ public class AsFatem0f implements Serializable{
 	private BigDecimal fcocl;
 	private BigDecimal fndep;
 	private String ftifa;
-	private String fcopa;
+	private Integer fcopa;
 	private BigDecimal fimpf;
 	private BigDecimal fmer1;
 	private BigDecimal fmer2;
@@ -61,11 +61,12 @@ public class AsFatem0f implements Serializable{
 	private String futen;
 	private String fcauc;
 	private String fcapa;
+	private String fccam;
 	
 	public AsFatem0f(){
 	}
 	
-	public AsFatem0f(AsFatem0fPKey id, BigDecimal fcocl, BigDecimal fndep, String ftifa, String fcopa, BigDecimal fimpf, BigDecimal fmer1, BigDecimal fmer2, BigDecimal fmer3, BigDecimal fmer4, BigDecimal fmer5, String fcos1, BigDecimal fisp1, String fcos2, BigDecimal fisp2, String fcos3, BigDecimal fisp3, String fciv1, BigDecimal fimp1, BigDecimal fiva1, String fciv2, BigDecimal fimp2, BigDecimal fiva2, String fciv3, BigDecimal fimp3, BigDecimal fiva3, String fciv4, BigDecimal fimp4, BigDecimal fiva4, String fciv5, BigDecimal fimp5, BigDecimal fiva5, String fces1, BigDecimal fime1, String fces2, BigDecimal fime2, BigDecimal fipos, BigDecimal fnupa, BigDecimal fanpa, String futen, String fcauc, String fcapa){
+	public AsFatem0f(AsFatem0fPKey id, BigDecimal fcocl, BigDecimal fndep, String ftifa, Integer fcopa, BigDecimal fimpf, BigDecimal fmer1, BigDecimal fmer2, BigDecimal fmer3, BigDecimal fmer4, BigDecimal fmer5, String fcos1, BigDecimal fisp1, String fcos2, BigDecimal fisp2, String fcos3, BigDecimal fisp3, String fciv1, BigDecimal fimp1, BigDecimal fiva1, String fciv2, BigDecimal fimp2, BigDecimal fiva2, String fciv3, BigDecimal fimp3, BigDecimal fiva3, String fciv4, BigDecimal fimp4, BigDecimal fiva4, String fciv5, BigDecimal fimp5, BigDecimal fiva5, String fces1, BigDecimal fime1, String fces2, BigDecimal fime2, BigDecimal fipos, BigDecimal fnupa, BigDecimal fanpa, String futen, String fcauc, String fcapa, String fccam){
 		super();
 		this.id = id;
 		this.fcocl = fcocl;
@@ -109,6 +110,7 @@ public class AsFatem0f implements Serializable{
 		this.futen = futen;
 		this.fcauc = fcauc;
 		this.fcapa = fcapa;
+		this.fccam = fccam;
 	}
 
 	public AsFatem0fPKey getId(){
@@ -143,11 +145,11 @@ public class AsFatem0f implements Serializable{
 		this.ftifa = ftifa;
 	}
 
-	public String getFcopa(){
+	public Integer getFcopa(){
 		return fcopa;
 	}
 
-	public void setFcopa(String fcopa){
+	public void setFcopa(Integer fcopa){
 		this.fcopa = fcopa;
 	}
 
@@ -447,6 +449,14 @@ public class AsFatem0f implements Serializable{
 		this.fcapa = fcapa;
 	}
 
+	public String getFccam(){
+		return fccam;
+	}
+
+	public void setFccam(String fccam){
+		this.fccam = fccam;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -492,6 +502,7 @@ public class AsFatem0f implements Serializable{
 		result = prime * result + ((fnupa == null) ? 0 : fnupa.hashCode());
 		result = prime * result + ((ftifa == null) ? 0 : ftifa.hashCode());
 		result = prime * result + ((futen == null) ? 0 : futen.hashCode());
+		result = prime * result + ((fccam == null) ? 0 : fccam.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -510,6 +521,6 @@ public class AsFatem0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsFatem0f [id=" + id + ", fcocl=" + fcocl + ", fndep=" + fndep + ", ftifa=" + ftifa + ", fcopa=" + fcopa + ", fimpf=" + fimpf + ", fmer1=" + fmer1 + ", fmer2=" + fmer2 + ", fmer3=" + fmer3 + ", fmer4=" + fmer4 + ", fmer5=" + fmer5 + ", fcos1=" + fcos1 + ", fisp1=" + fisp1 + ", fcos2=" + fcos2 + ", fisp2=" + fisp2 + ", fcos3=" + fcos3 + ", fisp3=" + fisp3 + ", fciv1=" + fciv1 + ", fimp1=" + fimp1 + ", fiva1=" + fiva1 + ", fciv2=" + fciv2 + ", fimp2=" + fimp2 + ", fiva2=" + fiva2 + ", fciv3=" + fciv3 + ", fimp3=" + fimp3 + ", fiva3=" + fiva3 + ", fciv4=" + fciv4 + ", fimp4=" + fimp4 + ", fiva4=" + fiva4 + ", fciv5=" + fciv5 + ", fimp5=" + fimp5 + ", fiva5=" + fiva5 + ", fces1=" + fces1 + ", fime1=" + fime1 + ", fces2=" + fces2 + ", fime2=" + fime2 + ", fipos=" + fipos + ", fnupa=" + fnupa + ", fanpa=" + fanpa + ", futen=" + futen + ", fcauc=" + fcauc + ", fcapa=" + fcapa + "]";
+		return "AsFatem0f [id=" + id + ", fcocl=" + fcocl + ", fndep=" + fndep + ", ftifa=" + ftifa + ", fcopa=" + fcopa + ", fimpf=" + fimpf + ", fmer1=" + fmer1 + ", fmer2=" + fmer2 + ", fmer3=" + fmer3 + ", fmer4=" + fmer4 + ", fmer5=" + fmer5 + ", fcos1=" + fcos1 + ", fisp1=" + fisp1 + ", fcos2=" + fcos2 + ", fisp2=" + fisp2 + ", fcos3=" + fcos3 + ", fisp3=" + fisp3 + ", fciv1=" + fciv1 + ", fimp1=" + fimp1 + ", fiva1=" + fiva1 + ", fciv2=" + fciv2 + ", fimp2=" + fimp2 + ", fiva2=" + fiva2 + ", fciv3=" + fciv3 + ", fimp3=" + fimp3 + ", fiva3=" + fiva3 + ", fciv4=" + fciv4 + ", fimp4=" + fimp4 + ", fiva4=" + fiva4 + ", fciv5=" + fciv5 + ", fimp5=" + fimp5 + ", fiva5=" + fiva5 + ", fces1=" + fces1 + ", fime1=" + fime1 + ", fces2=" + fces2 + ", fime2=" + fime2 + ", fipos=" + fipos + ", fnupa=" + fnupa + ", fanpa=" + fanpa + ", futen=" + futen + ", fcauc=" + fcauc + ", fcapa=" + fcapa + ", fccam=" + fccam + "]";
 	}
 }

@@ -22,7 +22,7 @@ public class AsBofor0f implements Serializable{
 	private AsBofor0fPKey id;
 	private BigDecimal bfcof;
 	private BigDecimal bfftr;
-	private String bfpag;
+	private Integer bfpag;
 	private String bfcau;
 	private Integer bfdep;
 	private Integer bfdbf;
@@ -59,11 +59,11 @@ public class AsBofor0f implements Serializable{
 		this.bfftr = bfftr;
 	}
 
-	public String getBfpag(){
+	public Integer getBfpag(){
 		return bfpag;
 	}
 
-	public void setBfpag(String bfpag){
+	public void setBfpag(Integer bfpag){
 		this.bfpag = bfpag;
 	}
 

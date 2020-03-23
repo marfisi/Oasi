@@ -113,7 +113,7 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 		try{
 			try{
 				utx.begin();
-				String sql = "select ((vprez - (vprez * vsco1 / 100)) - ((vprez - (vprez * vsco1 / 100)) * vsco2 / 100)) - (((vprez - (vprez * vsco1 / 100)) - ((vprez - (vprez * vsco1 / 100)) * vsco2 / 100)) * vsco3 / 100) from movma0f a where a.vprez > 0 and a.vcoda = :vcoda and left(a.vcaus, 1) = 'B' and a.vcaus <> 'B9' order by a.vdatr desc limit 1";
+				String sql = "select ((vprez - (vprez * vsco1 / 100)) - ((vprez - (vprez * vsco1 / 100)) * vsco2 / 100)) - (((vprez - (vprez * vsco1 / 100)) - ((vprez - (vprez * vsco1 / 100)) * vsco2 / 100)) * vsco3 / 100) from movma0f a where a.vprez > 0 and a.vcoda = :vcoda and left(a.vcaus, 1) = 'B' and a.vcaus <> 'B99' order by a.vdatr desc limit 1";
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("vcoda", vcoda);
 				o = (BigDecimal)query.getSingleResult();
@@ -148,6 +148,28 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 		return o;
 	}
 	
+	public Integer aggiornaVimps(Integer vdatr, String vcaus, Integer vnura, Integer vnumd, BigDecimal vimps){
+		Integer o = null;
+		try{
+			try{
+				utx.begin();
+				String sql = "update movma0f set vimps = :vimps where vdatr = :vdatr and vcaus = :vcaus and vnura = :vnura and vnumd = :vnumd and vimps = 0";
+				Query query = em.createNativeQuery(sql);
+				query.setParameter("vdatr", vdatr);
+				query.setParameter("vcaus", vcaus);
+				query.setParameter("vnura", vnura);
+				query.setParameter("vnumd", vnumd);
+				query.setParameter("vimps", vimps);
+				o = query.executeUpdate();
+			}catch(NoResultException e){
+				o = -1;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
 	
 	public Integer aggiornaVcomm(Integer vdatr, String vcaus, Integer vnura, Integer vnumd, String vcomm){
 		Integer o = null;
