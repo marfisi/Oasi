@@ -14,6 +14,8 @@ public interface AsAnmag0fDao{
 
 	AsAnmag0f getArticoloDaMcoda(String mcoda);
 	
+	AsAnmag0f getArticoloDaMoalu(String moalu);
+	
 //	List<AsAnmag0f> getArticoliIngrosso();
 //
 //	List<AsAnmag0f> getArticoliAttivi();

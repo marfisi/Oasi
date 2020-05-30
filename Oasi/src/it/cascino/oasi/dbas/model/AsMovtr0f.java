@@ -44,23 +44,6 @@ public class AsMovtr0f implements Serializable{
 		this.id = new AsMovtr0fPKey();
 	}
 
-	public AsMovtr0f(AsMovtr0fPKey id, String mtcod, BigDecimal mtqua, BigDecimal mtqri, Integer mtdpp, Integer mtdpa, Integer mtime, String mtute, String mtutr, String mtsta, Integer mtdar, Integer mtimr, String mtumi){
-		super();
-		this.id = id;
-		this.mtcod = mtcod;
-		this.mtqua = mtqua;
-		this.mtqri = mtqri;
-		this.mtdpp = mtdpp;
-		this.mtdpa = mtdpa;
-		this.mtime = mtime;
-		this.mtute = mtute;
-		this.mtutr = mtutr;
-		this.mtsta = mtsta;
-		this.mtdar = mtdar;
-		this.mtimr = mtimr;
-		this.mtumi = mtumi;
-	}
-
 	public AsMovtr0fPKey getId(){
 		return id;
 	}

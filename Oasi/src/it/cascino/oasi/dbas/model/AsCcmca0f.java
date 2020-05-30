@@ -29,6 +29,7 @@ public class AsCcmca0f implements Serializable{
 	private String cadav;
 	private BigDecimal caimp;
 	private String cacon;
+	private String cacoa;
 	private String cadmo;
 
 	public AsCcmca0f(){
@@ -114,6 +115,14 @@ public class AsCcmca0f implements Serializable{
 		this.cacon = cacon;
 	}
 
+	public String getCacoa(){
+		return cacoa;
+	}
+
+	public void setCacoa(String cacoa){
+		this.cacoa = cacoa;
+	}
+
 	public String getCadmo(){
 		return cadmo;
 	}
@@ -136,6 +145,7 @@ public class AsCcmca0f implements Serializable{
 		result = prime * result + ((canrp == null) ? 0 : canrp.hashCode());
 		result = prime * result + ((canud == null) ? 0 : canud.hashCode());
 		result = prime * result + ((canup == null) ? 0 : canup.hashCode());
+		result = prime * result + ((cacoa == null) ? 0 : cacoa.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -154,6 +164,6 @@ public class AsCcmca0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsCcmca0f [id=" + id + ", cadad=" + cadad + ", cadap=" + cadap + ", canup=" + canup + ", canrp=" + canrp + ", canud=" + canud + ", cacre=" + cacre + ", cadav=" + cadav + ", caimp=" + caimp + ", cacon=" + cacon + ", cadmo=" + cadmo + "]";
+		return "AsCcmca0f [id=" + id + ", cadad=" + cadad + ", cadap=" + cadap + ", canup=" + canup + ", canrp=" + canrp + ", canud=" + canud + ", cacre=" + cacre + ", cadav=" + cadav + ", caimp=" + caimp + ", cacon=" + cacon + ", cacoa=" + cacoa + ", cadmo=" + cadmo + "]";
 	}
 }

@@ -65,53 +65,6 @@ public class AsFatem0f implements Serializable{
 	
 	public AsFatem0f(){
 	}
-	
-	public AsFatem0f(AsFatem0fPKey id, BigDecimal fcocl, BigDecimal fndep, String ftifa, Integer fcopa, BigDecimal fimpf, BigDecimal fmer1, BigDecimal fmer2, BigDecimal fmer3, BigDecimal fmer4, BigDecimal fmer5, String fcos1, BigDecimal fisp1, String fcos2, BigDecimal fisp2, String fcos3, BigDecimal fisp3, String fciv1, BigDecimal fimp1, BigDecimal fiva1, String fciv2, BigDecimal fimp2, BigDecimal fiva2, String fciv3, BigDecimal fimp3, BigDecimal fiva3, String fciv4, BigDecimal fimp4, BigDecimal fiva4, String fciv5, BigDecimal fimp5, BigDecimal fiva5, String fces1, BigDecimal fime1, String fces2, BigDecimal fime2, BigDecimal fipos, BigDecimal fnupa, BigDecimal fanpa, String futen, String fcauc, String fcapa, String fccam){
-		super();
-		this.id = id;
-		this.fcocl = fcocl;
-		this.fndep = fndep;
-		this.ftifa = ftifa;
-		this.fcopa = fcopa;
-		this.fimpf = fimpf;
-		this.fmer1 = fmer1;
-		this.fmer2 = fmer2;
-		this.fmer3 = fmer3;
-		this.fmer4 = fmer4;
-		this.fmer5 = fmer5;
-		this.fcos1 = fcos1;
-		this.fisp1 = fisp1;
-		this.fcos2 = fcos2;
-		this.fisp2 = fisp2;
-		this.fcos3 = fcos3;
-		this.fisp3 = fisp3;
-		this.fciv1 = fciv1;
-		this.fimp1 = fimp1;
-		this.fiva1 = fiva1;
-		this.fciv2 = fciv2;
-		this.fimp2 = fimp2;
-		this.fiva2 = fiva2;
-		this.fciv3 = fciv3;
-		this.fimp3 = fimp3;
-		this.fiva3 = fiva3;
-		this.fciv4 = fciv4;
-		this.fimp4 = fimp4;
-		this.fiva4 = fiva4;
-		this.fciv5 = fciv5;
-		this.fimp5 = fimp5;
-		this.fiva5 = fiva5;
-		this.fces1 = fces1;
-		this.fime1 = fime1;
-		this.fces2 = fces2;
-		this.fime2 = fime2;
-		this.fipos = fipos;
-		this.fnupa = fnupa;
-		this.fanpa = fanpa;
-		this.futen = futen;
-		this.fcauc = fcauc;
-		this.fcapa = fcapa;
-		this.fccam = fccam;
-	}
 
 	public AsFatem0fPKey getId(){
 		return id;

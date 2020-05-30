@@ -24,13 +24,6 @@ public class AsTabel0f implements Serializable{
 	public AsTabel0f(){
 		this.id = new AsTabel0fPKey();
 	}
-
-	public AsTabel0f(AsTabel0fPKey id, String tdesc, String tcomm){
-		super();
-		this.id = id;
-		this.tdesc = tdesc;
-		this.tcomm = tcomm;
-	}
 	
 	public AsTabel0fPKey getId(){
 		return id;

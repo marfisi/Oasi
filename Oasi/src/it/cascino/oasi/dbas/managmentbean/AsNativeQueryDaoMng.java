@@ -152,6 +152,25 @@ public class AsNativeQueryDaoMng implements AsNativeQueryDao, Serializable{
 		return o;
 	}
 	
+	public Boolean getSeGiagenteNeiDepositi(String dcoda, String dep){
+		Boolean o = null;
+		try{
+			try{
+				utx.begin();
+				String sql = "select count(*) from ardep0f a where dcoda = :dcoda and dcode in (" + dep + ") and dgiac != 0";
+				Query query = em.createNativeQuery(sql);
+				query.setParameter("dcoda", dcoda);
+				o = (((Integer)query.getSingleResult()) == 0 ? false : true);
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getStoricoMovimenti(){
 		List<Object[]> o = null;

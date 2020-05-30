@@ -28,6 +28,7 @@ import it.cascino.oasi.dbas.dao.AsFatem0fDao;
 import it.cascino.oasi.dbas.dao.AsFinaz0fDao;
 import it.cascino.oasi.dbas.dao.AsFisca00fDao;
 import it.cascino.oasi.dbas.dao.AsForni00fDao;
+import it.cascino.oasi.dbas.dao.AsLisri0fDao;
 import it.cascino.oasi.dbas.dao.AsMovma0fDao;
 import it.cascino.oasi.dbas.dao.AsMovtr0fDao;
 import it.cascino.oasi.dbas.dao.AsNativeQueryDao;
@@ -46,6 +47,7 @@ import it.cascino.oasi.dbas.managmentbean.AsFatem0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsFinaz0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsFisca00fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsForni00fDaoMng;
+import it.cascino.oasi.dbas.managmentbean.AsLisri0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsMovma0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsMovtr0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsNativeQueryDaoMng;
@@ -64,6 +66,7 @@ import it.cascino.oasi.dbas.model.AsFatem0f;
 import it.cascino.oasi.dbas.model.AsFinaz0f;
 import it.cascino.oasi.dbas.model.AsFisca00f;
 import it.cascino.oasi.dbas.model.AsForni00f;
+import it.cascino.oasi.dbas.model.AsLisri0f;
 import it.cascino.oasi.dbas.model.AsMovma0f;
 import it.cascino.oasi.dbas.model.AsMovtr0f;
 import it.cascino.oasi.dbas.model.AsOaanm0f;
@@ -255,6 +258,8 @@ public class Oasi{
 	private AsFinaz0fDao asFinaz0fDao = new AsFinaz0fDaoMng();
 //	private List<AsFinaz0f> asFinaz0fLs;
 	
+	private AsLisri0fDao asLisri0fDao = new AsLisri0fDaoMng();
+	
 	private AsCcmca0fDao asCcmca0fDao = new AsCcmca0fDaoMng();
 	private List<AsCcmca0f> asCcmca0fLs;
 	
@@ -372,6 +377,7 @@ public class Oasi{
 		cmdLs.add(asOasic0fDao.getDaOaidtr(4));	// depositiExpert
 //		cmdLs.add(asOasic0fDao.getDaOaidtr(5));	// depositiTutti
 		
+//		cmdLs.add(asOasic0fDao.getDaOaidtr(55));	// as2oasiArticoli	
 //		cmdLs.add(asOasic0fDao.getDaOaidtr(67));	// as2oasiMovimentiMagazzino
 //		cmdLs.add(asOasic0fDao.getDaOaidtr(68));	// as2oasiTrasferimenti
 
@@ -575,6 +581,7 @@ public class Oasi{
 		asFatem0fDao.close();
 		asScocr0fDao.close();
 		asFinaz0fDao.close();
+		asLisri0fDao.close();
 		asCcmca0fDao.close();
 		
 		msvAS_ClientiDao.close();
@@ -1176,6 +1183,9 @@ public class Oasi{
 				asClien00f.setClcpor(asClien00fTmp.getClcpor());
 				asClien00f.setClcnor(asClien00fTmp.getClcnor());
 				asClien00f.setClcag1(asClien00fTmp.getClcag1());
+				if(StringUtils.equals(asClien00fTmp.getClccme(), "RA")){
+					asClien00f.setClccme(asClien00fTmp.getClccme());
+				}
 				if(!(asClien00fDao.aggiorna(asClien00f))){
 					chiudi();
 				}
@@ -1450,6 +1460,14 @@ public class Oasi{
 			flagArtIngrosso = 1;
 			
 			codIva = StringUtils.trim(asAnmag0f.getMciva());
+			// non va fatta la transcodfica, dobbiamo inviare il cod iva cascino
+//				codIva = "40";
+//			}else{
+//				codIva = transCodiciIva(codIva, "as2oasi");
+//				if(StringUtils.isBlank(codIva)){
+//					codIva = "40";
+//				}
+//			}
 			
 			annullato = 0;
 			if(StringUtils.equals(asAnmag0f.getAtama(), "A")){
@@ -1509,143 +1527,7 @@ public class Oasi{
 				}
 				
 				// listini
-				String tipoListino = "";
-				codArticolo = "";
-				BigDecimal prezzoNonIvato = new BigDecimal(0);
-				BigDecimal sconto1 = new BigDecimal(0);
-				BigDecimal sconto2 = new BigDecimal(0);
-				BigDecimal sconto3 = new BigDecimal(0);
-				
-				/* prezzo al pubblico (e' ivato in anmag) */
-				tipoListino = "P";
-				codArticolo = StringUtils.trim(asAnmag0f.getMcoda());
-
-				BigDecimal aliquotaIva = new BigDecimal(asTabge00fDao.getAliquotaIva(asAnmag0f.getMciva()));
-				aliquotaIva = aliquotaIva.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
-				
-				prezzoNonIvato = new BigDecimal(0);
-				try{
-					prezzoNonIvato = asAnmag0f.getMpeu2().divide((new BigDecimal(1)).add(aliquotaIva.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)), 4, BigDecimal.ROUND_HALF_UP);
-				}catch(ArithmeticException e){
-					log.error("calcolo prezzoNonIvato " + "Mpeu2: " + asAnmag0f.getMpeu2() + ", Mciva: " + asAnmag0f.getMciva());
-				}
-				Support.arrotonda(prezzoNonIvato, 4);
-				if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
-					prezzoNonIvato = new BigDecimal(0);
-				}
-				
-				sconto1 = asAnmag0f.getMsc12();
-				Support.arrotonda(sconto1, 2);
-				
-				MsvAS_ListiniPKey id = new MsvAS_ListiniPKey();
-				id.setTipoListino(tipoListino);
-				id.setCodArticolo(codArticolo);
-				MsvAS_Listini msvAS_Listini = new MsvAS_Listini();
-				msvAS_Listini.setId(id);
-				msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
-				msvAS_Listini.setSconto1(sconto1);
-				msvAS_Listini.setSconto2(sconto2);
-				msvAS_Listini.setSconto3(sconto3);
-				
-				MsvAS_Listini msvAS_ListiniTmp = msvAS_ListiniDao.getDaCodiceTipo(codArticolo, tipoListino);
-				if(msvAS_ListiniTmp == null){	// nuova quindi insert
-					log.info("salva: " + msvAS_Listini.toString());
-					msvAS_ListiniDao.salva(msvAS_Listini);
-				}else{	// gia' presente, quindi update
-					msvAS_ListiniDao.aggiorna(msvAS_Listini);
-				}
-								
-				/* prezzi non al pubblico (non ivati in anmag) */
-				if(asAnmag0f.getMpeu1().compareTo(new BigDecimal(0)) > 0){
-					tipoListino = "I";
-
-					prezzoNonIvato = asAnmag0f.getMpeu1();
-					Support.arrotonda(prezzoNonIvato, 4);
-					if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
-						prezzoNonIvato = new BigDecimal(0);
-					}
-					
-					sconto1 = asAnmag0f.getMsc21();
-					Support.arrotonda(sconto1, 2);
-					
-					id = new MsvAS_ListiniPKey();
-					id.setTipoListino(tipoListino);
-					id.setCodArticolo(codArticolo);
-					msvAS_Listini = new MsvAS_Listini();
-					msvAS_Listini.setId(id);
-					msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
-					msvAS_Listini.setSconto1(sconto1);
-					msvAS_Listini.setSconto2(sconto2);
-					msvAS_Listini.setSconto3(sconto3);
-					
-					msvAS_ListiniTmp = msvAS_ListiniDao.getDaCodiceTipo(codArticolo, tipoListino);
-					if(msvAS_ListiniTmp == null){	// nuova quindi insert
-						log.info("salva: " + msvAS_Listini.toString());
-						msvAS_ListiniDao.salva(msvAS_Listini);
-					}else{	// gia' presente, quindi update
-						msvAS_ListiniDao.aggiorna(msvAS_Listini);
-					}
-					
-					tipoListino = "R";
-					
-					sconto1 = asAnmag0f.getMsc11();
-					Support.arrotonda(sconto1, 2);
-					
-					id = new MsvAS_ListiniPKey();
-					id.setTipoListino(tipoListino);
-					id.setCodArticolo(codArticolo);
-					msvAS_Listini = new MsvAS_Listini();
-					msvAS_Listini.setId(id);
-					msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
-					msvAS_Listini.setSconto1(sconto1);
-					msvAS_Listini.setSconto2(sconto2);
-					msvAS_Listini.setSconto3(sconto3);
-					
-					msvAS_ListiniTmp = msvAS_ListiniDao.getDaCodiceTipo(codArticolo, tipoListino);
-					if(msvAS_ListiniTmp == null){	// nuova quindi insert
-						log.info("salva: " + msvAS_Listini.toString());
-						msvAS_ListiniDao.salva(msvAS_Listini);
-					}else{	// gia' presente, quindi update
-						msvAS_ListiniDao.aggiorna(msvAS_Listini);
-					}
-				}
-				
-				/* Ultimo Costo */
-				tipoListino = "C";
-
-				prezzoNonIvato = new BigDecimal(0);
-//				if(asMovma0fDao.getUltimoCostoArticolo(codArticolo) != null){
-//					prezzoNonIvato = asMovma0fDao.getUltimoCostoArticolo(codArticolo);
-//					Support.arrotonda(prezzoNonIvato, 4);
-//				}
-				AsPrzac0f asPrzac0f = asPrzac0fDao.getDaPzcod(codArticolo);
-				if(asPrzac0f != null){
-					prezzoNonIvato = asPrzac0f.getPzult();
-					Support.arrotonda(prezzoNonIvato, 4);
-				}
-				if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
-					prezzoNonIvato = new BigDecimal(0);
-				}
-				
-				sconto1 = new BigDecimal(0);
-				
-				id = new MsvAS_ListiniPKey();
-				id.setTipoListino(tipoListino);
-				id.setCodArticolo(codArticolo);
-				msvAS_Listini = new MsvAS_Listini();
-				msvAS_Listini.setId(id);
-				msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
-				msvAS_Listini.setSconto1(sconto1);
-				msvAS_Listini.setSconto2(sconto2);
-				msvAS_Listini.setSconto3(sconto3);
-				
-				msvAS_ListiniTmp = msvAS_ListiniDao.getDaCodiceTipo(codArticolo, tipoListino);
-				if(msvAS_ListiniTmp == null){	// nuova quindi insert
-					log.info("salva: " + msvAS_Listini.toString());
-					msvAS_ListiniDao.salva(msvAS_Listini);
-				}else{	// gia' presente, quindi update
-					msvAS_ListiniDao.aggiorna(msvAS_Listini);
-				}
+				inserisciInASListini(asAnmag0f);
 				
 				AsOaanm0f asOaanm0f = asOaanm0fDao.getDaMcoda(codArticolo);
 				asOaanm0f.setMflag("S");
@@ -1695,11 +1577,6 @@ public class Oasi{
 			String mcoda = "";
 			String mdesc = "";
 			String mumis = "";
-			BigDecimal mpeu1 = new BigDecimal(0);
-			BigDecimal mpeu2 = new BigDecimal(0);
-			BigDecimal msc11 = new BigDecimal(0);
-			BigDecimal msc12 = new BigDecimal(0);
-			BigDecimal msc21 = new BigDecimal(0);
 			BigDecimal mconf = new BigDecimal(0);
 			Integer mdepi = 0;
 			String madiv = "";
@@ -1713,7 +1590,9 @@ public class Oasi{
 			Integer mcofo = 0;
 			String mcoaf = "";
 			String mciva = "";
-			String mckit="";
+			String mckit = "";
+			String moalu = "";
+			String mclin = "";
 			
 			atama = " ";
 			if(Integer.compare(msvOA_Articoli.getAnnullato(), 1) == 0){
@@ -1742,11 +1621,6 @@ public class Oasi{
 				}
 			}
 			
-			mpeu1 = new BigDecimal(0);
-			mpeu2 = new BigDecimal(0);
-			msc11 = new BigDecimal(0);
-			msc12 = new BigDecimal(0);
-			msc21 = new BigDecimal(0);
 			mconf = new BigDecimal(0);			
 			mdepi = 0;
 			
@@ -1814,17 +1688,14 @@ public class Oasi{
 			if(StringUtils.equals(msvOA_Articoli.getTipoArticolo(), "08")){
 				mckit = "KT";
 			}
+			
+			moalu = StringUtils.left(StringUtils.trim(msvOA_Articoli.getCodLungoOasi()), 15);
 						
 			AsAnmag0f asAnmag0f = new AsAnmag0f();
 			asAnmag0f.setAtama(atama);
 			asAnmag0f.setMcoda(mcoda);
 			asAnmag0f.setMdesc(mdesc);
 			asAnmag0f.setMumis(mumis);
-			asAnmag0f.setMpeu1(mpeu1);
-			asAnmag0f.setMpeu2(mpeu2);
-			asAnmag0f.setMsc11(msc11);
-			asAnmag0f.setMsc12(msc12);
-			asAnmag0f.setMsc21(msc21);
 			asAnmag0f.setMconf(mconf);
 			asAnmag0f.setMdepi(mdepi);
 			asAnmag0f.setMadiv(madiv);
@@ -1839,6 +1710,8 @@ public class Oasi{
 			asAnmag0f.setMcoaf(mcoaf);
 			asAnmag0f.setMciva(mciva);
 			asAnmag0f.setMckit(mckit);
+			asAnmag0f.setMoalu(moalu);
+			asAnmag0f.setMclin(mclin);
 
 			AsAnmag0f asAnmag0fTmp = asAnmag0fDao.getArticoloDaMcoda(mcoda);
 			if(asAnmag0fTmp == null){	// nuova quindi insert
@@ -1847,13 +1720,9 @@ public class Oasi{
 				}
 			}else{	// gia' presente, quindi update
 				// non modifico i valori che non ricevo definiti
-				asAnmag0f.setMpeu1(asAnmag0fTmp.getMpeu1());
-				asAnmag0f.setMpeu2(asAnmag0fTmp.getMpeu2());
-				asAnmag0f.setMsc11(asAnmag0fTmp.getMsc11());
-				asAnmag0f.setMsc12(asAnmag0fTmp.getMsc12());
-				asAnmag0f.setMsc21(asAnmag0fTmp.getMsc21());
 				asAnmag0f.setMconf(asAnmag0fTmp.getMconf());
 				asAnmag0f.setMdepi(asAnmag0fTmp.getMdepi());
+				asAnmag0f.setMclin(asAnmag0fTmp.getMclin());
 				// se l'articolo e' ingrosso, non tocco il codice fornitore, codice articolo fornitore e descrizione
 				if((Integer.compare(asAnmag0fTmp.getMdepi(), 1) == 0) || (Integer.compare(asAnmag0fTmp.getMdepi(), 3) == 0)){
 					// se il codice fornitore e' gia definito, allora tengo quello di as, altrimenti (se e' vuoto) prendo quello di oasi
@@ -1871,6 +1740,13 @@ public class Oasi{
 						asAnmag0f.setModel(asAnmag0fTmp.getModel());
 					}					
 				}
+
+				// se l'articolo e' ingrosso o ha giacenza in qualsiasi deposito, non tocco il flag di annullato
+				if(((Integer.compare(asAnmag0fTmp.getMdepi(), 1) == 0) || (Integer.compare(asAnmag0fTmp.getMdepi(), 3) == 0)) ||
+					asNativeQueryDao.getSeGiagenteNeiDepositi(mcoda, depositiExpert + ", " + depositiIngrosso)){
+					asAnmag0f.setAtama(asAnmag0fTmp.getAtama());
+				}
+
 				if(!(asAnmag0fDao.aggiorna(asAnmag0f))){
 					chiudi();
 				}
@@ -2346,113 +2222,7 @@ public class Oasi{
 		while(iter_asAnmag0fLs.hasNext()){
 			asAnmag0f = iter_asAnmag0fLs.next();
 			
-			String tipoListino = "";
-			String codArticolo = "";
-			BigDecimal prezzoNonIvato = new BigDecimal(0);
-			BigDecimal sconto1 = new BigDecimal(0);
-			BigDecimal sconto2 = new BigDecimal(0);
-			BigDecimal sconto3 = new BigDecimal(0);
-			
-			/* prezzo al pubblico (e' ivato in anmag) */
-			tipoListino = "P";
-			codArticolo = StringUtils.trim(asAnmag0f.getMcoda());
-
-			prezzoNonIvato = new BigDecimal(0);
-			if(StringUtils.containsOnly(asAnmag0f.getMciva(), "0123456789")){
-				try{
-					prezzoNonIvato = asAnmag0f.getMpeu2().divide((new BigDecimal(1)).add((new BigDecimal(asAnmag0f.getMciva())).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)), 4, BigDecimal.ROUND_HALF_UP);
-				}catch(ArithmeticException e){
-					log.error("calcolo prezzoNonIvato " + "Mpeu2: " + asAnmag0f.getMpeu2() + ", Mciva: " + asAnmag0f.getMciva());
-				}
-				Support.arrotonda(prezzoNonIvato, 4);
-			}
-			if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
-				prezzoNonIvato = new BigDecimal(0);
-			}
-			
-			sconto1 = asAnmag0f.getMsc12();
-			Support.arrotonda(sconto1, 2);
-			
-			MsvAS_ListiniPKey id = new MsvAS_ListiniPKey();
-			id.setTipoListino(tipoListino);
-			id.setCodArticolo(codArticolo);
-			MsvAS_Listini msvAS_Listini = new MsvAS_Listini();
-			msvAS_Listini.setId(id);
-			msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
-			msvAS_Listini.setSconto1(sconto1);
-			msvAS_Listini.setSconto2(sconto2);
-			msvAS_Listini.setSconto3(sconto3);
-			
-			msvAS_ListiniDao.salva(msvAS_Listini);
-			
-			/* prezzi non al pubblico (non ivati in anmag) */
-			if(asAnmag0f.getMpeu1().compareTo(new BigDecimal(0)) > 0){
-				tipoListino = "I";
-
-				prezzoNonIvato = asAnmag0f.getMpeu1();
-				Support.arrotonda(prezzoNonIvato, 4);
-				if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
-					prezzoNonIvato = new BigDecimal(0);
-				}
-				
-				sconto1 = asAnmag0f.getMsc21();
-				Support.arrotonda(sconto1, 2);
-				
-				id = new MsvAS_ListiniPKey();
-				id.setTipoListino(tipoListino);
-				id.setCodArticolo(codArticolo);
-				msvAS_Listini = new MsvAS_Listini();
-				msvAS_Listini.setId(id);
-				msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
-				msvAS_Listini.setSconto1(sconto1);
-				msvAS_Listini.setSconto2(sconto2);
-				msvAS_Listini.setSconto3(sconto3);
-				
-				msvAS_ListiniDao.salva(msvAS_Listini);
-				
-				tipoListino = "R";
-				
-				sconto1 = asAnmag0f.getMsc11();
-				Support.arrotonda(sconto1, 2);
-				
-				id = new MsvAS_ListiniPKey();
-				id.setTipoListino(tipoListino);
-				id.setCodArticolo(codArticolo);
-				msvAS_Listini = new MsvAS_Listini();
-				msvAS_Listini.setId(id);
-				msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
-				msvAS_Listini.setSconto1(sconto1);
-				msvAS_Listini.setSconto2(sconto2);
-				msvAS_Listini.setSconto3(sconto3);
-				
-				msvAS_ListiniDao.salva(msvAS_Listini);
-			}
-			
-			/* Ultimo Costo */
-			tipoListino = "C";
-
-			prezzoNonIvato = new BigDecimal(0);
-			if(asMovma0fDao.getUltimoCostoArticolo(codArticolo) != null){
-				prezzoNonIvato = asMovma0fDao.getUltimoCostoArticolo(codArticolo);
-				Support.arrotonda(prezzoNonIvato, 4);
-			}
-			if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
-				prezzoNonIvato = new BigDecimal(0);
-			}
-			
-			sconto1 = new BigDecimal(0);
-			
-			id = new MsvAS_ListiniPKey();
-			id.setTipoListino(tipoListino);
-			id.setCodArticolo(codArticolo);
-			msvAS_Listini = new MsvAS_Listini();
-			msvAS_Listini.setId(id);
-			msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
-			msvAS_Listini.setSconto1(sconto1);
-			msvAS_Listini.setSconto2(sconto2);
-			msvAS_Listini.setSconto3(sconto3);
-			
-			msvAS_ListiniDao.salva(msvAS_Listini);
+			inserisciInASListini(asAnmag0f);
 		}
 		
 		stringBuilder.append("OK");
@@ -2894,6 +2664,7 @@ public class Oasi{
 			String vcven = "";
 			String vidoa = "";
 			String vtimo = "";
+			String vvfit = "";
 			
 			BigDecimal segnoQty = new BigDecimal(1);
 			
@@ -2953,7 +2724,8 @@ public class Oasi{
 			}
 			if(StringUtils.equals(causaleOasi, "RSCM")){
 				if(Integer.compare(tipoDocumento, 2) == 0){
-					vcaus = "M";
+					vcaus = "G";
+					segnoQty = new BigDecimal(-1);
 				}else if(Integer.compare(tipoDocumento, 1) == 0){
 					vcaus = "M";
 				}else{
@@ -3080,8 +2852,13 @@ public class Oasi{
 			if(StringUtils.equals(causaleOasi, "VEND") || StringUtils.equals(causaleOasi, "RSCM")){
 				voven = "BM";
 			}
+			
 			if(StringUtils.equalsIgnoreCase(msvOA_MovimentiTestate.getIpaCodiceCUP(), "social")){
 				voven = "BS";
+			}else if(StringUtils.equalsIgnoreCase(msvOA_MovimentiTestate.getIpaCodiceCUP(), "domex")){
+				voven = "BX";
+			}else if(StringUtils.equalsIgnoreCase(msvOA_MovimentiTestate.getIpaCodiceCUP(), "mepa")){
+				voven = "BE";
 			}
 			
 			vcocr = "";
@@ -3400,6 +3177,9 @@ public class Oasi{
 					if(StringUtils.equals(asAnmag0f.getMckit(), "KT")){
 						vvkit = "K";
 					}
+					if(StringUtils.equals(asAnmag0f.getMclin(), "1") || StringUtils.equals(asAnmag0f.getMclin(), "2")){
+						vvfit = "S";
+					}
 				}else{
 					log.warn(vcoda + " non presente in anmag");	
 					vdesc = "NON ANCORA CODIFICATO";
@@ -3445,6 +3225,7 @@ public class Oasi{
 				asMovma0f.setVcven(vcven);
 				asMovma0f.setVidoa(vidoa);
 				asMovma0f.setVtimo(vtimo);
+				asMovma0f.setVvfit(vvfit);
 								
 				Boolean ardepDaAggiornare = true;
 				
@@ -4140,6 +3921,7 @@ public class Oasi{
 			String vcven = "";
 			String vidoa = "";
 			String vtimo = "";
+			String vvfit = "";
 			
 			BigDecimal segnoQty = new BigDecimal(1);
 			
@@ -4238,6 +4020,9 @@ public class Oasi{
 				AsAnmag0f asAnmag0f = asAnmag0fDao.getArticoloDaMcoda(vcoda);
 				if(asAnmag0f != null){
 					vdesc = asAnmag0f.getMdesc();
+					if(StringUtils.equals(asAnmag0f.getMclin(), "2")){
+						vvfit = "S";
+					}
 				}else{
 					log.warn(vcoda + " non presente in anmag");	
 					vdesc = "NON ANCORA CODIFICATO";
@@ -4256,8 +4041,19 @@ public class Oasi{
 					continue;
 				}
 				
-				vprez = new BigDecimal(0);
-				vcost = new BigDecimal(0);
+				vprez = msvOA_MovimentiRighe.getPrezzoNetto();
+				vcost = msvOA_MovimentiRighe.getCosto();
+				
+				if((vcost.compareTo(new BigDecimal(0)) == 0) || (vcost.compareTo(new BigDecimal(-500000)) == -1)){	// oasi passa -999999 quando il costo e' indefinito
+					AsPrzac0f asPrzac0f = asPrzac0fDao.getDaPzcod(vcoda);
+					if(asPrzac0f != null){
+						vcost = asPrzac0f.getPzult();
+						Support.arrotonda(vcost, 4);
+					}
+					if(vcost.compareTo(new BigDecimal(0)) < 0){
+						vcost = new BigDecimal(0);
+					}
+				}
 
 				vquan = msvOA_MovimentiRighe.getQta().multiply(segnoQty);
 
@@ -4302,6 +4098,7 @@ public class Oasi{
 					asMovma0f.setVcven(vcven);
 					asMovma0f.setVidoa(vidoa);
 					asMovma0f.setVtimo(vtimo);
+					asMovma0f.setVvfit(vvfit);
 					
 					AsMovma0f asMovma0fTmp = asMovma0fDao.getDaId(vdatr, vcaus, vnura, vnumd, vprog);
 					if(asMovma0fTmp == null){	// nuova quindi insert
@@ -4832,15 +4629,20 @@ public class Oasi{
 			fnumd = Integer.parseInt(msvOA_PrimaNota_Tes.getDocumento());
 			fcocl = new BigDecimal(msvOA_MovimentiTestate.getCodCliFor());
 			fndep = new BigDecimal(transDeposito(msvOA_MovimentiTestate.getCodMag(), "oasi2as"));
+
+			fccam = StringUtils.join("D", StringUtils.leftPad(transDeposito(msvOA_MovimentiTestate.getCodMag(), "oasi2as"), 2, "0"));
 			ftifa = "I";
 			if(notaCredito){
 				ftifa = "R";
+				fccam = StringUtils.join("M", StringUtils.leftPad(transDeposito(msvOA_MovimentiTestate.getCodMag(), "oasi2as"), 2, "0"));
 			}
 			if(acconto){
 				ftifa = "A";
+				fccam = "";
 			}
 			if(abbuono){
 				ftifa = "S";
+				fccam = "";
 			}
 			
 			String fcopaTxt = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
@@ -4855,7 +4657,7 @@ public class Oasi{
 				fcopa = Integer.parseInt(fcopaTxt);
 				
 				if(Integer.compare(fcopa, 1) == 0){
-					fcopa = 899;	// il pagamento viene inserito in scmca0f
+					fcopa = 899;	// il pagamento viene inserito in ccmca0f
 				}
 			}
 			
@@ -5045,8 +4847,6 @@ public class Oasi{
 			if(Integer.compare(fcopa, 1) == 0){
 				fcapa = "IG";
 			}
-			
-			fccam = StringUtils.join("D", StringUtils.leftPad(transDeposito(msvOA_MovimentiTestate.getCodMag(), "oasi2as"), 2, "0"));
 
 			AsFatem0fPKey id = new AsFatem0fPKey();
 			id.setFdatd(fdatd);
@@ -5150,6 +4950,7 @@ public class Oasi{
 			String scute = "";
 			String scnot = "";
 			String sccag = "";
+			Integer scpag = 0;
 
 			String causale = msvOA_PrimaNota_Tes.getCausale();
 			String fPagamento = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
@@ -5282,7 +5083,7 @@ public class Oasi{
 			scnum = mtnumBD.intValue();
 			sccag = tcommcauc;
 			
-			sccau = StringUtils.join("G", scdep.toString());
+			sccau = StringUtils.join("G", StringUtils.leftPad(scdep.toString(), 2, "0"));
 			scnzs = 1;
 		
 //			String numDoc = msvOA_MovimentiTestate.getNroDoc();
@@ -5467,6 +5268,18 @@ public class Oasi{
 				scnot = StringUtils.left(StringUtils.join(scnot, "-", asClien00f.getCldrso()), 25);
 			}
 			
+			String scpagTxt = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
+			if(StringUtils.containsOnly(scpagTxt, "0123456789")){
+				scpag = Integer.parseInt(scpagTxt);
+			}else{	// e' un codice oasi, devo fare transcodifica
+				scpagTxt = transPagamenti(scpagTxt, "oasi2as");
+				if(StringUtils.isBlank(scpagTxt)){
+					log.error("Codice: " + msvOA_PrimaNota_Tes.getfPagamento() + " non gestito");
+					scpagTxt = "1";	// contanti
+				}
+				scpag = Integer.parseInt(scpagTxt);
+			}
+			
 			AsScocr0fPKey idS = new AsScocr0fPKey();
 			idS.setScdat(scdat);
 			idS.setScnuz(scnuz);
@@ -5485,6 +5298,7 @@ public class Oasi{
 			asScocr0f.setScute(scute);
 			asScocr0f.setScnot(scnot);
 			asScocr0f.setSccag(sccag);
+			asScocr0f.setScpag(scpag);
 
 			AsScocr0f asScocr0fTmp = asScocr0fDao.getDaId(scdat, scnuz, scnum);
 			if(asScocr0fTmp == null){	// nuova quindi insert
@@ -5574,6 +5388,7 @@ public class Oasi{
 			String cadav = "";
 			BigDecimal caimp = new BigDecimal(0);
 			String cacon = "";
+			String cacoa = "";
 			String cadmo = "";
 			
 			cadar = 0;
@@ -5801,6 +5616,13 @@ public class Oasi{
 							cacon = "1620005000";
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							break;
+						// incasso SumUp
+						case "00905":
+							cacre = "L2";
+							cacon = "1605040000";
+							cadap = cadad;
+							canup = "000001";
+							break;
 						default:
 							daEliminare = true;
 							break;
@@ -5833,6 +5655,7 @@ public class Oasi{
 				asCcmca0f.setCadav(cadav);
 				asCcmca0f.setCaimp(caimp);
 				asCcmca0f.setCacon(cacon);
+				asCcmca0f.setCacoa(cacoa);
 				asCcmca0f.setCadmo(cadmo);
 				
 				AsCcmca0f asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
@@ -5842,6 +5665,15 @@ public class Oasi{
 					}
 				}else{	// gia' presente, quindi update
 					if(!(asCcmca0fDao.aggiorna(asCcmca0f))){
+						chiudi();
+					}
+				}
+				
+				if(StringUtils.equals(cacre, "L2")){
+					log.info("cacre: L2, in pagamento precedente");
+					asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, (carig-1));	// il rigo prima
+					asCcmca0fTmp.setCacre("L2");
+					if(!(asCcmca0fDao.aggiorna(asCcmca0fTmp))){
 						chiudi();
 					}
 				}
@@ -5921,6 +5753,7 @@ public class Oasi{
 			String cadav = "";
 			BigDecimal caimp = new BigDecimal(0);
 			String cacon = "";
+			String cacoa = "";
 			String cadmo = "";
 			
 			cadar = 0;
@@ -5967,7 +5800,8 @@ public class Oasi{
 				msvOA_PrimaNota_Righe = iter_msvOA_PrimaNota_RigheLs.next();
 				
 				cacon = null;
-				
+				cacoa = "";
+			
 				if(msvOA_PrimaNota_Righe.getDare().compareTo(new BigDecimal(0)) > 0){
 					AsTabel0f asTabel0f = asTabel0fDao.getDaTnotaTcoel("DEC", StringUtils.join(" ", StringUtils.leftPad(scdep.toString(), 2, "0")));
 					String tcomm = StringUtils.trim(asTabel0f.getTcomm());
@@ -6020,6 +5854,12 @@ public class Oasi{
 							cacon = "1620005000";
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							break;
+						// buono estensione garanzia
+						case "00622":
+							cacre = "NT";
+							cacon = "6705000050";
+							cacoa = StringUtils.substring(tcomm, 20, 27);
+							break;
 						default:
 							break;
 					}
@@ -6057,6 +5897,7 @@ public class Oasi{
 				asCcmca0f.setCadav(cadav);
 				asCcmca0f.setCaimp(caimp);
 				asCcmca0f.setCacon(cacon);
+				asCcmca0f.setCacoa(cacoa);
 				asCcmca0f.setCadmo(cadmo);
 				
 				AsCcmca0f asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
@@ -6085,6 +5926,8 @@ public class Oasi{
 				iter_asMocac0fLs = asMocac0fLs.iterator();
 				while(iter_asMocac0fLs.hasNext()){
 					asMocac0f = iter_asMocac0fLs.next();
+					
+					cacoa = "";
 					
 					cadmo = "CASSA SEDE";
 					
@@ -6123,6 +5966,7 @@ public class Oasi{
 						asCcmca0f.setCadav(cadav);
 						asCcmca0f.setCaimp(caimp);
 						asCcmca0f.setCacon(cacon);
+						asCcmca0f.setCacoa(cacoa);
 						asCcmca0f.setCadmo(cadmo);
 						
 						AsCcmca0f asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
@@ -6153,6 +5997,8 @@ public class Oasi{
 
 						carig = numeroGiro;
 						
+						cacoa = "";
+						
 						importoTotale = importoTotale.add(caimp);
 						
 						AsCcmca0fPKey idC = new AsCcmca0fPKey();
@@ -6170,6 +6016,7 @@ public class Oasi{
 						asCcmca0f.setCadav(cadav);
 						asCcmca0f.setCaimp(caimp);
 						asCcmca0f.setCacon(cacon);
+						asCcmca0f.setCacoa(cacoa);
 						asCcmca0f.setCadmo(cadmo);
 						
 						AsCcmca0f asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
@@ -6194,6 +6041,7 @@ public class Oasi{
 				
 				cadav = "A";
 				cacon = "1605000100";
+				cacoa = "";
 				cadmo = "CASSE TOTALI";
 				
 				caimp = importoTotale;
@@ -6213,6 +6061,7 @@ public class Oasi{
 				asCcmca0f.setCadav(cadav);
 				asCcmca0f.setCaimp(caimp);
 				asCcmca0f.setCacon(cacon);
+				asCcmca0f.setCacoa(cacoa);
 				asCcmca0f.setCadmo(cadmo);
 				
 				AsCcmca0f asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
@@ -6601,14 +6450,22 @@ public class Oasi{
 		for(int i = 0; i < strArray.length; i++){
 			strFor = strArray[i];
 			if((Integer.compare(strFor.length(), 6) == 0) && (StringUtils.containsOnly(strFor, "0123456789"))){	// fattura
-				primaNotaDocumento = strFor;
-				primaNotaNumDepo = 0;
+				if(StringUtils.isBlank(primaNotaDocumento)){
+					primaNotaDocumento = strFor;
+				}
+				if(primaNotaNumDepo == 0){
+					primaNotaNumDepo = 0;
+				}
 			}else if((Integer.compare(strFor.length(), 14) == 0)){	// scontrino
 				String str1 = StringUtils.substringBetween(strFor, "m", "e");
 				if(StringUtils.isNotBlank(str1)){
-					primaNotaNumDepo = Integer.parseInt(transDeposito(StringUtils.leftPad(str1, 3, "0"), "oasi2as"));
+					if(primaNotaNumDepo == 0){
+						primaNotaNumDepo = Integer.parseInt(transDeposito(StringUtils.leftPad(str1, 3, "0"), "oasi2as"));
+					}
 					str1 = StringUtils.substringBefore(strFor, StringUtils.join("m", str1, "e"));
-					primaNotaDocumento = StringUtils.right(str1, 6);
+					if(StringUtils.isBlank(primaNotaDocumento)){
+						primaNotaDocumento = StringUtils.right(str1, 6);
+					}
 				}
 			}else if((Integer.compare(strFor.length(), 10) == 0) && (Integer.compare(StringUtils.countMatches(strFor, "/"), 2) == 0)){	// data
 				primaNotaData = strFor;
@@ -6631,4 +6488,238 @@ public class Oasi{
 //			}
 //		}		
 //	}
+	
+	private void inserisciInASListini(AsAnmag0f asAnmag0f){
+		String tipoListino = "";
+		String codArticolo = StringUtils.trim(asAnmag0f.getMcoda());
+		BigDecimal prezzoNonIvato = new BigDecimal(0);
+		BigDecimal sc = new BigDecimal(0);
+		BigDecimal sconto1 = new BigDecimal(0);
+		BigDecimal sconto2 = new BigDecimal(0);
+		BigDecimal sconto3 = new BigDecimal(0);
+//		BigDecimal sconto4 = new BigDecimal(0);
+		AsLisri0f asLisri0f = null;
+		
+		MsvAS_ListiniPKey id = null;
+		MsvAS_Listini msvAS_Listini = null;		
+		MsvAS_Listini msvAS_ListiniTmp = null;
+		
+		/* prezzo al pubblico (e' ivato) */
+		tipoListino = "P";
+		asLisri0f = asLisri0fDao.getDaId(codArticolo, 1, tipoListino);
+		if(asLisri0f != null){
+			BigDecimal aliquotaIva = new BigDecimal(0);
+			if(StringUtils.containsOnly(asAnmag0f.getMciva(), "0123456789")){
+				aliquotaIva= new BigDecimal(asTabge00fDao.getAliquotaIva(asAnmag0f.getMciva()));
+				aliquotaIva = aliquotaIva.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
+			}
+			
+			prezzoNonIvato = new BigDecimal(0);
+			try{
+				prezzoNonIvato = asLisri0f.getLsprl().divide((new BigDecimal(1)).add(aliquotaIva.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP)), 4, BigDecimal.ROUND_HALF_UP);
+			}catch(ArithmeticException e){
+				log.error("calcolo prezzoNonIvato " + "Lisri0f.Lsprl: " + asLisri0f.getLsprl() + ", Mciva: " + asAnmag0f.getMciva());
+			}
+			Support.arrotonda(prezzoNonIvato, 4);
+
+			if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
+				prezzoNonIvato = new BigDecimal(0);
+			}
+			
+			sc = null;
+			sconto1 = new BigDecimal(0);
+			sconto2 = new BigDecimal(0);
+			sconto3 = new BigDecimal(0);
+//			sconto4 = new BigDecimal(0);
+			sc = asLisri0f.getLssc1();
+			if(sc != null){
+				sconto1 = sc;
+				Support.arrotonda(sconto1, 2);
+			}
+			sc = asLisri0f.getLssc2();
+			if(sc != null){
+				sconto2= sc;
+				Support.arrotonda(sconto2, 2);
+			}			
+			sc = asLisri0f.getLssc3();
+			if(sc != null){
+				sconto3 = sc;
+				Support.arrotonda(sconto3, 2);
+			}
+//			sc = asLisri0f.getLssc4();
+//			if(sc != null){
+//				sconto4 = sc;
+//				Support.arrotonda(sconto4, 2);
+//			}
+			
+			id = new MsvAS_ListiniPKey();
+			id.setTipoListino(tipoListino);
+			id.setCodArticolo(codArticolo);
+			msvAS_Listini = new MsvAS_Listini();
+			msvAS_Listini.setId(id);
+			msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
+			msvAS_Listini.setSconto1(sconto1);
+			msvAS_Listini.setSconto2(sconto2);
+			msvAS_Listini.setSconto3(sconto3);
+//			msvAS_Listini.setSconto4(sconto4);
+			
+			msvAS_ListiniTmp = msvAS_ListiniDao.getDaCodiceTipo(codArticolo, tipoListino);
+			if(msvAS_ListiniTmp == null){	// nuova quindi insert
+				log.info("salva: " + msvAS_Listini.toString());
+				msvAS_ListiniDao.salva(msvAS_Listini);
+			}else{	// gia' presente, quindi update
+				msvAS_ListiniDao.aggiorna(msvAS_Listini);
+			}
+		}
+
+		tipoListino = "I";
+		asLisri0f = asLisri0fDao.getDaId(codArticolo, 2, tipoListino);
+		if(asLisri0f != null){
+			prezzoNonIvato = asLisri0f.getLsprl();
+			Support.arrotonda(prezzoNonIvato, 4);
+			if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
+				prezzoNonIvato = new BigDecimal(0);
+			}
+			
+			sc = null;
+			sconto1 = new BigDecimal(0);
+			sconto2 = new BigDecimal(0);
+			sconto3 = new BigDecimal(0);
+//			sconto4 = new BigDecimal(0);
+			sc = asLisri0f.getLssc1();
+			if(sc != null){
+				sconto1 = sc;
+				Support.arrotonda(sconto1, 2);
+			}
+			sc = asLisri0f.getLssc2();
+			if(sc != null){
+				sconto2= sc;
+				Support.arrotonda(sconto2, 2);
+			}			
+			sc = asLisri0f.getLssc3();
+			if(sc != null){
+				sconto3 = sc;
+				Support.arrotonda(sconto3, 2);
+			}
+//			sc = asLisri0f.getLssc4();
+//			if(sc != null){
+//				sconto4 = sc;
+//				Support.arrotonda(sconto4, 2);
+//			}
+			
+			id = new MsvAS_ListiniPKey();
+			id.setTipoListino(tipoListino);
+			id.setCodArticolo(codArticolo);
+			msvAS_Listini = new MsvAS_Listini();
+			msvAS_Listini.setId(id);
+			msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
+			msvAS_Listini.setSconto1(sconto1);
+			msvAS_Listini.setSconto2(sconto2);
+			msvAS_Listini.setSconto3(sconto3);
+//			msvAS_Listini.setSconto4(sconto4);
+			
+			msvAS_ListiniTmp = msvAS_ListiniDao.getDaCodiceTipo(codArticolo, tipoListino);
+			if(msvAS_ListiniTmp == null){	// nuova quindi insert
+				log.info("salva: " + msvAS_Listini.toString());
+				msvAS_ListiniDao.salva(msvAS_Listini);
+			}else{	// gia' presente, quindi update
+				msvAS_ListiniDao.aggiorna(msvAS_Listini);
+			}
+		}
+		
+		tipoListino = "R";
+		asLisri0f = asLisri0fDao.getDaId(codArticolo, 3, tipoListino);
+		if(asLisri0f != null){
+			prezzoNonIvato = asLisri0f.getLsprl();
+			Support.arrotonda(prezzoNonIvato, 4);
+			if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
+				prezzoNonIvato = new BigDecimal(0);
+			}
+			
+			sc = null;
+			sconto1 = new BigDecimal(0);
+			sconto2 = new BigDecimal(0);
+			sconto3 = new BigDecimal(0);
+//			sconto4 = new BigDecimal(0);
+			sc = asLisri0f.getLssc1();
+			if(sc != null){
+				sconto1 = sc;
+				Support.arrotonda(sconto1, 2);
+			}
+			sc = asLisri0f.getLssc2();
+			if(sc != null){
+				sconto2= sc;
+				Support.arrotonda(sconto2, 2);
+			}			
+			sc = asLisri0f.getLssc3();
+			if(sc != null){
+				sconto3 = sc;
+				Support.arrotonda(sconto3, 2);
+			}
+//			sc = asLisri0f.getLssc4();
+//			if(sc != null){
+//				sconto4 = sc;
+//				Support.arrotonda(sconto4, 2);
+//			}
+			
+			id = new MsvAS_ListiniPKey();
+			id.setTipoListino(tipoListino);
+			id.setCodArticolo(codArticolo);
+			msvAS_Listini = new MsvAS_Listini();
+			msvAS_Listini.setId(id);
+			msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
+			msvAS_Listini.setSconto1(sconto1);
+			msvAS_Listini.setSconto2(sconto2);
+			msvAS_Listini.setSconto3(sconto3);
+//			msvAS_Listini.setSconto4(sconto4);
+			
+			msvAS_ListiniTmp = msvAS_ListiniDao.getDaCodiceTipo(codArticolo, tipoListino);
+			if(msvAS_ListiniTmp == null){	// nuova quindi insert
+				log.info("salva: " + msvAS_Listini.toString());
+				msvAS_ListiniDao.salva(msvAS_Listini);
+			}else{	// gia' presente, quindi update
+				msvAS_ListiniDao.aggiorna(msvAS_Listini);
+			}
+		}
+		
+		/* Ultimo Costo */
+		tipoListino = "C";
+
+		prezzoNonIvato = new BigDecimal(0);
+//		if(asMovma0fDao.getUltimoCostoArticolo(codArticolo) != null){
+//			prezzoNonIvato = asMovma0fDao.getUltimoCostoArticolo(codArticolo);
+//			Support.arrotonda(prezzoNonIvato, 4);
+//		}
+		AsPrzac0f asPrzac0f = asPrzac0fDao.getDaPzcod(codArticolo);
+		if(asPrzac0f != null){
+			prezzoNonIvato = asPrzac0f.getPzult();
+			Support.arrotonda(prezzoNonIvato, 4);
+		}
+		if(prezzoNonIvato.compareTo(new BigDecimal(0)) < 0){
+			prezzoNonIvato = new BigDecimal(0);
+		}
+		
+		sconto1 = new BigDecimal(0);
+		sconto2 = new BigDecimal(0);
+		sconto3 = new BigDecimal(0);
+//		sconto4 = new BigDecimal(0);
+		
+		id = new MsvAS_ListiniPKey();
+		id.setTipoListino(tipoListino);
+		id.setCodArticolo(codArticolo);
+		msvAS_Listini = new MsvAS_Listini();
+		msvAS_Listini.setId(id);
+		msvAS_Listini.setPrezzoNonIvato(prezzoNonIvato);
+		msvAS_Listini.setSconto1(sconto1);
+		msvAS_Listini.setSconto2(sconto2);
+		msvAS_Listini.setSconto3(sconto3);
+		
+		msvAS_ListiniTmp = msvAS_ListiniDao.getDaCodiceTipo(codArticolo, tipoListino);
+		if(msvAS_ListiniTmp == null){	// nuova quindi insert
+			log.info("salva: " + msvAS_Listini.toString());
+			msvAS_ListiniDao.salva(msvAS_Listini);
+		}else{	// gia' presente, quindi update
+			msvAS_ListiniDao.aggiorna(msvAS_Listini);
+		}
+	}
 }

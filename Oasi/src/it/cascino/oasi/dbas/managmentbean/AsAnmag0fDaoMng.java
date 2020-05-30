@@ -104,6 +104,24 @@ public class AsAnmag0fDaoMng implements AsAnmag0fDao, Serializable{
 		return o;
 	}
 	
+	public AsAnmag0f getArticoloDaMoalu(String moalu){
+		AsAnmag0f o = null;
+		try{
+			try{
+				utx.begin();
+				Query query = em.createNamedQuery("AsAnmag0f.findByMoalu");
+				query.setParameter("moalu", moalu);
+				o = (AsAnmag0f)query.getSingleResult();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 //	@SuppressWarnings("unchecked")
 //	public List<AsAnmag0f> getArticoliIngrosso(){
 //		List<AsAnmag0f> o = null;

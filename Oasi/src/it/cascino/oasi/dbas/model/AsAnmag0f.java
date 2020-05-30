@@ -13,7 +13,8 @@ import javax.persistence.*;
 	@NamedQuery(name = "AsAnmag0f.findAll", query = "SELECT a FROM Anmag0f a WHERE a.atama != 'A' and a.atama != 'S' order by a.mcoda asc"),
 	@NamedQuery(name = "AsAnmag0f.findByMcoda", query = "SELECT a FROM Anmag0f a WHERE a.atama != 'S' and a.mcoda = :mcoda "),
 	@NamedQuery(name = "AsAnmag0f.findAllIngrosso", query = "SELECT a FROM Anmag0f a WHERE a.atama in (' ', 'A') and ((a.mdepi = 1) or (a.mdepi = 3)) order by a.mcoda asc"),
-	@NamedQuery(name = "AsAnmag0f.findAttivi", query = "SELECT a FROM Anmag0f a WHERE a.atama = ' ' order by a.mcoda asc")
+	@NamedQuery(name = "AsAnmag0f.findAttivi", query = "SELECT a FROM Anmag0f a WHERE a.atama = ' ' order by a.mcoda asc"),
+	@NamedQuery(name = "AsAnmag0f.findByMoalu", query = "SELECT a FROM Anmag0f a WHERE a.atama != 'S' and a.moalu = :moalu ")
 })
 public class AsAnmag0f implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -28,11 +29,6 @@ public class AsAnmag0f implements Serializable{
 	private String mcoda;
 	private String mdesc;
 	private String mumis;
-	private BigDecimal mpeu1;
-	private BigDecimal mpeu2;
-	private BigDecimal msc11;
-	private BigDecimal msc12;
-	private BigDecimal msc21;
 	private BigDecimal mconf;
 	private Integer mdepi;
 	private String madiv;
@@ -47,6 +43,8 @@ public class AsAnmag0f implements Serializable{
 	private String mcoaf;
 	private String mciva;
 	private String mckit;
+	private String moalu;
+	private String mclin;
 	
 	public AsAnmag0f(){
 	}
@@ -82,46 +80,6 @@ public class AsAnmag0f implements Serializable{
 
 	public void setMumis(String mumis){
 		this.mumis = mumis;
-	}
-
-	public BigDecimal getMpeu1(){
-		return mpeu1;
-	}
-
-	public void setMpeu1(BigDecimal mpeu1){
-		this.mpeu1 = mpeu1;
-	}
-	
-	public BigDecimal getMpeu2(){
-		return mpeu2;
-	}
-
-	public void setMpeu2(BigDecimal mpeu2){
-		this.mpeu2 = mpeu2;
-	}
-	
-	public BigDecimal getMsc11(){
-		return msc11;
-	}
-
-	public void setMsc11(BigDecimal msc11){
-		this.msc11 = msc11;
-	}
-
-	public BigDecimal getMsc12(){
-		return msc12;
-	}
-
-	public void setMsc12(BigDecimal msc12){
-		this.msc12 = msc12;
-	}
-
-	public BigDecimal getMsc21(){
-		return msc21;
-	}
-
-	public void setMsc21(BigDecimal msc21){
-		this.msc21 = msc21;
 	}
 	
 	public BigDecimal getMconf(){
@@ -236,6 +194,22 @@ public class AsAnmag0f implements Serializable{
 		this.mckit = mckit;
 	}
 
+	public String getMoalu(){
+		return moalu;
+	}
+
+	public void setMoalu(String moalu){
+		this.moalu = moalu;
+	}
+
+	public String getMclin(){
+		return mclin;
+	}
+
+	public void setMclin(String mclin){
+		this.mclin = mclin;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -255,13 +229,10 @@ public class AsAnmag0f implements Serializable{
 		result = prime * result + ((mdepi == null) ? 0 : mdepi.hashCode());
 		result = prime * result + ((mdesc == null) ? 0 : mdesc.hashCode());
 		result = prime * result + ((model == null) ? 0 : model.hashCode());
-		result = prime * result + ((mpeu1 == null) ? 0 : mpeu1.hashCode());
-		result = prime * result + ((mpeu2 == null) ? 0 : mpeu2.hashCode());
-		result = prime * result + ((msc11 == null) ? 0 : msc11.hashCode());
-		result = prime * result + ((msc12 == null) ? 0 : msc12.hashCode());
-		result = prime * result + ((msc21 == null) ? 0 : msc12.hashCode());
 		result = prime * result + ((mumis == null) ? 0 : mumis.hashCode());
 		result = prime * result + ((mciva == null) ? 0 : mciva.hashCode());
+		result = prime * result + ((moalu == null) ? 0 : moalu.hashCode());
+		result = prime * result + ((mclin == null) ? 0 : mclin.hashCode());
 		return result;
 	}
 
@@ -279,6 +250,6 @@ public class AsAnmag0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsAnmag0f [atama=" + atama + ", mcoda=" + mcoda + ", mdesc=" + mdesc + ", mumis=" + mumis + ", mpeu1=" + mpeu1 + ", mpeu2=" + mpeu2 + ", msc11=" + msc11 + ", msc12=" + msc12 + ", msc21=" + msc21 + ", mconf=" + mconf + ", mdepi=" + mdepi + ", madiv=" + madiv + ", magru=" + magru + ", masot=" + masot + ", mafam=" + mafam + ", mastf=" + mastf + ", mast1=" + mast1 + ", march=" + march + ", model=" + model + ", mcofo=" + mcofo + ", mcoaf=" + mcoaf + ", mciva=" + mciva + ", mckit=" + mckit + "]";
+		return "AsAnmag0f [atama=" + atama + ", mcoda=" + mcoda + ", mdesc=" + mdesc + ", mumis=" + mumis + ",  mconf=" + mconf + ", mdepi=" + mdepi + ", madiv=" + madiv + ", magru=" + magru + ", masot=" + masot + ", mafam=" + mafam + ", mastf=" + mastf + ", mast1=" + mast1 + ", march=" + march + ", model=" + model + ", mcofo=" + mcofo + ", mcoaf=" + mcoaf + ", mciva=" + mciva + ", mckit=" + mckit + ", moalu=" + moalu  + ", mclin=" + mclin + "]";
 	}	
 }

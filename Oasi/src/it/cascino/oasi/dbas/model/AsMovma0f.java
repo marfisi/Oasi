@@ -51,9 +51,9 @@ public class AsMovma0f implements Serializable{
 	private String vcven;
 	private String vidoa;
 	private String vtimo;
+	private String vvfit;
 	
 	public AsMovma0f(){
-		this.id = new AsMovma0fPKey();
 	}
 	
 	public AsMovma0fPKey getId(){
@@ -272,6 +272,14 @@ public class AsMovma0f implements Serializable{
 		this.vtimo = vtimo;
 	}
 
+	public String getVvfit(){
+		return vvfit;
+	}
+
+	public void setVvfit(String vvfit){
+		this.vvfit = vvfit;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -303,6 +311,7 @@ public class AsMovma0f implements Serializable{
 		result = prime * result + ((vtimo == null) ? 0 : vtimo.hashCode());
 		result = prime * result + ((vtpac == null) ? 0 : vtpac.hashCode());
 		result = prime * result + ((vvkit == null) ? 0 : vvkit.hashCode());
+		result = prime * result + ((vvfit == null) ? 0 : vvfit.hashCode());
 		return result;
 	}
 
@@ -320,6 +329,6 @@ public class AsMovma0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsMovma0f [id=" + id + ", vdain=" + vdain + ", vorin=" + vorin + ", vcoda=" + vcoda + ", vdesc=" + vdesc + ", vcocf=" + vcocf + ", vricl=" + vricl + ", vndep=" + vndep + ", vquan=" + vquan + ", vprez=" + vprez + ", vsco1=" + vsco1 + ", vsco2=" + vsco2 + ", vsco3=" + vsco3 + ", vsco4=" + vsco4 + ", vciva=" + vciva + ", valiv=" + valiv + ", vimps=" + vimps + ", vcocr=" + vcocr + ", voven=" + voven + ", vtcve=" + vtcve + ", vcost=" + vcost + ", vtpac=" + vtpac + ", vvkit=" + vvkit + ", vcusr=" + vcusr + ", vcven=" + vcven + ", vidoa=" + vidoa + ", vtimo=" + vtimo + "]";
+		return "AsMovma0f [id=" + id + ", vdain=" + vdain + ", vorin=" + vorin + ", vcoda=" + vcoda + ", vdesc=" + vdesc + ", vcocf=" + vcocf + ", vricl=" + vricl + ", vndep=" + vndep + ", vquan=" + vquan + ", vprez=" + vprez + ", vsco1=" + vsco1 + ", vsco2=" + vsco2 + ", vsco3=" + vsco3 + ", vsco4=" + vsco4 + ", vciva=" + vciva + ", valiv=" + valiv + ", vimps=" + vimps + ", vcocr=" + vcocr + ", voven=" + voven + ", vtcve=" + vtcve + ", vcost=" + vcost + ", vtpac=" + vtpac + ", vvkit=" + vvkit + ", vcusr=" + vcusr + ", vcven=" + vcven + ", vidoa=" + vidoa + ", vtimo=" + vtimo + ", vvfit=" + vvfit + "]";
 	}
 }

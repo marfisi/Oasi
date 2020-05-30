@@ -16,6 +16,8 @@ public interface AsNativeQueryDao{
 	
 	List<AsMovtr0f> getMovtrDaIngrossoAexpert(String depIngrosso, String depExpert, Integer data, Integer ora);
 	
+	Boolean getSeGiagenteNeiDepositi(String articolo, String dep);
+	
 	List<Object[]> getStoricoMovimenti();
 	
 	List<Object[]> getChiusuraCassaSede(Integer mcdac);

@@ -31,6 +31,7 @@ public class AsScocr0f implements Serializable{
 	private String scute;
 	private String scnot;
 	private String sccag;
+	private Integer scpag;
 	
 	public AsScocr0f(){
 	}
@@ -139,6 +140,14 @@ public class AsScocr0f implements Serializable{
 		this.sccag = sccag;
 	}
 	
+	public Integer getScpag(){
+		return scpag;
+	}
+
+	public void setScpag(Integer scpag){
+		this.scpag = scpag;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -156,6 +165,7 @@ public class AsScocr0f implements Serializable{
 		result = prime * result + ((scnzs == null) ? 0 : scnzs.hashCode());
 		result = prime * result + ((sctpc == null) ? 0 : sctpc.hashCode());
 		result = prime * result + ((scute == null) ? 0 : scute.hashCode());
+		result = prime * result + ((scpag == null) ? 0 : scpag.hashCode());
 		return result;
 	}
 
@@ -173,6 +183,6 @@ public class AsScocr0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsScocr0f [id=" + id + ", sccau=" + sccau + ", scnzs=" + scnzs + ", scnus=" + scnus + ", scdep=" + scdep + ", sccoc=" + sccoc + ", scims=" + scims + ", sctpc=" + sctpc + ", scdaf=" + scdaf + ", scnuf=" + scnuf + ", scute=" + scute + ", scnot=" + scnot + ", sccag=" + sccag + "]";
+		return "AsScocr0f [id=" + id + ", sccau=" + sccau + ", scnzs=" + scnzs + ", scnus=" + scnus + ", scdep=" + scdep + ", sccoc=" + sccoc + ", scims=" + scims + ", sctpc=" + sctpc + ", scdaf=" + scdaf + ", scnuf=" + scnuf + ", scute=" + scute + ", scnot=" + scnot + ", sccag=" + sccag + ", scpag=" + scpag + "]";
 	}
 }
