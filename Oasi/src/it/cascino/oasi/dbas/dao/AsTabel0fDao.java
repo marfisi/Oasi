@@ -11,6 +11,8 @@ public interface AsTabel0fDao{
 	Boolean aggiorna(AsTabel0f o);
 
 	AsTabel0f getDaTnotaTcoel(String tnota, String tcoel);
+	
+	void detach(Object entity);
 
 	void close();
 }

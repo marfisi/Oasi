@@ -29,6 +29,8 @@ public interface AsAnmag0fDao{
 	List<AsAnmag0f> getArticoliDaAS400aOasi();
 	
 	AsAnmag0f getArticoliDaAS400aOasi(String mcoda);
+	
+	List<AsAnmag0f> getArticoliDaAS400aOasiSoloGiacenze();
 
 	Integer aggiornaCampiMancanti();
 	

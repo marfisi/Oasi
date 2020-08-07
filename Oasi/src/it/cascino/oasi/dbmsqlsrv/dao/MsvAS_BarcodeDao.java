@@ -16,5 +16,7 @@ public interface MsvAS_BarcodeDao{
 
 	void svuotaTabella();
 	
+	void detach(Object entity);
+
 	void close();
 }

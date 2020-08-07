@@ -15,7 +15,7 @@ public class AsTabel0fDaoMng implements AsTabel0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsTabel0fDaoMng.class);
 	
@@ -73,7 +73,6 @@ public class AsTabel0fDaoMng implements AsTabel0fDao, Serializable{
 		AsTabel0f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsTabel0f.findByTnotaTcoel");
 				query.setParameter("tnota", tnota);
 				query.setParameter("tcoel", tcoel);
@@ -81,11 +80,16 @@ public class AsTabel0fDaoMng implements AsTabel0fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
+		
+//		evict non era sufficiente, elimina solo la cahce di 2livello, em.getEntityManagerFactory().getCache().evict(entity.getClass());		
 	}
 	
 	public void close(){

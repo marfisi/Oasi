@@ -115,6 +115,10 @@ public class MsvAS_ArticoliDaoMng implements MsvAS_ArticoliDao, Serializable{
 		}
 	}
 	
+	public void detach(Object entity){
+		em.detach(entity);
+	}
+	
 	public void close(){
 		res.close();
 		log.info("chiuso");

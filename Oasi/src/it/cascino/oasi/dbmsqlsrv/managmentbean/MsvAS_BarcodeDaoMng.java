@@ -117,6 +117,10 @@ public class MsvAS_BarcodeDaoMng implements MsvAS_BarcodeDao, Serializable{
 		}
 	}
 	
+	public void detach(Object entity){
+		em.detach(entity);
+	}
+	
 	public void close(){
 		res.close();
 		log.info("chiuso");

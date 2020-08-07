@@ -116,6 +116,10 @@ public class MsvAS_ListiniDaoMng implements MsvAS_ListiniDao, Serializable{
 		}
 	}
 	
+	public void detach(Object entity){
+		em.detach(entity);
+	}
+	
 	public void close(){
 		res.close();
 		log.info("chiuso");

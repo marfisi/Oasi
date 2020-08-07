@@ -35,6 +35,7 @@ public class AsBolem0f implements Serializable{
 	private BigDecimal bdpro;
 	private String bragg;
 	private String bnote;
+	private String bflad;
 	
 	public AsBolem0f(){
 	}
@@ -167,6 +168,14 @@ public class AsBolem0f implements Serializable{
 		this.bnote = bnote;
 	}
 
+	public String getBflad(){
+		return bflad;
+	}
+
+	public void setBflad(String bflad){
+		this.bflad = bflad;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -186,6 +195,7 @@ public class AsBolem0f implements Serializable{
 		result = prime * result + ((bragg == null) ? 0 : bragg.hashCode());
 		result = prime * result + ((btide == null) ? 0 : btide.hashCode());
 		result = prime * result + ((buten == null) ? 0 : buten.hashCode());
+		result = prime * result + ((bflad == null) ? 0 : bflad.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -204,6 +214,6 @@ public class AsBolem0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsBolem0f [id=" + id + ", btide=" + btide + ", bcodi=" + bcodi + ", bcaus=" + bcaus + ", bimpb=" + bimpb + ", bfatt=" + bfatt + ", bpaga=" + bpaga + ", bcatr=" + bcatr + ", bcons=" + bcons + ", buten=" + buten + ", bccup=" + bccup + ", bccig=" + bccig + ", bprot=" + bprot + ", bdpro=" + bdpro + ", bragg=" + bragg + ", bnote=" + bnote + "]";
+		return "AsBolem0f [id=" + id + ", btide=" + btide + ", bcodi=" + bcodi + ", bcaus=" + bcaus + ", bimpb=" + bimpb + ", bfatt=" + bfatt + ", bpaga=" + bpaga + ", bcatr=" + bcatr + ", bcons=" + bcons + ", buten=" + buten + ", bccup=" + bccup + ", bccig=" + bccig + ", bprot=" + bprot + ", bdpro=" + bdpro + ", bragg=" + bragg + ", bnote=" + bnote + ", bflad=" + bflad + "]";
 	}
 }

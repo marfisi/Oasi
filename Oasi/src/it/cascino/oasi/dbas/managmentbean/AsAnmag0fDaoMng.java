@@ -262,6 +262,25 @@ public class AsAnmag0fDaoMng implements AsAnmag0fDao, Serializable{
 		return o;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<AsAnmag0f> getArticoliDaAS400aOasiSoloGiacenze(){
+		List<AsAnmag0f> o = null;
+		try{
+			try{
+				utx.begin();
+				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda in (select m2cod from anma20f where m2oas = 'G')";
+				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
+				o = (List<AsAnmag0f>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public Integer aggiornaCampiMancanti(){
 		Integer o = null;
 		try{

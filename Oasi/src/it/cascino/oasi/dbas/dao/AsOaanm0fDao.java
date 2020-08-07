@@ -13,6 +13,8 @@ public interface AsOaanm0fDao{
 	List<String> getDaElaborare();
 	
 	void svuotaTabella();
+	
+	void detach(Object entity);
 
 	void close();
 }

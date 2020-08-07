@@ -30,6 +30,7 @@ public class AsFinaz0f implements Serializable{
 	private Integer fndep;
 	private String fnute;
 	private String fntab;
+	private String fnta2;
 
 	public AsFinaz0f(){
 	}
@@ -130,6 +131,14 @@ public class AsFinaz0f implements Serializable{
 		this.fntab = fntab;
 	}
 
+	public String getFnta2(){
+		return fnta2;
+	}
+
+	public void setFnta2(String fnta2){
+		this.fnta2 = fnta2;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -139,12 +148,13 @@ public class AsFinaz0f implements Serializable{
 		result = prime * result + ((fncoc == null) ? 0 : fncoc.hashCode());
 		result = prime * result + ((fndep == null) ? 0 : fndep.hashCode());
 		result = prime * result + ((fnifi == null) ? 0 : fnifi.hashCode());
-		result = prime * result + ((fnnur == null) ? 0 : fnnur.hashCode());
 		result = prime * result + ((fnloc == null) ? 0 : fnloc.hashCode());
 		result = prime * result + ((fnnoc == null) ? 0 : fnnoc.hashCode());
 		result = prime * result + ((fnnup == null) ? 0 : fnnup.hashCode());
-		result = prime * result + ((fnute == null) ? 0 : fnute.hashCode());
+		result = prime * result + ((fnnur == null) ? 0 : fnnur.hashCode());
+		result = prime * result + ((fnta2 == null) ? 0 : fnta2.hashCode());
 		result = prime * result + ((fntab == null) ? 0 : fntab.hashCode());
+		result = prime * result + ((fnute == null) ? 0 : fnute.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -163,6 +173,6 @@ public class AsFinaz0f implements Serializable{
 
 	@Override
 	public String toString(){
-		return "AsFinaz0f [id=" + id + ", fncoc=" + fncoc + ", fnnoc=" + fnnoc + ", fnloc=" + fnloc + ", fncfi=" + fncfi + ", fnnur=" + fnnur + ", fnifi=" + fnifi + ", fncag=" + fncag + ", fnnup=" + fnnup + ", fndep=" + fndep + ", fnute=" + fnute + ", fntab=" + fntab +"]";
+		return "AsFinaz0f [id=" + id + ", fncoc=" + fncoc + ", fnnoc=" + fnnoc + ", fnloc=" + fnloc + ", fncfi=" + fncfi + ", fnnur=" + fnnur + ", fnifi=" + fnifi + ", fncag=" + fncag + ", fnnup=" + fnnup + ", fndep=" + fndep + ", fnute=" + fnute + ", fntab=" + fntab + ", fnta2=" + fnta2 + "]";
 	}
 }

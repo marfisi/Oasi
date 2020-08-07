@@ -126,6 +126,10 @@ public class AsOaanm0fDaoMng implements AsOaanm0fDao, Serializable{
 		}
 	}
 	
+	public void detach(Object entity){
+		em.detach(entity);
+	}
+	
 	public void close(){
 		res.close();
 		log.info("chiuso");
