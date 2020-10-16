@@ -19,47 +19,46 @@ public class MsvAS_FornitoriDaoMng implements MsvAS_FornitoriDao, Serializable{
 	
 	Logger log = Logger.getLogger(MsvAS_FornitoriDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvAS_Fornitori> getAll(){
 		List<MsvAS_Fornitori> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Fornitori.findAll");
 				o = (List<MsvAS_Fornitori>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	// TODO @Transactional(rollbackOn = MsvAS_Fornitori.class)
-	public void salva(MsvAS_Fornitori a){
+	// @Transactional(rollbackOn = MsvAS_Fornitori.class)
+	public void salva(MsvAS_Fornitori o){
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
-//				log.info("salva: " + a.toString());
-				em.persist(a);
+				// log.info("salva: " + o.toString());
+				em.persist(o);
 			}finally{
 				utx.commit();
 			}
 		}catch(Exception e){
-			log.error("salva: " + a.toString());
+			log.error("salva: " + o.toString());
 			log.fatal(e.toString());
 		}
 	}
 	
-	public void aggiorna(MsvAS_Fornitori a){
+	public void aggiorna(MsvAS_Fornitori o){
 		try{
 			try{
 				utx.begin();
-				log.info("aggiorna: " + a.toString());
-				em.merge(a);
+				log.info("aggiorna: " + o.toString());
+				em.merge(o);
 			}finally{
 				utx.commit();
 			}
@@ -67,22 +66,6 @@ public class MsvAS_FornitoriDaoMng implements MsvAS_FornitoriDao, Serializable{
 			log.fatal(e.toString());
 		}
 	}
-	
-//	public void elimina(MsvAS_Fornitori aElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvAS_Fornitori a = em.find(MsvAS_Fornitori.class, aElimina.getMcoda());
-//				log.info("elimina: " + a.toString());
-//				em.remove(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public void svuotaTabella(){
 		try{
@@ -102,18 +85,20 @@ public class MsvAS_FornitoriDaoMng implements MsvAS_FornitoriDao, Serializable{
 		MsvAS_Fornitori o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Fornitori.findByCodice");
 				query.setParameter("codice", codice);
 				o = (MsvAS_Fornitori)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

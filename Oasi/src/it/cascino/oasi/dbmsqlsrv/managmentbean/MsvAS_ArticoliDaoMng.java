@@ -19,46 +19,45 @@ public class MsvAS_ArticoliDaoMng implements MsvAS_ArticoliDao, Serializable{
 	
 	Logger log = Logger.getLogger(MsvAS_ArticoliDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvAS_Articoli> getAll(){
 		List<MsvAS_Articoli> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Articoli.findAll");
 				o = (List<MsvAS_Articoli>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	public void salva(MsvAS_Articoli a){
+	public void salva(MsvAS_Articoli o){
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
-//				log.info("salva: " + a.toString());
-				em.persist(a);
+				// log.info("salva: " + a.toString());
+				em.persist(o);
 			}finally{
 				utx.commit();
 			}
 		}catch(Exception e){
-			log.error("salva: " + a.toString());
+			log.error("salva: " + o.toString());
 			log.fatal(e.toString());
 		}
 	}
 	
-	public void aggiorna(MsvAS_Articoli a){
+	public void aggiorna(MsvAS_Articoli o){
 		try{
 			try{
 				utx.begin();
-				log.info("aggiorna: " + a.toString());
-				em.merge(a);
+				log.info("aggiorna: " + o.toString());
+				em.merge(o);
 			}finally{
 				utx.commit();
 			}
@@ -66,41 +65,23 @@ public class MsvAS_ArticoliDaoMng implements MsvAS_ArticoliDao, Serializable{
 			log.fatal(e.toString());
 		}
 	}
-	
-//	public void elimina(MsvAS_Articoli aElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvAS_Articoli a = em.find(MsvAS_Articoli.class, aElimina.getMcoda());
-//				log.info("elimina: " + a.toString());
-//				em.remove(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public MsvAS_Articoli getDaCodice(String codArticolo){
 		MsvAS_Articoli o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Articoli.findByCodArticolo");
 				query.setParameter("codArticolo", codArticolo);
 				o = (MsvAS_Articoli)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
-
+	
 	public void svuotaTabella(){
 		try{
 			try{

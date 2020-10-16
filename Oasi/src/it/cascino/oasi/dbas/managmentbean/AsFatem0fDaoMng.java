@@ -2,7 +2,6 @@ package it.cascino.oasi.dbas.managmentbean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 import it.cascino.oasi.dbas.model.AsFatem0f;
 import it.cascino.oasi.utils.Resources;
 import it.cascino.oasi.dbas.dao.AsFatem0fDao;
@@ -16,27 +15,9 @@ public class AsFatem0fDaoMng implements AsFatem0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsFatem0fDaoMng.class);
-	
-	@SuppressWarnings("unchecked")
-	public List<AsFatem0f> getAll(){
-		List<AsFatem0f> cod = null;
-		try{
-			try{
-				utx.begin();
-				Query query = em.createNamedQuery("AsFatem0f.findAll");
-				cod = (List<AsFatem0f>)query.getResultList();
-			}catch(NoResultException e){
-				cod = null;
-			}
-			utx.commit();
-		}catch(Exception e){
-			log.fatal(e.toString());
-		}
-		return cod;
-	}
 	
 	public Boolean salva(AsFatem0f o){
 		try{
@@ -70,27 +51,10 @@ public class AsFatem0fDaoMng implements AsFatem0fDao, Serializable{
 		return true;
 	}
 	
-//	public void elimina(AsFatem0f oElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				AsFatem0f o = em.find(AsFatem0f.class, oElimina.getVcoda());
-//				log.info("elimina: " + o.toString());
-//				em.remove(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-	
 	public AsFatem0f getDaId(Integer fdatd, Integer fnura, Integer fnumd){
 		AsFatem0f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsFatem0f.findById");
 				query.setParameter("fdatd", fdatd);
 				query.setParameter("fnura", fnura);
@@ -99,7 +63,6 @@ public class AsFatem0fDaoMng implements AsFatem0fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -110,7 +73,6 @@ public class AsFatem0fDaoMng implements AsFatem0fDao, Serializable{
 		AsFatem0f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsFatem0f.findByFdatdFnumdFcocl");
 				query.setParameter("fdatd", fdatd);
 				query.setParameter("fnumd", fnumd);
@@ -119,11 +81,14 @@ public class AsFatem0fDaoMng implements AsFatem0fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

@@ -2,17 +2,27 @@ package it.cascino.oasi.dbas.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import org.apache.commons.lang3.StringUtils;
+
 /**
 * The persistent class for the cas_dat/ancab0f database table.
 * 
 */
-@Entity(name = "Ancab0f")
-@NamedQueries({
-	@NamedQuery(name = "AsAncab0f.findAll", query = "SELECT a FROM Ancab0f a"),
-	@NamedQuery(name = "AsAncab0f.findByCcoda", query = "SELECT a FROM Ancab0f a WHERE a.ccoda = :ccoda order by a.ccodb"),
-	@NamedQuery(name = "AsAncab0f.findByCcodb", query = "SELECT a FROM Ancab0f a WHERE a.ccodb = :ccodb")
-})
+@Entity(
+	name = "Ancab0f"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsAncab0f.findAll",
+		query = "SELECT o FROM Ancab0f o"
+	), @NamedQuery(
+		name = "AsAncab0f.findByCcoda",
+		query = "SELECT o FROM Ancab0f o WHERE o.ccoda = :ccoda order by o.ccodb"
+	), @NamedQuery(
+		name = "AsAncab0f.findByCcodb",
+		query = "SELECT o FROM Ancab0f o WHERE o.ccodb = :ccodb"
+	)
+	}
+)
 public class AsAncab0f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -21,30 +31,24 @@ public class AsAncab0f implements Serializable{
 	
 	public AsAncab0f(){
 	}
-
-	public AsAncab0f(String ccoda, String ccodb){
-		super();
-		this.ccoda = ccoda;
-		this.ccodb = ccodb;
-	}
-
+	
 	public String getCcoda(){
 		return ccoda;
 	}
-
+	
 	public void setCcoda(String ccoda){
 		this.ccoda = ccoda;
 	}
-
+	
 	@Id
 	public String getCcodb(){
 		return ccodb;
 	}
-
+	
 	public void setCcodb(String ccodb){
 		this.ccodb = ccodb;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -56,8 +60,8 @@ public class AsAncab0f implements Serializable{
 	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof AsAncab0f) {
-			if(this.ccodb == ((AsAncab0f)obj).ccodb) {
+		if(obj instanceof AsAncab0f){
+			if(this.ccodb == ((AsAncab0f)obj).ccodb){
 				return true;
 			}else{
 				return false;
@@ -68,12 +72,6 @@ public class AsAncab0f implements Serializable{
 	
 	@Override
 	public String toString(){
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1));
-		stringBuilder.append("[");
-		stringBuilder.append("ccoda=" + StringUtils.trim(ccoda)).append(", ");
-		stringBuilder.append("ccodb=" + StringUtils.trim(ccodb));
-		stringBuilder.append("]");
-		return stringBuilder.toString();
+		return "AsAncab0f [ccoda=" + ccoda + ", ccodb=" + ccodb + "]";
 	}
 }

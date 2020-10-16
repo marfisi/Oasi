@@ -19,47 +19,46 @@ public class MsvAS_ClientiDaoMng implements MsvAS_ClientiDao, Serializable{
 	
 	Logger log = Logger.getLogger(MsvAS_ClientiDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvAS_Clienti> getAll(){
 		List<MsvAS_Clienti> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Clienti.findAll");
 				o = (List<MsvAS_Clienti>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	// TODO @Transactional(rollbackOn = MsvAS_Clienti.class)
-	public void salva(MsvAS_Clienti a){
+	// @Transactional(rollbackOn = MsvAS_Clienti.class)
+	public void salva(MsvAS_Clienti o){
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
-//				log.info("salva: " + a.toString());
-				em.persist(a);
+				// log.info("salva: " + o.toString());
+				em.persist(o);
 			}finally{
 				utx.commit();
 			}
 		}catch(Exception e){
-			log.error("salva: " + a.toString());
+			log.error("salva: " + o.toString());
 			log.fatal(e.toString());
 		}
 	}
 	
-	public void aggiorna(MsvAS_Clienti a){
+	public void aggiorna(MsvAS_Clienti o){
 		try{
 			try{
 				utx.begin();
-				log.info("aggiorna: " + a.toString());
-				em.merge(a);
+				log.info("aggiorna: " + o.toString());
+				em.merge(o);
 			}finally{
 				utx.commit();
 			}
@@ -67,35 +66,17 @@ public class MsvAS_ClientiDaoMng implements MsvAS_ClientiDao, Serializable{
 			log.fatal(e.toString());
 		}
 	}
-	
-//	public void elimina(MsvAS_Clienti aElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvAS_Clienti a = em.find(MsvAS_Clienti.class, aElimina.getMcoda());
-//				log.info("elimina: " + a.toString());
-//				em.remove(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public MsvAS_Clienti getDaCodice(String codice){
 		MsvAS_Clienti o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Clienti.findByCodice");
 				query.setParameter("codice", codice);
 				o = (MsvAS_Clienti)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -114,6 +95,10 @@ public class MsvAS_ClientiDaoMng implements MsvAS_ClientiDao, Serializable{
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

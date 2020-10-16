@@ -19,46 +19,45 @@ public class MsvAS_ListiniDaoMng implements MsvAS_ListiniDao, Serializable{
 	
 	Logger log = Logger.getLogger(MsvAS_ListiniDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvAS_Listini> getAll(){
 		List<MsvAS_Listini> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Listini.findAll");
 				o = (List<MsvAS_Listini>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	public void salva(MsvAS_Listini a){
+	public void salva(MsvAS_Listini o){
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
-//				log.info("salva: " + a.toString());
-				em.persist(a);
+				// log.info("salva: " + a.toString());
+				em.persist(o);
 			}finally{
 				utx.commit();
 			}
 		}catch(Exception e){
-			log.error("salva: " + a.toString());
+			log.error("salva: " + o.toString());
 			log.fatal(e.toString());
 		}
 	}
 	
-	public void aggiorna(MsvAS_Listini a){
+	public void aggiorna(MsvAS_Listini o){
 		try{
 			try{
 				utx.begin();
-				log.info("aggiorna: " + a.toString());
-				em.merge(a);
+				log.info("aggiorna: " + o.toString());
+				em.merge(o);
 			}finally{
 				utx.commit();
 			}
@@ -66,28 +65,11 @@ public class MsvAS_ListiniDaoMng implements MsvAS_ListiniDao, Serializable{
 			log.fatal(e.toString());
 		}
 	}
-	
-//	public void elimina(MsvAS_Listini aElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvAS_Listini a = em.find(MsvAS_Listini.class, aElimina.getMcoda());
-//				log.info("elimina: " + a.toString());
-//				em.remove(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public MsvAS_Listini getDaCodiceTipo(String codArticolo, String tipoListino){
 		MsvAS_Listini o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Listini.findByCodArticoloTipoListino");
 				query.setParameter("codArticolo", codArticolo);
 				query.setParameter("tipoListino", tipoListino);
@@ -95,7 +77,6 @@ public class MsvAS_ListiniDaoMng implements MsvAS_ListiniDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}

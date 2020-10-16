@@ -8,22 +8,36 @@ import javax.persistence.*;
 * The persistent class for the cas_dat/anmag0f database table.
 * 
 */
-@Entity(name="Anmag0f")
-@NamedQueries({
-	@NamedQuery(name = "AsAnmag0f.findAll", query = "SELECT a FROM Anmag0f a WHERE a.atama != 'A' and a.atama != 'S' order by a.mcoda asc"),
-	@NamedQuery(name = "AsAnmag0f.findByMcoda", query = "SELECT a FROM Anmag0f a WHERE a.atama != 'S' and a.mcoda = :mcoda "),
-	@NamedQuery(name = "AsAnmag0f.findAllIngrosso", query = "SELECT a FROM Anmag0f a WHERE a.atama in (' ', 'A') and ((a.mdepi = 1) or (a.mdepi = 3)) order by a.mcoda asc"),
-	@NamedQuery(name = "AsAnmag0f.findAttivi", query = "SELECT a FROM Anmag0f a WHERE a.atama = ' ' order by a.mcoda asc"),
-	@NamedQuery(name = "AsAnmag0f.findByMoalu", query = "SELECT a FROM Anmag0f a WHERE a.atama != 'S' and a.moalu = :moalu ")
-})
+@Entity(
+	name = "Anmag0f"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsAnmag0f.findAll",
+		query = "SELECT o FROM Anmag0f o WHERE o.atama != 'A' and o.atama != 'S' order by o.mcoda asc"
+	), @NamedQuery(
+		name = "AsAnmag0f.findByMcoda",
+		query = "SELECT o FROM Anmag0f o WHERE o.atama != 'S' and o.mcoda = :mcoda "
+	), @NamedQuery(
+		name = "AsAnmag0f.findAllIngrosso",
+		query = "SELECT o FROM Anmag0f o WHERE o.atama in (' ', 'A') and ((o.mdepi = 1) or (o.mdepi = 3)) order by o.mcoda asc"
+	), @NamedQuery(
+		name = "AsAnmag0f.findAttivi",
+		query = "SELECT o FROM Anmag0f o WHERE o.atama = ' ' order by o.mcoda asc"
+	), @NamedQuery(
+		name = "AsAnmag0f.findByMoalu",
+		query = "SELECT o FROM Anmag0f o WHERE o.atama != 'S' and o.moalu = :moalu "
+	)
+	}
+)
 public class AsAnmag0f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Logger
 	 */
-//	@Inject
-//	private Logger log;
+	// @Inject
+	// private Logger log;
 	
 	private String atama;
 	private String mcoda;
@@ -48,20 +62,20 @@ public class AsAnmag0f implements Serializable{
 	
 	public AsAnmag0f(){
 	}
-
+	
 	public String getAtama(){
 		return atama;
 	}
-
+	
 	public void setAtama(String atama){
 		this.atama = atama;
 	}
-
+	
 	@Id
 	public String getMcoda(){
 		return mcoda;
 	}
-
+	
 	public void setMcoda(String mcoda){
 		this.mcoda = mcoda;
 	}
@@ -69,15 +83,15 @@ public class AsAnmag0f implements Serializable{
 	public String getMdesc(){
 		return mdesc;
 	}
-
+	
 	public void setMdesc(String mdesc){
 		this.mdesc = mdesc;
 	}
-
+	
 	public String getMumis(){
 		return mumis;
 	}
-
+	
 	public void setMumis(String mumis){
 		this.mumis = mumis;
 	}
@@ -85,23 +99,23 @@ public class AsAnmag0f implements Serializable{
 	public BigDecimal getMconf(){
 		return mconf;
 	}
-
+	
 	public void setMconf(BigDecimal mconf){
 		this.mconf = mconf;
 	}
-
+	
 	public Integer getMdepi(){
 		return mdepi;
 	}
-
+	
 	public void setMdepi(Integer mdepi){
 		this.mdepi = mdepi;
 	}
-
+	
 	public String getMadiv(){
 		return madiv;
 	}
-
+	
 	public void setMadiv(String madiv){
 		this.madiv = madiv;
 	}
@@ -109,31 +123,31 @@ public class AsAnmag0f implements Serializable{
 	public String getMagru(){
 		return magru;
 	}
-
+	
 	public void setMagru(String magru){
 		this.magru = magru;
 	}
-
+	
 	public String getMasot(){
 		return masot;
 	}
-
+	
 	public void setMasot(String masot){
 		this.masot = masot;
 	}
-
+	
 	public String getMafam(){
 		return mafam;
 	}
-
+	
 	public void setMafam(String mafam){
 		this.mafam = mafam;
 	}
-
+	
 	public String getMastf(){
 		return mastf;
 	}
-
+	
 	public void setMastf(String mastf){
 		this.mastf = mastf;
 	}
@@ -141,23 +155,23 @@ public class AsAnmag0f implements Serializable{
 	public String getMast1(){
 		return mast1;
 	}
-
+	
 	public void setMast1(String mast1){
 		this.mast1 = mast1;
 	}
-
+	
 	public String getMarch(){
 		return march;
 	}
-
+	
 	public void setMarch(String march){
 		this.march = march;
 	}
-
+	
 	public String getModel(){
 		return model;
 	}
-
+	
 	public void setModel(String model){
 		this.model = model;
 	}
@@ -165,51 +179,51 @@ public class AsAnmag0f implements Serializable{
 	public Integer getMcofo(){
 		return mcofo;
 	}
-
+	
 	public void setMcofo(Integer mcofo){
 		this.mcofo = mcofo;
 	}
-
+	
 	public String getMcoaf(){
 		return mcoaf;
 	}
-
+	
 	public void setMcoaf(String mcoaf){
-		this.mcoaf =mcoaf;
+		this.mcoaf = mcoaf;
 	}
-
+	
 	public String getMciva(){
 		return mciva;
 	}
-
+	
 	public void setMciva(String mciva){
 		this.mciva = mciva;
 	}
-
+	
 	public String getMckit(){
 		return mckit;
 	}
-
+	
 	public void setMckit(String mckit){
 		this.mckit = mckit;
 	}
-
+	
 	public String getMoalu(){
 		return moalu;
 	}
-
+	
 	public void setMoalu(String moalu){
 		this.moalu = moalu;
 	}
-
+	
 	public String getMclin(){
 		return mclin;
 	}
-
+	
 	public void setMclin(String mclin){
 		this.mclin = mclin;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -235,7 +249,7 @@ public class AsAnmag0f implements Serializable{
 		result = prime * result + ((mclin == null) ? 0 : mclin.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof AsAnmag0f){
@@ -247,9 +261,9 @@ public class AsAnmag0f implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
-		return "AsAnmag0f [atama=" + atama + ", mcoda=" + mcoda + ", mdesc=" + mdesc + ", mumis=" + mumis + ",  mconf=" + mconf + ", mdepi=" + mdepi + ", madiv=" + madiv + ", magru=" + magru + ", masot=" + masot + ", mafam=" + mafam + ", mastf=" + mastf + ", mast1=" + mast1 + ", march=" + march + ", model=" + model + ", mcofo=" + mcofo + ", mcoaf=" + mcoaf + ", mciva=" + mciva + ", mckit=" + mckit + ", moalu=" + moalu  + ", mclin=" + mclin + "]";
-	}	
+		return "AsAnmag0f [atama=" + atama + ", mcoda=" + mcoda + ", mdesc=" + mdesc + ", mumis=" + mumis + ",  mconf=" + mconf + ", mdepi=" + mdepi + ", madiv=" + madiv + ", magru=" + magru + ", masot=" + masot + ", mafam=" + mafam + ", mastf=" + mastf + ", mast1=" + mast1 + ", march=" + march + ", model=" + model + ", mcofo=" + mcofo + ", mcoaf=" + mcoaf + ", mciva=" + mciva + ", mckit=" + mckit + ", moalu=" + moalu + ", mclin=" + mclin + "]";
+	}
 }

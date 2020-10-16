@@ -9,12 +9,14 @@ public interface AsAlmer0fDao{
 	Boolean salva(AsAlmer0f o);
 	
 	Boolean aggiorna(AsAlmer0f o);
-
+	
 	List<AsAlmer0f> getDaAmset(String amset);
-
+	
 	AsAlmer0f getDaId(String amset, String amgru, String amsot, String amfam, String amstf, String amst1);
-
-//	BigDecimal getRRNDaIdgetDaId(String alb);
+	
+	// BigDecimal getRRNDaIdgetDaId(String alb);
+	
+	void detach(Object entity);
 	
 	void close();
 }

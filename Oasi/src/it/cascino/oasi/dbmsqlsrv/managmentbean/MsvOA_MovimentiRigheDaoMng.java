@@ -19,46 +19,30 @@ public class MsvOA_MovimentiRigheDaoMng implements MsvOA_MovimentiRigheDao, Seri
 	
 	Logger log = Logger.getLogger(MsvOA_MovimentiRigheDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_MovimentiRighe> getAll(){
 		List<MsvOA_MovimentiRighe> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_MovimentiRighe.findAll");
 				o = (List<MsvOA_MovimentiRighe>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-//	public void salva(MsvOA_MovimentiRighe a){
-//		try{
-//			try{
-//				utx.begin();
-//				// precodice.setId(null);
-////				log.info("salva: " + a.toString());
-//				em.persist(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.error("salva: " + a.toString());
-//			log.fatal(e.toString());
-//		}
-//	}
-	
-	public void aggiorna(MsvOA_MovimentiRighe a){
+	public void aggiorna(MsvOA_MovimentiRighe o){
 		try{
 			try{
 				utx.begin();
-				log.info("aggiorna: " + a.toString());
-				em.merge(a);
+				log.info("aggiorna: " + o.toString());
+				em.merge(o);
 			}finally{
 				utx.commit();
 			}
@@ -67,73 +51,57 @@ public class MsvOA_MovimentiRigheDaoMng implements MsvOA_MovimentiRigheDao, Seri
 		}
 	}
 	
-//	public void elimina(MsvOA_MovimentiRighe oElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvOA_MovimentiRighe a = em.find(MsvOA_MovimentiRighe.class, oElimina.getId());
-//				log.info("elimina: " + a.toString());
-//				em.remove(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_MovimentiRighe> getDaIdUnivocoTes(String idUnivocoTes){
 		List<MsvOA_MovimentiRighe> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_MovimentiRighe.findByIdUnivocoTes");
 				query.setParameter("idUnivocoTes", idUnivocoTes);
 				o = (List<MsvOA_MovimentiRighe>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_MovimentiRighe> getDaIdUnivocoTesNonElaborate(String idUnivocoTes){
 		List<MsvOA_MovimentiRighe> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_MovimentiRighe.findByIdUnivocoTesNonElaborate");
 				query.setParameter("idUnivocoTes", idUnivocoTes);
 				o = (List<MsvOA_MovimentiRighe>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_MovimentiRighe> getDaIdUnivocoTesElaborate(String idUnivocoTes){
 		List<MsvOA_MovimentiRighe> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_MovimentiRighe.findByIdUnivocoTesElaborate");
 				query.setParameter("idUnivocoTes", idUnivocoTes);
 				o = (List<MsvOA_MovimentiRighe>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -144,7 +112,6 @@ public class MsvOA_MovimentiRigheDaoMng implements MsvOA_MovimentiRigheDao, Seri
 		MsvOA_MovimentiRighe o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_MovimentiRighe.findByIdUnivocoTesIdUnivocoRiga");
 				query.setParameter("idUnivocoTes", idUnivocoTes);
 				query.setParameter("idUnivocoRiga", idUnivocoRiga);
@@ -152,26 +119,15 @@ public class MsvOA_MovimentiRigheDaoMng implements MsvOA_MovimentiRigheDao, Seri
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-//	public void svuotaTabella(){
-//		try{
-//			try{
-//				utx.begin();
-//				Query query = em.createNamedQuery("MsvOA_MovimentiRighe.svuota");
-//				query.executeUpdate();
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
+	public void detach(Object entity){
+		em.detach(entity);
+	}
 	
 	public void close(){
 		res.close();

@@ -10,12 +10,14 @@ public interface AsClien00fDao{
 	Boolean salva(AsClien00f o);
 	
 	Boolean aggiorna(AsClien00f o);
-
+	
 	AsClien00f getDaClccli(BigDecimal clccli);
 	
 	List<AsClien00f> getAggiornatiDopo(BigDecimal cluins, BigDecimal clhins);
 	
 	Integer aggiornaCampiMancanti();
-		
+	
+	void detach(Object entity);
+	
 	void close();
 }

@@ -19,70 +19,38 @@ public class MsvAS_MovimentiDaoMng implements MsvAS_MovimentiDao, Serializable{
 	
 	Logger log = Logger.getLogger(MsvAS_MovimentiDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvAS_Movimenti> getAll(){
 		List<MsvAS_Movimenti> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Movimenti.findAll");
 				o = (List<MsvAS_Movimenti>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	// TODO @Transactional(rollbackOn = MsvAS_Movimenti.class)
-	public void salva(MsvAS_Movimenti a){
+	public void salva(MsvAS_Movimenti o){
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
-//				log.info("salva: " + a.toString());
-				em.persist(a);
+				// log.info("salva: " + a.toString());
+				em.persist(o);
 			}finally{
 				utx.commit();
 			}
 		}catch(Exception e){
-			log.error("salva: " + a.toString());
+			log.error("salva: " + o.toString());
 			log.fatal(e.toString());
 		}
 	}
-//	
-//	public void aggiorna(MsvAS_Movimenti a){
-//		try{
-//			try{
-//				utx.begin();
-//				log.info("aggiorna: " + a.toString());
-//				em.merge(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-//	
-//	public void elimina(MsvAS_Movimenti aElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvAS_Movimenti a = em.find(MsvAS_Movimenti.class, aElimina.getMcoda());
-//				log.info("elimina: " + a.toString());
-//				em.remove(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public void svuotaTabella(){
 		try{
@@ -96,6 +64,10 @@ public class MsvAS_MovimentiDaoMng implements MsvAS_MovimentiDao, Serializable{
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

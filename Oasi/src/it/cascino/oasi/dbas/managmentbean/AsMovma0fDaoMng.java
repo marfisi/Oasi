@@ -16,26 +16,26 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsMovma0fDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsMovma0f> getAll(){
-		List<AsMovma0f> cod = null;
+		List<AsMovma0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsMovma0f.findAll");
-				cod = (List<AsMovma0f>)query.getResultList();
+				o = (List<AsMovma0f>)query.getResultList();
 			}catch(NoResultException e){
-				cod = null;
+				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
-		return cod;
+		return o;
 	}
 	
 	public Boolean salva(AsMovma0f o){
@@ -70,27 +70,10 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 		return true;
 	}
 	
-//	public void elimina(AsMovma0f oElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				AsMovma0f o = em.find(AsMovma0f.class, oElimina.getVcoda());
-//				log.info("elimina: " + o.toString());
-//				em.remove(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-	
 	public AsMovma0f getDaId(Integer vdatr, String vcaus, Integer vnura, Integer vnumd, Integer vprog){
 		AsMovma0f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsMovma0f.findById");
 				query.setParameter("vdatr", vdatr);
 				query.setParameter("vcaus", vcaus);
@@ -101,18 +84,16 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
-
+	
 	public BigDecimal getUltimoCostoArticolo(String vcoda){
 		BigDecimal o = null;
 		try{
 			try{
-				utx.begin();
 				String sql = "select ((vprez - (vprez * vsco1 / 100)) - ((vprez - (vprez * vsco1 / 100)) * vsco2 / 100)) - (((vprez - (vprez * vsco1 / 100)) - ((vprez - (vprez * vsco1 / 100)) * vsco2 / 100)) * vsco3 / 100) from movma0f a where a.vprez > 0 and a.vcoda = :vcoda and left(a.vcaus, 1) = 'B' and a.vcaus <> 'B99' order by a.vdatr desc limit 1";
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("vcoda", vcoda);
@@ -120,19 +101,19 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsMovma0f> getDaVcoda(String vcoda, String dataPartenza, String depositi){
 		List<AsMovma0f> o = null;
 		try{
 			try{
-				utx.begin();
 				String sql = "select * from movma0f where vcoda = :vcoda and vdatr >= :datapart and vndep in (" + depositi + ") order by vdatr, vndep, vcaus, vnura, vnumd";
 				Query query = em.createNativeQuery(sql, AsMovma0f.class);
 				query.setParameter("vcoda", vcoda);
@@ -141,7 +122,6 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -191,6 +171,10 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

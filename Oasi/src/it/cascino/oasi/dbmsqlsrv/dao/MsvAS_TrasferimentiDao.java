@@ -8,11 +8,9 @@ public interface MsvAS_TrasferimentiDao{
 	
 	void salva(MsvAS_Trasferimenti o);
 	
-//	void aggiorna(MsvAS_Trasferimenti o);
-//	
-//	void elimina(MsvAS_Trasferimenti o);
-
 	void svuotaTabella();
+	
+	void detach(Object entity);
 	
 	void close();
 }

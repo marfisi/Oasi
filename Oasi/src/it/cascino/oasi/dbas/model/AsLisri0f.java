@@ -9,11 +9,16 @@ import it.cascino.oasi.dbas.model.pkey.AsLisri0fPKey;
 * The persistent class for the cas_dat/Lisri0f database table.
 * 
 */
- @Entity(name = "Lisri0f")
- @NamedQueries({
-	 @NamedQuery(name = "AsLisri0f.findAll", query = "SELECT o FROM Lisri0f o"),
-	 @NamedQuery(name = "AsLisri0f.findById", query = "SELECT o FROM Lisri0f o WHERE o.id.lscoa = :lscoa and o.id.idlis = :idlis and o.lstip = 'V' and o.lstve = :lstve")
- })
+@Entity(
+	name = "Lisri0f"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsLisri0f.findById",
+		query = "SELECT o FROM Lisri0f o WHERE o.id.lscoa = :lscoa and o.id.idlis = :idlis and o.lstip = 'V' and o.lstve = :lstve"
+	)
+	}
+)
 public class AsLisri0f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

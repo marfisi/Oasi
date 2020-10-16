@@ -8,13 +8,26 @@ import javax.persistence.*;
 * The persistent class for the $$libfca/clien00f database table.
 * 
 */
-@Entity(name="Clien00f")
-@Table(name="Clien00f", schema="$$libfca")
-@NamedQueries({
-	@NamedQuery(name = "AsClien00f.findAll", query = "SELECT a FROM Clien00f a order by a.clccli"),
-	@NamedQuery(name = "AsClien00f.findByClccli", query = "SELECT a FROM Clien00f a WHERE a.clccli = :clccli"),
-	@NamedQuery(name = "AsClien00f.findAggiornatiDopo", query = "SELECT a FROM Clien00f a WHERE a.cluins > :cluins or (a.cluins = :cluins and a.clhins > :clhins) order by a.clccli")
-})
+@Entity(
+	name = "Clien00f"
+)
+@Table(
+	name = "Clien00f",
+	schema = "$$libfca"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsClien00f.findAll",
+		query = "SELECT a FROM Clien00f a order by a.clccli"
+	), @NamedQuery(
+		name = "AsClien00f.findByClccli",
+		query = "SELECT a FROM Clien00f a WHERE a.clccli = :clccli"
+	), @NamedQuery(
+		name = "AsClien00f.findAggiornatiDopo",
+		query = "SELECT a FROM Clien00f a WHERE a.cluins > :cluins or (a.cluins = :cluins and a.clhins > :clhins) order by a.clccli"
+	)
+	}
+)
 public class AsClien00f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -52,172 +65,172 @@ public class AsClien00f implements Serializable{
 	
 	public AsClien00f(){
 	}
-
+	
 	@Id
 	public BigDecimal getClccli(){
 		return clccli;
 	}
-
+	
 	public void setClccli(BigDecimal clccli){
 		this.clccli = clccli;
 	}
-
+	
 	public String getClfann(){
 		return clfann;
 	}
-
+	
 	public void setClfann(String clfann){
 		this.clfann = clfann;
 	}
-
+	
 	public String getCltcli(){
 		return cltcli;
 	}
-
+	
 	public void setCltcli(String cltcli){
 		this.cltcli = cltcli;
 	}
-
+	
 	public String getCldrso(){
 		return cldrso;
 	}
-
+	
 	public void setCldrso(String cldrso){
 		this.cldrso = cldrso;
 	}
-
+	
 	public String getCldrsa(){
 		return cldrsa;
 	}
-
+	
 	public void setCldrsa(String cldrsa){
 		this.cldrsa = cldrsa;
 	}
-
+	
 	public String getCldind(){
 		return cldind;
 	}
-
+	
 	public void setCldind(String cldind){
 		this.cldind = cldind;
 	}
-
+	
 	public String getClccap(){
 		return clccap;
 	}
-
+	
 	public void setClccap(String clccap){
 		this.clccap = clccap;
 	}
-
+	
 	public String getCldloc(){
 		return cldloc;
 	}
-
+	
 	public void setCldloc(String cldloc){
 		this.cldloc = cldloc;
 	}
-
+	
 	public String getClcprv(){
 		return clcprv;
 	}
-
+	
 	public void setClcprv(String clcprv){
 		this.clcprv = clcprv;
 	}
-
+	
 	public String getClcfis(){
 		return clcfis;
 	}
-
+	
 	public void setClcfis(String clcfis){
 		this.clcfis = clcfis;
 	}
-
+	
 	public BigDecimal getClcpiv(){
 		return clcpiv;
 	}
-
+	
 	public void setClcpiv(BigDecimal clcpiv){
 		this.clcpiv = clcpiv;
 	}
-
+	
 	public String getClnprt(){
 		return clnprt;
 	}
-
+	
 	public void setClnprt(String clnprt){
 		this.clnprt = clnprt;
 	}
-
+	
 	public String getClntel(){
 		return clntel;
 	}
-
+	
 	public void setClntel(String clntel){
 		this.clntel = clntel;
 	}
-
+	
 	public String getClnprf(){
 		return clnprf;
 	}
-
+	
 	public void setClnprf(String clnprf){
 		this.clnprf = clnprf;
 	}
-
+	
 	public String getClnfax(){
 		return clnfax;
 	}
-
+	
 	public void setClnfax(String clnfax){
 		this.clnfax = clnfax;
 	}
-
+	
 	public String getClntex(){
 		return clntex;
 	}
-
+	
 	public void setClntex(String clntex){
 		this.clntex = clntex;
 	}
-
+	
 	public String getCldema(){
 		return cldema;
 	}
-
+	
 	public void setCldema(String cldema){
 		this.cldema = cldema;
 	}
-
+	
 	public String getClcag1(){
 		return clcag1;
 	}
-
+	
 	public void setClcag1(String clcag1){
 		this.clcag1 = clcag1;
 	}
-
+	
 	public String getClcf08(){
 		return clcf08;
 	}
-
+	
 	public void setClcf08(String clcf08){
 		this.clcf08 = clcf08;
 	}
-
+	
 	public String getClfisp(){
 		return clfisp;
 	}
-
+	
 	public void setClfisp(String clfisp){
 		this.clfisp = clfisp;
 	}
-
+	
 	public String getClccme(){
 		return clccme;
 	}
-
+	
 	public void setClccme(String clccme){
 		this.clccme = clccme;
 	}
@@ -225,31 +238,31 @@ public class AsClien00f implements Serializable{
 	public String getCldalt(){
 		return cldalt;
 	}
-
+	
 	public void setCldalt(String cldalt){
 		this.cldalt = cldalt;
 	}
-
+	
 	public String getClcnaz(){
 		return clcnaz;
 	}
-
+	
 	public void setClcnaz(String clcnaz){
 		this.clcnaz = clcnaz;
 	}
-
+	
 	public BigDecimal getClcpag(){
 		return clcpag;
 	}
-
+	
 	public void setClcpag(BigDecimal clcpag){
 		this.clcpag = clcpag;
 	}
-
+	
 	public String getClfasi(){
 		return clfasi;
 	}
-
+	
 	public void setClfasi(String clfasi){
 		this.clfasi = clfasi;
 	}
@@ -257,51 +270,51 @@ public class AsClien00f implements Serializable{
 	public String getCltdoc(){
 		return cltdoc;
 	}
-
+	
 	public void setCltdoc(String cltdoc){
 		this.cltdoc = cltdoc;
 	}
-
+	
 	public String getClcpor(){
 		return clcpor;
 	}
-
+	
 	public void setClcpor(String clcpor){
 		this.clcpor = clcpor;
 	}
-
+	
 	public String getClcusr(){
 		return clcusr;
 	}
-
+	
 	public void setClcusr(String clcusr){
 		this.clcusr = clcusr;
 	}
-
+	
 	public BigDecimal getCluins(){
 		return cluins;
 	}
-
+	
 	public void setCluins(BigDecimal cluins){
 		this.cluins = cluins;
 	}
-
+	
 	public BigDecimal getClhins(){
 		return clhins;
 	}
-
+	
 	public void setClhins(BigDecimal clhins){
 		this.clhins = clhins;
 	}
-
+	
 	public String getClcnor(){
 		return clcnor;
 	}
-
+	
 	public void setClcnor(String clcnor){
 		this.clcnor = clcnor;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -337,11 +350,11 @@ public class AsClien00f implements Serializable{
 		result = prime * result + ((clcnor == null) ? 0 : clcnor.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof AsClien00f) {
-			if(this.clccli == ((AsClien00f)obj).clccli) {
+		if(obj instanceof AsClien00f){
+			if(this.clccli == ((AsClien00f)obj).clccli){
 				return true;
 			}else{
 				return false;

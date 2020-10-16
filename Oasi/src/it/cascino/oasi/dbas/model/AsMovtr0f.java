@@ -9,13 +9,25 @@ import it.cascino.oasi.dbas.model.pkey.AsMovtr0fPKey;
 * The persistent class for the cas_dat/Movtr0f database table.
 * 
 */
-@Entity(name = "Movtr0f")
-@NamedQueries({
-	@NamedQuery(name = "AsMovtr0f.findAll", query = "SELECT o FROM Movtr0f o"),
-	@NamedQuery(name = "AsMovtr0f.findById", query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat = :mtdat and o.id.mtnuz = :mtnuz and o.id.mtnum = :mtnum and o.id.mtnur = :mtnur"),
-	@NamedQuery(name = "AsMovtr0f.findByMtdatMtdpaMtute", query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat = :mtdat and o.mtdpp = :mtdpp and o.mtute = :mtute"),
-	@NamedQuery(name = "AsMovtr0f.findByMtdatMtdppMtdpaMtuteMtcod", query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat >= :mtdat and o.mtdpp = :mtdpp and o.mtdpa = :mtdpa and o.mtute = :mtute and o.mtcod = :mtcod and o.mtsta = '' order by o.id.mtnur asc")
-})
+@Entity(
+	name = "Movtr0f"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsMovtr0f.findAll",
+		query = "SELECT o FROM Movtr0f o"
+	), @NamedQuery(
+		name = "AsMovtr0f.findById",
+		query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat = :mtdat and o.id.mtnuz = :mtnuz and o.id.mtnum = :mtnum and o.id.mtnur = :mtnur"
+	), @NamedQuery(
+		name = "AsMovtr0f.findByMtdatMtdpaMtute",
+		query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat = :mtdat and o.mtdpp = :mtdpp and o.mtute = :mtute"
+	), @NamedQuery(
+		name = "AsMovtr0f.findByMtdatMtdppMtdpaMtuteMtcod",
+		query = "SELECT o FROM Movtr0f o WHERE o.id.mtdat >= :mtdat and o.mtdpp = :mtdpp and o.mtdpa = :mtdpa and o.mtute = :mtute and o.mtcod = :mtcod and o.mtsta = '' order by o.id.mtnur asc"
+	)
+	}
+)
 public class AsMovtr0f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -29,9 +41,9 @@ public class AsMovtr0f implements Serializable{
 	private AsMovtr0fPKey id;
 	private String mtcod;
 	private BigDecimal mtqua;
-	private BigDecimal mtqri; 
+	private BigDecimal mtqri;
 	private Integer mtdpp;
-	private Integer mtdpa; 
+	private Integer mtdpa;
 	private Integer mtime;
 	private String mtute;
 	private String mtutr;
@@ -43,111 +55,111 @@ public class AsMovtr0f implements Serializable{
 	public AsMovtr0f(){
 		this.id = new AsMovtr0fPKey();
 	}
-
+	
 	public AsMovtr0fPKey getId(){
 		return id;
 	}
-
+	
 	public void setId(AsMovtr0fPKey id){
 		this.id = id;
 	}
-
+	
 	public String getMtcod(){
 		return mtcod;
 	}
-
+	
 	public void setMtcod(String mtcod){
 		this.mtcod = mtcod;
 	}
-
+	
 	public BigDecimal getMtqua(){
 		return mtqua;
 	}
-
+	
 	public void setMtqua(BigDecimal mtqua){
 		this.mtqua = mtqua;
 	}
-
+	
 	public BigDecimal getMtqri(){
 		return mtqri;
 	}
-
+	
 	public void setMtqri(BigDecimal mtqri){
 		this.mtqri = mtqri;
 	}
-
+	
 	public Integer getMtdpp(){
 		return mtdpp;
 	}
-
+	
 	public void setMtdpp(Integer mtdpp){
 		this.mtdpp = mtdpp;
 	}
-
+	
 	public Integer getMtdpa(){
 		return mtdpa;
 	}
-
+	
 	public void setMtdpa(Integer mtdpa){
 		this.mtdpa = mtdpa;
 	}
-
+	
 	public Integer getMtime(){
 		return mtime;
 	}
-
+	
 	public void setMtime(Integer mtime){
 		this.mtime = mtime;
 	}
-
+	
 	public String getMtute(){
 		return mtute;
 	}
-
+	
 	public void setMtute(String mtute){
 		this.mtute = mtute;
 	}
-
+	
 	public String getMtutr(){
 		return mtutr;
 	}
-
+	
 	public void setMtutr(String mtutr){
 		this.mtutr = mtutr;
 	}
-
+	
 	public String getMtsta(){
 		return mtsta;
 	}
-
+	
 	public void setMtsta(String mtsta){
 		this.mtsta = mtsta;
 	}
-
+	
 	public Integer getMtdar(){
 		return mtdar;
 	}
-
+	
 	public void setMtdar(Integer mtdar){
 		this.mtdar = mtdar;
 	}
-
+	
 	public Integer getMtimr(){
 		return mtimr;
 	}
-
+	
 	public void setMtimr(Integer mtimr){
 		this.mtimr = mtimr;
 	}
-
+	
 	public String getMtumi(){
 		return mtumi;
 	}
-
+	
 	public void setMtumi(String mtumi){
 		this.mtumi = mtumi;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -165,13 +177,13 @@ public class AsMovtr0f implements Serializable{
 		result = prime * result + ((mtute == null) ? 0 : mtute.hashCode());
 		result = prime * result + ((mtutr == null) ? 0 : mtutr.hashCode());
 		result = prime * result + ((mtumi == null) ? 0 : mtumi.hashCode());
-			return result;
+		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof AsMovtr0f) {
-			if(this.id == ((AsMovtr0f)obj).id) {
+		if(obj instanceof AsMovtr0f){
+			if(this.id == ((AsMovtr0f)obj).id){
 				return true;
 			}else{
 				return false;
@@ -179,7 +191,7 @@ public class AsMovtr0f implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "AsMovtr0f [id=" + id + ", mtcod=" + mtcod + ", mtqua=" + mtqua + ", mtqri=" + mtqri + ", mtdpp=" + mtdpp + ", mtdpa=" + mtdpa + ", mtime=" + mtime + ", mtute=" + mtute + ", mtutr=" + mtutr + ", mtsta=" + mtsta + ", mtdar=" + mtdar + ", mtimr=" + mtimr + ", mtumi=" + mtumi + "]";

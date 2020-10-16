@@ -15,76 +15,77 @@ public class AsOaard0fDaoMng implements AsOaard0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsOaard0fDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsOaard0f> getAll(){
 		List<AsOaard0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsOaard0f.findAll");
 				o = (List<AsOaard0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	public Boolean aggiorna(AsOaard0f a){
+	public Boolean aggiorna(AsOaard0f o){
 		try{
 			try{
 				utx.begin();
-				em.merge(a);
+				// log.info("aggiorna: " + o.toString());
+				em.merge(o);
 			}finally{
 				utx.commit();
 			}
 		}catch(Exception e){
-			log.info("aggiorna: " + a.toString());
+			log.info("aggiorna: " + o.toString());
 			log.fatal(e.toString());
 			return false;
 		}
 		return true;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsOaard0f> getDaDcoda(String dcoda){
 		List<AsOaard0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsOaard0f.findByDcoda");
 				query.setParameter("dcoda", dcoda);
 				o = (List<AsOaard0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsOaard0f> getDaDcode(Integer dcode){
 		List<AsOaard0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsOaard0f.findByDcode");
 				query.setParameter("dcode", dcode);
 				o = (List<AsOaard0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -95,7 +96,6 @@ public class AsOaard0fDaoMng implements AsOaard0fDao, Serializable{
 		AsOaard0f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsOaard0f.findByDcodaDcode");
 				query.setParameter("dcoda", dcoda);
 				query.setParameter("dcode", dcode);
@@ -103,44 +103,43 @@ public class AsOaard0fDaoMng implements AsOaard0fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-//	@SuppressWarnings("unchecked")
-//	public List<AsOaard0f> getDaElaborare(){
-//		List<AsOaard0f> o = null;
-//		try{
-//			try{
-//				utx.begin();
-//				Query query = em.createNamedQuery("AsOaard0f.findDaElab");
-//				o = (List<AsOaard0f>)query.getResultList();
-//			}catch(NoResultException e){
-//				o = null;
-//			}
-//			utx.commit();
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//		return o;
-//	}
+	// @SuppressWarnings("unchecked")
+	// public List<AsOaard0f> getDaElaborare(){
+	// List<AsOaard0f> o = null;
+	// try{
+	// try{
+	// utx.begin();
+	// Query query = em.createNamedQuery("AsOaard0f.findDaElab");
+	// o = (List<AsOaard0f>)query.getResultList();
+	// }catch(NoResultException e){
+	// o = null;
+	// }
+	// utx.commit();
+	// }catch(Exception e){
+	// log.fatal(e.toString());
+	// }
+	// return o;
+	// }
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsOaard0f> getDaElaborare(){
 		List<AsOaard0f> o = null;
 		try{
 			try{
-				utx.begin();
 				String sql = "SELECT * FROM Oaard0f a WHERE a.dflag = ' ' order by a.dcoda asc, a.dcode asc";
 				Query query = em.createNativeQuery(sql, AsOaard0f.class);
 				o = (List<AsOaard0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -153,16 +152,20 @@ public class AsOaard0fDaoMng implements AsOaard0fDao, Serializable{
 				utx.begin();
 				Query query = em.createNamedQuery("AsOaard0f.svuota");
 				query.executeUpdate();
-				//String sql = "TRUNCATE TABLE Oaard0f";
-//				String sql = "DELETE FROM Oaard0f";
-//				Query query = em.createNativeQuery(sql);
-//				query.executeUpdate();//.getResultList();
+				// String sql = "TRUNCATE TABLE Oaard0f";
+				// String sql = "DELETE FROM Oaard0f";
+				// Query query = em.createNativeQuery(sql);
+				// query.executeUpdate();//.getResultList();
 			}catch(NoResultException e){
 			}
 			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

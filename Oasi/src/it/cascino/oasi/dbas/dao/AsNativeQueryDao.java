@@ -9,7 +9,7 @@ public interface AsNativeQueryDao{
 	BigDecimal getDaMovtr0f_MtquaDaMtcodAndMtdpa(String mtcod, Integer mtdpa);
 	
 	BigDecimal getDaMovtr0f_MtquaDaMtcodAndMtdpp(String mtcod, Integer mtdpp);
-
+	
 	Timestamp getDaSysdummy1_TimestampAs400();
 	
 	List<Object[]> getArdepArren(String articolo, String depIngrosso);
@@ -21,6 +21,8 @@ public interface AsNativeQueryDao{
 	List<Object[]> getStoricoMovimenti();
 	
 	List<Object[]> getChiusuraCassaSede(Integer mcdac);
-
+	
+	void detach(Object entity);
+	
 	void close();
 }

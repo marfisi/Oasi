@@ -15,59 +15,41 @@ public class AsTabge00fDaoMng implements AsTabge00fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsTabge00fDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsTabge00f> getAll(){
 		List<AsTabge00f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsTabge00f.findAll");
 				o = (List<AsTabge00f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-//	public AsTabge00f getDaClccli(Integer clccli){
-//		AsTabge00f o = null;
-//		try{
-//			try{
-//				utx.begin();
-//				Query query = em.createNamedQuery("AsTabge00f.findByClccli");
-//				query.setParameter("clccli", clccli);
-//				o = (AsTabge00f)query.getSingleResult();
-//			}catch(NoResultException e){
-//				o = null;
-//			}
-//			utx.commit();
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//		return o;
-//	}
-	 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsTabge00f> getDaTachia(String tachia){
 		List<AsTabge00f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsTabge00f.findByTachia");
 				query.setParameter("tachia", tachia);
 				o = (List<AsTabge00f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -78,15 +60,13 @@ public class AsTabge00fDaoMng implements AsTabge00fDao, Serializable{
 		Boolean o = null;
 		try{
 			try{
-				utx.begin();
-				String sql = "select count(*) from $$libfca.tabge00f a where substr(a.tachia, 1, 2)='AG' and substr(a.tachia, 14, 2) = :codagente and substr(a.tadati, 99, 2) <> 'SM'";     
+				String sql = "select count(*) from $$libfca.tabge00f a where substr(a.tachia, 1, 2)='AG' and substr(a.tachia, 14, 2) = :codagente and substr(a.tadati, 99, 2) <> 'SM'";
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("codagente", codAgente);
 				o = (((Integer)query.getSingleResult()) == 0 ? false : true);
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -97,7 +77,6 @@ public class AsTabge00fDaoMng implements AsTabge00fDao, Serializable{
 		String o = null;
 		try{
 			try{
-				utx.begin();
 				String sql = "select indirizzo_e_mail from $$libfca.rubri00f where tp_cli_for_potenz = :cof and titolo = 'PEC' and cod_cli_for_potenz = :codcof limit 1";
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("codcof", codCoF);
@@ -106,7 +85,6 @@ public class AsTabge00fDaoMng implements AsTabge00fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -159,15 +137,13 @@ public class AsTabge00fDaoMng implements AsTabge00fDao, Serializable{
 		String o = null;
 		try{
 			try{
-				utx.begin();
-				String sql = "select tadati from $$libfca.tabge00f a where substr(a.tachia, 1, 2)='PO' and substr(a.tachia, 15, 1) = :codsped";     
+				String sql = "select tadati from $$libfca.tabge00f a where substr(a.tachia, 1, 2)='PO' and substr(a.tachia, 15, 1) = :codsped";
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("codsped", codSped);
 				o = (String)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -178,21 +154,22 @@ public class AsTabge00fDaoMng implements AsTabge00fDao, Serializable{
 		String o = null;
 		try{
 			try{
-				utx.begin();
-				String sql = "select substr(tadati, 26, 4) from $$libfca.tabge00f o where substr(o.tachia, 1, 2) = 'IV' and substr(o.tachia, 14, 2) = :codiva";     
+				String sql = "select substr(tadati, 26, 4) from $$libfca.tabge00f o where substr(o.tachia, 1, 2) = 'IV' and substr(o.tachia, 14, 2) = :codiva";
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("codiva", codiva);
 				o = (String)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
-
+	
+	public void detach(Object entity){
+		em.detach(entity);
+	}
 	
 	public void close(){
 		res.close();

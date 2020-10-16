@@ -6,13 +6,11 @@ import it.cascino.oasi.dbmsqlsrv.model.MsvAS_Marchi;
 public interface MsvAS_MarchiDao{
 	List<MsvAS_Marchi> getAll();
 	
-	void salva(MsvAS_Marchi a);
-//	
-//	void aggiorna(MsvAS_Marchi a);
-//	
-//	void elimina(MsvAS_Marchi a);
-
+	void salva(MsvAS_Marchi o);
+	
 	void svuotaTabella();
+	
+	void detach(Object entity);
 	
 	void close();
 }

@@ -15,22 +15,22 @@ public class AsAnma20fDaoMng implements AsAnma20fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsAnma20fDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsAnma20f> getAll(){
 		List<AsAnma20f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsAnma20f.findAll");
 				o = (List<AsAnma20f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -41,7 +41,6 @@ public class AsAnma20fDaoMng implements AsAnma20fDao, Serializable{
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
 				log.info("salva: " + o.toString());
 				em.persist(o);
 			}finally{
@@ -74,37 +73,39 @@ public class AsAnma20fDaoMng implements AsAnma20fDao, Serializable{
 		AsAnma20f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsAnma20f.findByM2cod");
 				query.setParameter("m2cod", m2cod);
 				o = (AsAnma20f)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsAnma20f> getDaM2oas(String m2oas){
 		List<AsAnma20f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsAnma20f.findByM2oas");
 				query.setParameter("m2oas", m2oas);
 				o = (List<AsAnma20f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

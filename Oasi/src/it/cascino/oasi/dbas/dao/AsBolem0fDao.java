@@ -9,10 +9,12 @@ public interface AsBolem0fDao{
 	Boolean salva(AsBolem0f o);
 	
 	Boolean aggiorna(AsBolem0f o);
-
+	
 	AsBolem0f getDaId(Integer bdatd, Integer bnura, Integer bnumd);
 	
 	AsBolem0f getDaBnote(String bnote);
-
+	
+	void detach(Object entity);
+	
 	void close();
 }

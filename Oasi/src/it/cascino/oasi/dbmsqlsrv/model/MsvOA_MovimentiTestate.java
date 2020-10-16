@@ -9,20 +9,30 @@ import javax.persistence.*;
 * The persistent class for the OA_MovimentiTestate database table.
 * 
 */
-@Entity(name="OA_MovimentiTestate")
-@NamedQueries({
-	@NamedQuery(name = "MsvOA_MovimentiTestate.findAll", query = "SELECT o FROM OA_MovimentiTestate o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.dataReg, o.idUnivocoTes"),
-	@NamedQuery(name = "MsvOA_MovimentiTestate.findByIdUnivocoTes", query = "SELECT o FROM OA_MovimentiTestate o WHERE o.idUnivocoTes = :idUnivocoTes"),
-	@NamedQuery(name = "MsvOA_MovimentiTestate.findByIdPntNReg", query = "SELECT o FROM OA_MovimentiTestate o WHERE o.idPntNReg = :idPntNReg")
-})
+@Entity(
+	name = "OA_MovimentiTestate"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "MsvOA_MovimentiTestate.findAll",
+		query = "SELECT o FROM OA_MovimentiTestate o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.dataReg, o.idUnivocoTes"
+	), @NamedQuery(
+		name = "MsvOA_MovimentiTestate.findByIdUnivocoTes",
+		query = "SELECT o FROM OA_MovimentiTestate o WHERE o.idUnivocoTes = :idUnivocoTes"
+	), @NamedQuery(
+		name = "MsvOA_MovimentiTestate.findByIdPntNReg",
+		query = "SELECT o FROM OA_MovimentiTestate o WHERE o.idPntNReg = :idPntNReg"
+	)
+	}
+)
 public class MsvOA_MovimentiTestate implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Logger
 	 */
-//	@Inject
-//	private Logger log;
+	// @Inject
+	// private Logger log;
 	
 	private String idUnivocoTes;
 	private Timestamp dataReg;
@@ -46,159 +56,159 @@ public class MsvOA_MovimentiTestate implements Serializable{
 	private String notaFZ;
 	private String notaFN;
 	private String tipoOperazione;
-
+	
 	public MsvOA_MovimentiTestate(){
 	}
-
+	
 	@Id
 	public String getIdUnivocoTes(){
 		return idUnivocoTes;
 	}
-
+	
 	public void setIdUnivocoTes(String idUnivocoTes){
 		this.idUnivocoTes = idUnivocoTes;
 	}
-
+	
 	public Timestamp getDataReg(){
 		return dataReg;
 	}
-
+	
 	public void setDataReg(Timestamp dataReg){
 		this.dataReg = dataReg;
 	}
-
+	
 	public String getCausaleOasi(){
 		return causaleOasi;
 	}
-
+	
 	public void setCausaleOasi(String causaleOasi){
 		this.causaleOasi = causaleOasi;
 	}
-
+	
 	public Integer getTipoPrezzo(){
 		return tipoPrezzo;
 	}
-
+	
 	public void setTipoPrezzo(Integer tipoPrezzo){
 		this.tipoPrezzo = tipoPrezzo;
 	}
-
+	
 	public Integer getDocumAccomp(){
 		return documAccomp;
 	}
-
+	
 	public void setDocumAccomp(Integer documAccomp){
 		this.documAccomp = documAccomp;
 	}
-
+	
 	public String getCodMag(){
 		return codMag;
 	}
-
+	
 	public void setCodMag(String codMag){
 		this.codMag = codMag;
 	}
-
+	
 	public String getCodCliFor(){
 		return codCliFor;
 	}
-
+	
 	public void setCodCliFor(String codCliFor){
 		this.codCliFor = codCliFor;
 	}
-
+	
 	public String getIdPntNReg(){
 		return idPntNReg;
 	}
-
+	
 	public void setIdPntNReg(String idPntNReg){
 		this.idPntNReg = idPntNReg;
 	}
-
+	
 	public String getCodIvaTes(){
 		return codIvaTes;
 	}
-
+	
 	public void setCodIvaTes(String codIvaTes){
 		this.codIvaTes = codIvaTes;
 	}
-
+	
 	public String getNroDoc(){
 		return nroDoc;
 	}
-
+	
 	public void setNroDoc(String nroDoc){
 		this.nroDoc = nroDoc;
 	}
-
+	
 	public Timestamp getDataDoc(){
 		return dataDoc;
 	}
-
+	
 	public void setDataDoc(Timestamp dataDoc){
 		this.dataDoc = dataDoc;
 	}
-
+	
 	public String getIpaCodiceCIG(){
 		return ipaCodiceCIG;
 	}
-
+	
 	public void setIpaCodiceCIG(String ipaCodiceCIG){
 		this.ipaCodiceCIG = ipaCodiceCIG;
 	}
-
+	
 	public String getIpaCodiceCUP(){
 		return ipaCodiceCUP;
 	}
-
+	
 	public void setIpaCodiceCUP(String ipaCodiceCUP){
 		this.ipaCodiceCUP = ipaCodiceCUP;
 	}
-
+	
 	public String getIpaCodiceCommessa(){
 		return ipaCodiceCommessa;
 	}
-
+	
 	public void setIpaCodiceCommessa(String ipaCodiceCommessa){
 		this.ipaCodiceCommessa = ipaCodiceCommessa;
 	}
-
+	
 	public String getIpaIdDocumento(){
 		return ipaIdDocumento;
 	}
-
+	
 	public void setIpaIdDocumento(String ipaIdDocumento){
 		this.ipaIdDocumento = ipaIdDocumento;
 	}
-
+	
 	public Timestamp getIpaDataDocumento(){
 		return ipaDataDocumento;
 	}
-
+	
 	public void setIpaDataDocumento(Timestamp ipaDataDocumento){
 		this.ipaDataDocumento = ipaDataDocumento;
 	}
-
+	
 	public String getCodPagamento(){
 		return codPagamento;
 	}
-
+	
 	public void setCodPagamento(String codPagamento){
 		this.codPagamento = codPagamento;
 	}
-
+	
 	public String getnMovDdt(){
 		return nMovDdt;
 	}
-
+	
 	public void setnMovDdt(String nMovDdt){
 		this.nMovDdt = nMovDdt;
 	}
-
+	
 	public BigDecimal getValTrasporto(){
 		return valTrasporto;
 	}
-
+	
 	public void setValTrasporto(BigDecimal valTrasporto){
 		this.valTrasporto = valTrasporto;
 	}
@@ -206,7 +216,7 @@ public class MsvOA_MovimentiTestate implements Serializable{
 	public String getNotaFZ(){
 		return notaFZ;
 	}
-
+	
 	public void setNotaFZ(String notaFZ){
 		this.notaFZ = notaFZ;
 	}
@@ -214,19 +224,19 @@ public class MsvOA_MovimentiTestate implements Serializable{
 	public String getNotaFN(){
 		return notaFN;
 	}
-
+	
 	public void setNotaFN(String notaFN){
 		this.notaFN = notaFN;
 	}
-
+	
 	public String getTipoOperazione(){
 		return tipoOperazione;
 	}
-
+	
 	public void setTipoOperazione(String tipoOperazione){
 		this.tipoOperazione = tipoOperazione;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -255,7 +265,7 @@ public class MsvOA_MovimentiTestate implements Serializable{
 		result = prime * result + ((valTrasporto == null) ? 0 : valTrasporto.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof MsvOA_MovimentiTestate){
@@ -267,7 +277,7 @@ public class MsvOA_MovimentiTestate implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "MsvOA_MovimentiTestate [idUnivocoTes=" + idUnivocoTes + ", dataReg=" + dataReg + ", causaleOasi=" + causaleOasi + ", tipoPrezzo=" + tipoPrezzo + ", documAccomp=" + documAccomp + ", codMag=" + codMag + ", codCliFor=" + codCliFor + ", idPntNReg=" + idPntNReg + ", codIvaTes=" + codIvaTes + ", nroDoc=" + nroDoc + ", dataDoc=" + dataDoc + ", ipaCodiceCIG=" + ipaCodiceCIG + ", ipaCodiceCUP=" + ipaCodiceCUP + ", ipaCodiceCommessa=" + ipaCodiceCommessa + ", ipaIdDocumento=" + ipaIdDocumento + ", ipaDataDocumento=" + ipaDataDocumento + ", codPagamento=" + codPagamento + ", nMovDdt=" + nMovDdt + ", valTrasporto=" + valTrasporto + ", notaFZ=" + notaFZ + ", notaFN=" + notaFN + ", tipoOperazione=" + tipoOperazione + "]";

@@ -8,20 +8,30 @@ import javax.persistence.*;
 * The persistent class for the OA_Clienti database table.
 * 
 */
-@Entity(name="OA_Clienti")
-@NamedQueries({
-	@NamedQuery(name = "MsvOA_Clienti.findAll", query = "SELECT o FROM OA_Clienti o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.codice != '' order by o.codice asc"),
-	@NamedQuery(name = "MsvOA_Clienti.findByCodice", query = "SELECT o FROM OA_Clienti o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.codice = :codice"),
-	@NamedQuery(name = "MsvOA_Clienti.svuota", query = "DELETE FROM OA_Clienti o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.codice != ''")
-})
+@Entity(
+	name = "OA_Clienti"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "MsvOA_Clienti.findAll",
+		query = "SELECT o FROM OA_Clienti o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.codice != '' order by o.codice asc"
+	), @NamedQuery(
+		name = "MsvOA_Clienti.findByCodice",
+		query = "SELECT o FROM OA_Clienti o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.codice = :codice"
+	), @NamedQuery(
+		name = "MsvOA_Clienti.svuota",
+		query = "DELETE FROM OA_Clienti o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.codice != ''"
+	)
+	}
+)
 public class MsvOA_Clienti implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Logger
 	 */
-//	@Inject
-//	private Logger log;
+	// @Inject
+	// private Logger log;
 	
 	private String codice;
 	private String ragSoc1;
@@ -57,253 +67,219 @@ public class MsvOA_Clienti implements Serializable{
 	public MsvOA_Clienti(){
 	}
 	
-	public MsvOA_Clienti(String codice, String ragSoc1, String ragSoc2, String indirizzo, String cap, String localita, String provincia, String codiceFiscale, String partitaIva, String telefono, String fax, String cellulare, String email, Integer grossista, String codIntermed, String codPa, String flagSplitPaym, String emailPec, String classeSconto, String nomignolo, String nazione, String codicePagamento, Integer speseIncasso, String documentoAccompagnamento, Integer reverseCharge, BigDecimal speseTrasportoImporto, BigDecimal speseTrasportoPercentuale, String cognome, String nome, String tipoOperazione){
-		super();
-		this.codice = codice;
-		this.ragSoc1 = ragSoc1;
-		this.ragSoc2 = ragSoc2;
-		this.indirizzo = indirizzo;
-		this.cap = cap;
-		this.localita = localita;
-		this.provincia = provincia;
-		this.codiceFiscale = codiceFiscale;
-		this.partitaIva = partitaIva;
-		this.telefono = telefono;
-		this.fax = fax;
-		this.cellulare = cellulare;
-		this.email = email;
-		this.grossista = grossista;
-		this.codIntermed = codIntermed;
-		this.codPa = codPa;
-		this.flagSplitPaym = flagSplitPaym;
-		this.emailPec = emailPec;
-		this.classeSconto = classeSconto;
-		this.nomignolo = nomignolo;
-		this.nazione = nazione;
-		this.codicePagamento = codicePagamento;
-		this.speseIncasso = speseIncasso;
-		this.documentoAccompagnamento = documentoAccompagnamento;
-		this.reverseCharge = reverseCharge;
-		this.speseTrasportoImporto = speseTrasportoImporto;
-		this.speseTrasportoPercentuale = speseTrasportoPercentuale;
-		this.cognome = cognome;
-		this.nome = nome;
-		this.tipoOperazione = tipoOperazione;
-	}
-
-	@Id	
+	@Id
 	public String getCodice(){
 		return codice;
 	}
-
+	
 	public void setCodice(String codice){
 		this.codice = codice;
 	}
-
+	
 	public String getRagSoc1(){
 		return ragSoc1;
 	}
-
+	
 	public void setRagSoc1(String ragSoc1){
 		this.ragSoc1 = ragSoc1;
 	}
-
+	
 	public String getRagSoc2(){
 		return ragSoc2;
 	}
-
+	
 	public void setRagSoc2(String ragSoc2){
 		this.ragSoc2 = ragSoc2;
 	}
-
+	
 	public String getIndirizzo(){
 		return indirizzo;
 	}
-
+	
 	public void setIndirizzo(String indirizzo){
 		this.indirizzo = indirizzo;
 	}
-
+	
 	public String getCap(){
 		return cap;
 	}
-
+	
 	public void setCap(String cap){
 		this.cap = cap;
 	}
-
+	
 	public String getLocalita(){
 		return localita;
 	}
-
+	
 	public void setLocalita(String localita){
 		this.localita = localita;
 	}
-
+	
 	public String getProvincia(){
 		return provincia;
 	}
-
+	
 	public void setProvincia(String provincia){
 		this.provincia = provincia;
 	}
-
+	
 	public String getCodiceFiscale(){
 		return codiceFiscale;
 	}
-
+	
 	public void setCodiceFiscale(String codiceFiscale){
 		this.codiceFiscale = codiceFiscale;
 	}
-
+	
 	public String getPartitaIva(){
 		return partitaIva;
 	}
-
+	
 	public void setPartitaIva(String partitaIva){
 		this.partitaIva = partitaIva;
 	}
-
+	
 	public String getTelefono(){
 		return telefono;
 	}
-
+	
 	public void setTelefono(String telefono){
 		this.telefono = telefono;
 	}
-
+	
 	public String getFax(){
 		return fax;
 	}
-
+	
 	public void setFax(String fax){
 		this.fax = fax;
 	}
-
+	
 	public String getCellulare(){
 		return cellulare;
 	}
-
+	
 	public void setCellulare(String cellulare){
 		this.cellulare = cellulare;
 	}
-
+	
 	public String getEmail(){
 		return email;
 	}
-
+	
 	public void setEmail(String email){
 		this.email = email;
 	}
-
+	
 	public Integer getGrossista(){
 		return grossista;
 	}
-
+	
 	public void setGrossista(Integer grossista){
 		this.grossista = grossista;
 	}
-
+	
 	public String getCodIntermed(){
 		return codIntermed;
 	}
-
+	
 	public void setCodIntermed(String codIntermed){
 		this.codIntermed = codIntermed;
 	}
-
+	
 	public String getCodPa(){
 		return codPa;
 	}
-
+	
 	public void setCodPa(String codPa){
 		this.codPa = codPa;
 	}
-
+	
 	public String getFlagSplitPaym(){
 		return flagSplitPaym;
 	}
-
+	
 	public void setFlagSplitPaym(String flagSplitPaym){
 		this.flagSplitPaym = flagSplitPaym;
 	}
-
+	
 	public String getEmailPec(){
 		return emailPec;
 	}
-
+	
 	public void setEmailPec(String emailPec){
 		this.emailPec = emailPec;
 	}
-
+	
 	public String getClasseSconto(){
 		return classeSconto;
 	}
-
+	
 	public void setClasseSconto(String classeSconto){
 		this.classeSconto = classeSconto;
 	}
-
+	
 	public String getNomignolo(){
 		return nomignolo;
 	}
-
+	
 	public void setNomignolo(String nomignolo){
 		this.nomignolo = nomignolo;
 	}
-
+	
 	public String getNazione(){
 		return nazione;
 	}
-
+	
 	public void setNazione(String nazione){
 		this.nazione = nazione;
 	}
-
+	
 	public String getCodicePagamento(){
 		return codicePagamento;
 	}
-
+	
 	public void setCodicePagamento(String codicePagamento){
 		this.codicePagamento = codicePagamento;
 	}
-
+	
 	public Integer getSpeseIncasso(){
 		return speseIncasso;
 	}
-
+	
 	public void setSpeseIncasso(Integer speseIncasso){
 		this.speseIncasso = speseIncasso;
 	}
-
+	
 	public String getDocumentoAccompagnamento(){
 		return documentoAccompagnamento;
 	}
-
+	
 	public void setDocumentoAccompagnamento(String documentoAccompagnamento){
 		this.documentoAccompagnamento = documentoAccompagnamento;
 	}
-
+	
 	public Integer getReverseCharge(){
 		return reverseCharge;
 	}
-
+	
 	public void setReverseCharge(Integer reverseCharge){
 		this.reverseCharge = reverseCharge;
 	}
-
+	
 	public BigDecimal getSpeseTrasportoImporto(){
 		return speseTrasportoImporto;
 	}
-
+	
 	public void setSpeseTrasportoImporto(BigDecimal speseTrasportoImporto){
 		this.speseTrasportoImporto = speseTrasportoImporto;
 	}
-
+	
 	public BigDecimal getSpeseTrasportoPercentuale(){
 		return speseTrasportoPercentuale;
 	}
-
+	
 	public void setSpeseTrasportoPercentuale(BigDecimal speseTrasportoPercentuale){
 		this.speseTrasportoPercentuale = speseTrasportoPercentuale;
 	}
@@ -311,27 +287,27 @@ public class MsvOA_Clienti implements Serializable{
 	public String getCognome(){
 		return cognome;
 	}
-
+	
 	public void setCognome(String cognome){
 		this.cognome = cognome;
 	}
-
+	
 	public String getNome(){
 		return nome;
 	}
-
+	
 	public void setNome(String nome){
 		this.nome = nome;
 	}
-
+	
 	public String getTipoOperazione(){
 		return tipoOperazione;
 	}
-
+	
 	public void setTipoOperazione(String tipoOperazione){
 		this.tipoOperazione = tipoOperazione;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -368,7 +344,7 @@ public class MsvOA_Clienti implements Serializable{
 		result = prime * result + ((tipoOperazione == null) ? 0 : tipoOperazione.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof MsvOA_Clienti){
@@ -380,7 +356,7 @@ public class MsvOA_Clienti implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "MsvOA_Clienti [codice=" + codice + ", ragSoc1=" + ragSoc1 + ", ragSoc2=" + ragSoc2 + ", indirizzo=" + indirizzo + ", cap=" + cap + ", localita=" + localita + ", provincia=" + provincia + ", codiceFiscale=" + codiceFiscale + ", partitaIva=" + partitaIva + ", telefono=" + telefono + ", fax=" + fax + ", cellulare=" + cellulare + ", email=" + email + ", grossista=" + grossista + ", codIntermed=" + codIntermed + ", codPa=" + codPa + ", flagSplitPaym=" + flagSplitPaym + ", emailPec=" + emailPec + ", classeSconto=" + classeSconto + ", nomignolo=" + nomignolo + ", nazione=" + nazione + ", codicePagamento=" + codicePagamento + ", speseIncasso=" + speseIncasso + ", documentoAccompagnamento=" + documentoAccompagnamento + ", reverseCharge=" + reverseCharge + ", speseTrasportoImporto=" + speseTrasportoImporto + ", speseTrasportoPercentuale=" + speseTrasportoPercentuale + ", cognome=" + cognome + ", nome=" + nome + ", tipoOperazione=" + tipoOperazione + "]";

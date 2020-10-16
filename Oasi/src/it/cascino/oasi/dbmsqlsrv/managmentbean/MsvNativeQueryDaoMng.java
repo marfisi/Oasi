@@ -29,7 +29,7 @@ public class MsvNativeQueryDaoMng implements MsvNativeQueryDao, Serializable{
 				Query query = em.createNativeQuery(sql);
 				o = query.executeUpdate();
 				log.info("Eliminate " + o + " righe da " + "OA_MovimentiRighe");
-
+				
 				sql = "DELETE FROM OA_MovimentiTestate where DataReg <= '" + data + "'";
 				query = em.createNativeQuery(sql);
 				o = query.executeUpdate();
@@ -62,6 +62,10 @@ public class MsvNativeQueryDaoMng implements MsvNativeQueryDao, Serializable{
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

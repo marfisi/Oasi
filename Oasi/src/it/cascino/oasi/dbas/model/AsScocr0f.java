@@ -9,11 +9,16 @@ import it.cascino.oasi.dbas.model.pkey.AsScocr0fPKey;
 * The persistent class for the cas_dat/Scocr0f database table.
 * 
 */
-@Entity(name = "Scocr0f")
-@NamedQueries({
-	@NamedQuery(name = "AsScocr0f.findAll", query = "SELECT o FROM Scocr0f o"),
-	@NamedQuery(name = "AsScocr0f.findById", query = "SELECT o FROM Scocr0f o WHERE o.id.scdat = :scdat and o.id.scnuz = :scnuz and o.id.scnum = :scnum")
-})
+@Entity(
+	name = "Scocr0f"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsScocr0f.findById",
+		query = "SELECT o FROM Scocr0f o WHERE o.id.scdat = :scdat and o.id.scnuz = :scnuz and o.id.scnum = :scnum"
+	)
+	}
+)
 public class AsScocr0f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -39,103 +44,103 @@ public class AsScocr0f implements Serializable{
 	public AsScocr0fPKey getId(){
 		return id;
 	}
-
+	
 	public void setId(AsScocr0fPKey id){
 		this.id = id;
 	}
-
+	
 	public String getSccau(){
 		return sccau;
 	}
-
+	
 	public void setSccau(String sccau){
 		this.sccau = sccau;
 	}
-
+	
 	public Integer getScnzs(){
 		return scnzs;
 	}
-
+	
 	public void setScnzs(Integer scnzs){
 		this.scnzs = scnzs;
 	}
-
+	
 	public Integer getScnus(){
 		return scnus;
 	}
-
+	
 	public void setScnus(Integer scnus){
 		this.scnus = scnus;
 	}
-
+	
 	public Integer getScdep(){
 		return scdep;
 	}
-
+	
 	public void setScdep(Integer scdep){
 		this.scdep = scdep;
 	}
-
+	
 	public Integer getSccoc(){
 		return sccoc;
 	}
-
+	
 	public void setSccoc(Integer sccoc){
 		this.sccoc = sccoc;
 	}
-
+	
 	public BigDecimal getScims(){
 		return scims;
 	}
-
+	
 	public void setScims(BigDecimal scims){
 		this.scims = scims;
 	}
-
+	
 	public String getSctpc(){
 		return sctpc;
 	}
-
+	
 	public void setSctpc(String sctpc){
 		this.sctpc = sctpc;
 	}
-
+	
 	public Integer getScdaf(){
 		return scdaf;
 	}
-
+	
 	public void setScdaf(Integer scdaf){
 		this.scdaf = scdaf;
 	}
-
+	
 	public Integer getScnuf(){
 		return scnuf;
 	}
-
+	
 	public void setScnuf(Integer scnuf){
 		this.scnuf = scnuf;
 	}
-
+	
 	public String getScute(){
 		return scute;
 	}
-
+	
 	public void setScute(String scute){
 		this.scute = scute;
 	}
-
+	
 	public String getScnot(){
 		return scnot;
 	}
-
+	
 	public void setScnot(String scnot){
 		this.scnot = scnot;
 	}
-
+	
 	public String getSccag(){
 		return sccag;
 	}
-
+	
 	public void setSccag(String sccag){
 		this.sccag = sccag;
 	}
@@ -143,11 +148,11 @@ public class AsScocr0f implements Serializable{
 	public Integer getScpag(){
 		return scpag;
 	}
-
+	
 	public void setScpag(Integer scpag){
 		this.scpag = scpag;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -168,11 +173,11 @@ public class AsScocr0f implements Serializable{
 		result = prime * result + ((scpag == null) ? 0 : scpag.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof AsScocr0f) {
-			if(this.id == ((AsScocr0f)obj).id) {
+		if(obj instanceof AsScocr0f){
+			if(this.id == ((AsScocr0f)obj).id){
 				return true;
 			}else{
 				return false;
@@ -180,7 +185,7 @@ public class AsScocr0f implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "AsScocr0f [id=" + id + ", sccau=" + sccau + ", scnzs=" + scnzs + ", scnus=" + scnus + ", scdep=" + scdep + ", sccoc=" + sccoc + ", scims=" + scims + ", sctpc=" + sctpc + ", scdaf=" + scdaf + ", scnuf=" + scnuf + ", scute=" + scute + ", scnot=" + scnot + ", sccag=" + sccag + ", scpag=" + scpag + "]";

@@ -2,21 +2,32 @@ package it.cascino.oasi.dbas.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import org.apache.commons.lang3.StringUtils;
 import it.cascino.oasi.dbas.model.pkey.AsOasic0fPKey;
 
 /**
 * The persistent class for the cas_dat/oasic0f database table.
 * 
 */
-@Entity(name = "Oasic0f")
-@NamedQueries({
-	@NamedQuery(name = "AsOasic0f.findAll", query = "SELECT c FROM Oasic0f c WHERE c.oatipo = :oatipo"),
-	@NamedQuery(name = "AsOasic0f.findByToDo", query = "SELECT c FROM Oasic0f c WHERE c.oaris1 = '' and c.oatipo = :oatipo"),
-	@NamedQuery(name = "AsOasic0f.findByOaidtr", query = "SELECT c FROM Oasic0f c WHERE c.id.oaidtr = :oaidtr"),
-	@NamedQuery(name = "AsOasic0f.updateRis", query = "UPDATE Oasic0f c SET c.oaris1 = :oaris1 WHERE c.id.oacmd1 = :oacmd1 and c.oaris1 = '' and c.id.oaidtr = :oaidtr and c.oatipo = :oatipo")
-})
-//@NamedQuery(name = "AsOasic0f.findByOacass", query = "SELECT c FROM Oasic0f c WHERE c.id.oacass = :oacass and c.oatipo = :oatipo"),
+@Entity(
+	name = "Oasic0f"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsOasic0f.findAll",
+		query = "SELECT o FROM Oasic0f o WHERE o.oatipo = :oatipo"
+	), @NamedQuery(
+		name = "AsOasic0f.findByToDo",
+		query = "SELECT o FROM Oasic0f o WHERE o.oaris1 = '' and o.oatipo = :oatipo"
+	), @NamedQuery(
+		name = "AsOasic0f.findByOaidtr",
+		query = "SELECT o FROM Oasic0f o WHERE o.id.oaidtr = :oaidtr"
+	), @NamedQuery(
+		name = "AsOasic0f.updateRis",
+		query = "UPDATE Oasic0f o SET o.oaris1 = :oaris1 WHERE o.id.oacmd1 = :oacmd1 and o.oaris1 = '' and o.id.oaidtr = :oaidtr and o.oatipo = :oatipo"
+	)
+	}
+)
+// @NamedQuery(name = "AsOasic0f.findByOacass", query = "SELECT c FROM Oasic0f c WHERE c.id.oacass = :oacass and c.oatipo = :oatipo"),
 
 public class AsOasic0f implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -34,13 +45,6 @@ public class AsOasic0f implements Serializable{
 	
 	public AsOasic0f(){
 		this.id = new AsOasic0fPKey();
-	}
-	
-	public AsOasic0f(AsOasic0fPKey id, String oaris1, String oatipo){
-		super();
-		this.id = id;
-		this.oaris1 = oaris1;
-		this.oatipo = oatipo;
 	}
 	
 	public AsOasic0fPKey getId(){
@@ -79,8 +83,8 @@ public class AsOasic0f implements Serializable{
 	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof AsOasic0f) {
-			if(this.id == ((AsOasic0f)obj).id) {
+		if(obj instanceof AsOasic0f){
+			if(this.id == ((AsOasic0f)obj).id){
 				return true;
 			}else{
 				return false;
@@ -91,13 +95,6 @@ public class AsOasic0f implements Serializable{
 	
 	@Override
 	public String toString(){
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1));
-		stringBuilder.append("[");
-		stringBuilder.append("id=" + StringUtils.trim(id.toString())).append(", ");
-		stringBuilder.append("oaris1=" + StringUtils.trim(oaris1)).append(", ");
-		stringBuilder.append("oatipo=" + StringUtils.trim(oatipo));
-		stringBuilder.append("]");
-		return stringBuilder.toString();
+		return "AsOasic0f [id=" + id + ", oaris1=" + oaris1 + ", oatipo=" + oatipo + "]";
 	}
 }

@@ -10,8 +10,10 @@ public interface AsFisca00fDao{
 	Boolean salva(AsFisca00f o);
 	
 	Boolean aggiorna(AsFisca00f o);
-
+	
 	AsFisca00f getDaFiccfoFitcfo(BigDecimal ficcfo, String fitcfo);
-		
+	
+	void detach(Object entity);
+	
 	void close();
 }

@@ -21,5 +21,7 @@ public interface AsTabge00fDao{
 	
 	String getAliquotaIva(String codiva);
 	
+	void detach(Object entity);
+	
 	void close();
 }

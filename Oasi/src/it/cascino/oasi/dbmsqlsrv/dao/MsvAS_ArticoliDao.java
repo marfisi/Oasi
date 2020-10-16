@@ -6,11 +6,9 @@ import it.cascino.oasi.dbmsqlsrv.model.MsvAS_Articoli;
 public interface MsvAS_ArticoliDao{
 	List<MsvAS_Articoli> getAll();
 	
-	void salva(MsvAS_Articoli a);
+	void salva(MsvAS_Articoli o);
 	
-	void aggiorna(MsvAS_Articoli a);
-	
-//	void elimina(MsvAS_Articoli a);
+	void aggiorna(MsvAS_Articoli o);
 	
 	MsvAS_Articoli getDaCodice(String codArticolo);
 

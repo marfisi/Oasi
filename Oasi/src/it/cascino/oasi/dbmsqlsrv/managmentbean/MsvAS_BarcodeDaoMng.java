@@ -19,31 +19,29 @@ public class MsvAS_BarcodeDaoMng implements MsvAS_BarcodeDao, Serializable{
 	
 	Logger log = Logger.getLogger(MsvAS_BarcodeDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvAS_Barcode> getAll(){
 		List<MsvAS_Barcode> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Barcode.findAll");
 				o = (List<MsvAS_Barcode>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	// TODO @Transactional(rollbackOn = MsvAS_Barcode.class)
 	public void salva(MsvAS_Barcode a){
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
-//				log.info("salva: " + a.toString());
+				// log.info("salva: " + a.toString());
 				em.persist(a);
 			}finally{
 				utx.commit();
@@ -68,27 +66,10 @@ public class MsvAS_BarcodeDaoMng implements MsvAS_BarcodeDao, Serializable{
 		}
 	}
 	
-//	public void elimina(MsvAS_Barcode aElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvAS_Barcode a = em.find(MsvAS_Barcode.class, aElimina.getMcoda());
-//				log.info("elimina: " + a.toString());
-//				em.remove(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-	
 	public MsvAS_Barcode getDaCodiceBarcode(String codArticolo, String barcode){
 		MsvAS_Barcode o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Barcode.findByCodArticoloBarcode");
 				query.setParameter("articolo", codArticolo);
 				query.setParameter("barcode", barcode);
@@ -96,7 +77,6 @@ public class MsvAS_BarcodeDaoMng implements MsvAS_BarcodeDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}

@@ -9,12 +9,22 @@ import it.cascino.oasi.dbas.model.pkey.AsBolem0fPKey;
 * The persistent class for the cas_dat/Bolem0f database table.
 * 
 */
-@Entity(name = "Bolem0f")
-@NamedQueries({
-	@NamedQuery(name = "AsBolem0f.findAll", query = "SELECT o FROM Bolem0f o"),
-	@NamedQuery(name = "AsBolem0f.findById", query = "SELECT o FROM Bolem0f o WHERE o.id.bdatd = :bdatd and o.id.bnura = :bnura and o.id.bnumd = :bnumd"),
-	@NamedQuery(name = "AsBolem0f.findByBnote", query = "SELECT o FROM Bolem0f o WHERE o.bnote = :bnote")
-})
+@Entity(
+	name = "Bolem0f"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsBolem0f.findAll",
+		query = "SELECT o FROM Bolem0f o"
+	), @NamedQuery(
+		name = "AsBolem0f.findById",
+		query = "SELECT o FROM Bolem0f o WHERE o.id.bdatd = :bdatd and o.id.bnura = :bnura and o.id.bnumd = :bnumd"
+	), @NamedQuery(
+		name = "AsBolem0f.findByBnote",
+		query = "SELECT o FROM Bolem0f o WHERE o.bnote = :bnote"
+	)
+	}
+)
 public class AsBolem0f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -43,111 +53,111 @@ public class AsBolem0f implements Serializable{
 	public AsBolem0fPKey getId(){
 		return id;
 	}
-
+	
 	public void setId(AsBolem0fPKey id){
 		this.id = id;
 	}
-
+	
 	public String getBtide(){
 		return btide;
 	}
-
+	
 	public void setBtide(String btide){
 		this.btide = btide;
 	}
-
+	
 	public BigDecimal getBcodi(){
 		return bcodi;
 	}
-
+	
 	public void setBcodi(BigDecimal bcodi){
 		this.bcodi = bcodi;
 	}
-
+	
 	public String getBcaus(){
 		return bcaus;
 	}
-
+	
 	public void setBcaus(String bcaus){
 		this.bcaus = bcaus;
 	}
-
+	
 	public BigDecimal getBimpb(){
 		return bimpb;
 	}
-
+	
 	public void setBimpb(BigDecimal bimpb){
 		this.bimpb = bimpb;
 	}
-
+	
 	public String getBfatt(){
 		return bfatt;
 	}
-
+	
 	public void setBfatt(String bfatt){
 		this.bfatt = bfatt;
 	}
-
+	
 	public String getBpaga(){
 		return bpaga;
 	}
-
+	
 	public void setBpaga(String bpaga){
 		this.bpaga = bpaga;
 	}
-
+	
 	public String getBcatr(){
 		return bcatr;
 	}
-
+	
 	public void setBcatr(String bcatr){
 		this.bcatr = bcatr;
 	}
-
+	
 	public String getBcons(){
 		return bcons;
 	}
-
+	
 	public void setBcons(String bcons){
 		this.bcons = bcons;
 	}
-
+	
 	public String getButen(){
 		return buten;
 	}
-
+	
 	public void setButen(String buten){
 		this.buten = buten;
 	}
-
+	
 	public String getBccup(){
 		return bccup;
 	}
-
+	
 	public void setBccup(String bccup){
 		this.bccup = bccup;
 	}
-
+	
 	public String getBccig(){
 		return bccig;
 	}
-
+	
 	public void setBccig(String bccig){
 		this.bccig = bccig;
 	}
-
+	
 	public String getBprot(){
 		return bprot;
 	}
-
+	
 	public void setBprot(String bprot){
 		this.bprot = bprot;
 	}
-
+	
 	public BigDecimal getBdpro(){
 		return bdpro;
 	}
-
+	
 	public void setBdpro(BigDecimal bdpro){
 		this.bdpro = bdpro;
 	}
@@ -155,27 +165,27 @@ public class AsBolem0f implements Serializable{
 	public String getBragg(){
 		return bragg;
 	}
-
+	
 	public void setBragg(String bragg){
 		this.bragg = bragg;
 	}
-
+	
 	public String getBnote(){
 		return bnote;
 	}
-
+	
 	public void setBnote(String bnote){
 		this.bnote = bnote;
 	}
-
+	
 	public String getBflad(){
 		return bflad;
 	}
-
+	
 	public void setBflad(String bflad){
 		this.bflad = bflad;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -202,8 +212,8 @@ public class AsBolem0f implements Serializable{
 	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof AsBolem0f) {
-			if(this.id == ((AsBolem0f)obj).id) {
+		if(obj instanceof AsBolem0f){
+			if(this.id == ((AsBolem0f)obj).id){
 				return true;
 			}else{
 				return false;
@@ -211,7 +221,7 @@ public class AsBolem0f implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "AsBolem0f [id=" + id + ", btide=" + btide + ", bcodi=" + bcodi + ", bcaus=" + bcaus + ", bimpb=" + bimpb + ", bfatt=" + bfatt + ", bpaga=" + bpaga + ", bcatr=" + bcatr + ", bcons=" + bcons + ", buten=" + buten + ", bccup=" + bccup + ", bccig=" + bccig + ", bprot=" + bprot + ", bdpro=" + bdpro + ", bragg=" + bragg + ", bnote=" + bnote + ", bflad=" + bflad + "]";

@@ -9,13 +9,25 @@ import it.cascino.oasi.dbas.model.pkey.AsArdep0fPKey;
 * The persistent class for the cas_dat/ardep0f database table.
 * 
 */
-@Entity(name = "Ardep0f")
-@NamedQueries({
-	@NamedQuery(name = "AsArdep0f.findAll", query = "SELECT a FROM Ardep0f a"),
-	@NamedQuery(name = "AsArdep0f.findByDcoda", query = "SELECT a FROM Ardep0f a WHERE a.id.dcoda = :dcoda"),
-	@NamedQuery(name = "AsArdep0f.findByDcode", query = "SELECT a FROM Ardep0f a WHERE a.id.dcode = :dcode"),
-	@NamedQuery(name = "AsArdep0f.findByDcodaAndDcode", query = "SELECT a FROM Ardep0f a WHERE a.id.dcoda = :dcoda and a.id.dcode = :dcode")
-})
+@Entity(
+	name = "Ardep0f"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsArdep0f.findAll",
+		query = "SELECT o FROM Ardep0f o"
+	), @NamedQuery(
+		name = "AsArdep0f.findByDcoda",
+		query = "SELECT o FROM Ardep0f o WHERE o.id.dcoda = :dcoda"
+	), @NamedQuery(
+		name = "AsArdep0f.findByDcode",
+		query = "SELECT o FROM Ardep0f o WHERE o.id.dcode = :dcode"
+	), @NamedQuery(
+		name = "AsArdep0f.findByDcodaAndDcode",
+		query = "SELECT o FROM Ardep0f o WHERE o.id.dcoda = :dcoda and o.id.dcode = :dcode"
+	)
+	}
+)
 public class AsArdep0f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -100,11 +112,11 @@ public class AsArdep0f implements Serializable{
 	public BigDecimal getDamma(){
 		return damma;
 	}
-
+	
 	public void setDamma(BigDecimal damma){
 		this.damma = damma;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -120,11 +132,11 @@ public class AsArdep0f implements Serializable{
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof AsArdep0f) {
-			if(this.id == ((AsArdep0f)obj).id) {
+		if(obj instanceof AsArdep0f){
+			if(this.id == ((AsArdep0f)obj).id){
 				return true;
 			}else{
 				return false;
@@ -132,7 +144,7 @@ public class AsArdep0f implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "AsArdep0f [id=" + id + ", dgiac=" + dgiac + ", dgdif=" + dgdif + ", datuc=" + datuc + ", datus=" + datus + ", datin=" + datin + ", dscmi=" + dscmi + ", dscma=" + dscma + ", damma=" + damma + "]";

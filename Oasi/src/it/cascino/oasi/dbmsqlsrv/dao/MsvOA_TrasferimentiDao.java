@@ -6,13 +6,9 @@ import it.cascino.oasi.dbmsqlsrv.model.MsvOA_Trasferimenti;
 public interface MsvOA_TrasferimentiDao{
 	List<MsvOA_Trasferimenti> getAll();
 	
-//	void salva(MsvOA_Trasferimenti o);
-	
-//	void aggiorna(MsvOA_Trasferimenti o);
-	
 	void elimina(MsvOA_Trasferimenti o);
-
-//	void svuotaTabella();
+	
+	void detach(Object entity);
 	
 	void close();
 }

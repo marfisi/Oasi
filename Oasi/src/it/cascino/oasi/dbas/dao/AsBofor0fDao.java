@@ -14,6 +14,8 @@ public interface AsBofor0fDao{
 	AsBofor0f getDaId(Integer bfdat, Integer bfnuz, Integer bfnum);
 	
 	List<AsBofor0f> getDaBfdatBfcofBfido(Integer bfdat, BigDecimal bfcof, String bfido);
-
+	
+	void detach(Object entity);
+	
 	void close();
 }

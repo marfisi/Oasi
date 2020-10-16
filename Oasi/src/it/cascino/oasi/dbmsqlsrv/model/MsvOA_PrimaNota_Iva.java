@@ -9,20 +9,30 @@ import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvOA_PrimaNota_IvaPKey;
 * The persistent class for the OA_PrimaNota_Iva database table.
 * 
 */
-@Entity(name="OA_PrimaNota_Iva")
-@NamedQueries({
-	@NamedQuery(name = "MsvOA_PrimaNota_Iva.findAll", query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.id.nReg,  o.id.nRiga"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Iva.findByNReg", query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg order by o.id.nRiga"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Iva.findByNRegNriga", query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg and o.id.nRiga = :nRiga")
-})
+@Entity(
+	name = "OA_PrimaNota_Iva"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "MsvOA_PrimaNota_Iva.findAll",
+		query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.id.nReg,  o.id.nRiga"
+	), @NamedQuery(
+		name = "MsvOA_PrimaNota_Iva.findByNReg",
+		query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg order by o.id.nRiga"
+	), @NamedQuery(
+		name = "MsvOA_PrimaNota_Iva.findByNRegNriga",
+		query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg and o.id.nRiga = :nRiga"
+	)
+	}
+)
 public class MsvOA_PrimaNota_Iva implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Logger
 	 */
-//	@Inject
-//	private Logger log;
+	// @Inject
+	// private Logger log;
 	
 	@EmbeddedId
 	private MsvOA_PrimaNota_IvaPKey id;
@@ -31,68 +41,58 @@ public class MsvOA_PrimaNota_Iva implements Serializable{
 	private BigDecimal imposta;
 	private BigDecimal indetraibile;
 	private String tipoOperazione;
-
+	
 	public MsvOA_PrimaNota_Iva(){
 	}
 	
-	public MsvOA_PrimaNota_Iva(MsvOA_PrimaNota_IvaPKey id, String codIva, BigDecimal imponibile, BigDecimal imposta, BigDecimal indetraibile, String tipoOperazione){
-		super();
-		this.id = id;
-		this.codIva = codIva;
-		this.imponibile = imponibile;
-		this.imposta = imposta;
-		this.indetraibile = indetraibile;
-		this.tipoOperazione = tipoOperazione;
-	}
-
 	public MsvOA_PrimaNota_IvaPKey getId(){
 		return id;
 	}
-
+	
 	public void setId(MsvOA_PrimaNota_IvaPKey id){
 		this.id = id;
 	}
-
+	
 	public String getCodIva(){
 		return codIva;
 	}
-
+	
 	public void setCodIva(String codIva){
 		this.codIva = codIva;
 	}
-
+	
 	public BigDecimal getImponibile(){
 		return imponibile;
 	}
-
+	
 	public void setImponibile(BigDecimal imponibile){
 		this.imponibile = imponibile;
 	}
-
+	
 	public BigDecimal getImposta(){
 		return imposta;
 	}
-
+	
 	public void setImposta(BigDecimal imposta){
 		this.imposta = imposta;
 	}
-
+	
 	public BigDecimal getIndetraibile(){
 		return indetraibile;
 	}
-
+	
 	public void setIndetraibile(BigDecimal indetraibile){
 		this.indetraibile = indetraibile;
 	}
-
+	
 	public String getTipoOperazione(){
 		return tipoOperazione;
 	}
-
+	
 	public void setTipoOperazione(String tipoOperazione){
 		this.tipoOperazione = tipoOperazione;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -105,7 +105,7 @@ public class MsvOA_PrimaNota_Iva implements Serializable{
 		result = prime * result + ((tipoOperazione == null) ? 0 : tipoOperazione.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof MsvOA_PrimaNota_Iva){

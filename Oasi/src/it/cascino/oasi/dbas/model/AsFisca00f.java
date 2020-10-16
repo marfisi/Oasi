@@ -8,12 +8,23 @@ import it.cascino.oasi.dbas.model.pkey.AsFisca00fPKey;
 * The persistent class for the $$libfca/Fisca00f database table.
 * 
 */
-@Entity(name="Fisca00f")
-@Table(name="Fisca00f", schema="$$libfca")
-@NamedQueries({
-	@NamedQuery(name = "AsFisca00f.findAll", query = "SELECT o FROM Fisca00f o order by o.id.ficcfo"),
-	@NamedQuery(name = "AsFisca00f.findByFiccfoFitcfo", query = "SELECT o FROM Fisca00f o WHERE o.id.ficcfo = :ficcfo and o.id.fitcfo = :fitcfo")
-})
+@Entity(
+	name = "Fisca00f"
+)
+@Table(
+	name = "Fisca00f",
+	schema = "$$libfca"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsFisca00f.findAll",
+		query = "SELECT o FROM Fisca00f o order by o.id.ficcfo"
+	), @NamedQuery(
+		name = "AsFisca00f.findByFiccfoFitcfo",
+		query = "SELECT o FROM Fisca00f o WHERE o.id.ficcfo = :ficcfo and o.id.fitcfo = :fitcfo"
+	)
+	}
+)
 public class AsFisca00f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -25,7 +36,7 @@ public class AsFisca00f implements Serializable{
 	public AsFisca00f(){
 		this.id = new AsFisca00fPKey();
 	}
-
+	
 	public AsFisca00fPKey getId(){
 		return id;
 	}
@@ -33,23 +44,23 @@ public class AsFisca00f implements Serializable{
 	public void setId(AsFisca00fPKey id){
 		this.id = id;
 	}
-
+	
 	public String getFidrss(){
 		return fidrss;
 	}
-
+	
 	public void setFidrss(String fidrss){
 		this.fidrss = fidrss;
 	}
-
+	
 	public String getFidnme(){
 		return fidnme;
 	}
-
+	
 	public void setFidnme(String fidnme){
 		this.fidnme = fidnme;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -59,11 +70,11 @@ public class AsFisca00f implements Serializable{
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof AsMovma0f) {
-			if(this.id == ((AsFisca00f)obj).id) {
+		if(obj instanceof AsMovma0f){
+			if(this.id == ((AsFisca00f)obj).id){
 				return true;
 			}else{
 				return false;
@@ -71,7 +82,7 @@ public class AsFisca00f implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "AsFisca00f [id=" + id + ", fidrss=" + fidrss + ", fidnme=" + fidnme + "]";

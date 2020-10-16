@@ -9,8 +9,10 @@ public interface AsTabe20fDao{
 	Boolean salva(AsTabe20f o);
 	
 	Boolean aggiorna(AsTabe20f o);
-
+	
 	AsTabe20f getDaTbnotTbele(String tbnot, String tbele);
-
+	
+	void detach(Object entity);
+	
 	void close();
 }

@@ -9,20 +9,30 @@ import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvAS_GiacenzePKey;
 * The persistent class for the AS_Giacenze database table.
 * 
 */
-@Entity(name="AS_Giacenze")
-@NamedQueries({
-	@NamedQuery(name = "MsvAS_Giacenze.findAll", query = "SELECT a FROM AS_Giacenze a WHERE a.id.codArticolo != '' order by a.id.codArticolo asc"),
-	@NamedQuery(name = "MsvAS_Giacenze.findByCodArticoloCodDeposito", query = "SELECT a FROM AS_Giacenze a WHERE a.id.codArticolo = :codArticolo and a.id.codDeposito = :codDeposito"),
-	@NamedQuery(name = "MsvAS_Giacenze.svuota", query = "DELETE FROM AS_Giacenze a WHERE a.id.codArticolo != ''")
-})
+@Entity(
+	name = "AS_Giacenze"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "MsvAS_Giacenze.findAll",
+		query = "SELECT o FROM AS_Giacenze o WHERE o.id.codArticolo != '' order by o.id.codArticolo asc"
+	), @NamedQuery(
+		name = "MsvAS_Giacenze.findByCodArticoloCodDeposito",
+		query = "SELECT o FROM AS_Giacenze o WHERE o.id.codArticolo = :codArticolo and o.id.codDeposito = :codDeposito"
+	), @NamedQuery(
+		name = "MsvAS_Giacenze.svuota",
+		query = "DELETE FROM AS_Giacenze o WHERE o.id.codArticolo != ''"
+	)
+	}
+)
 public class MsvAS_Giacenze implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Logger
 	 */
-//	@Inject
-//	private Logger log;
+	// @Inject
+	// private Logger log;
 	
 	@EmbeddedId
 	private MsvAS_GiacenzePKey id;
@@ -31,69 +41,59 @@ public class MsvAS_Giacenze implements Serializable{
 	private BigDecimal difettosi;
 	private BigDecimal scorteMin;
 	private BigDecimal scorteMax;
-
+	
 	public MsvAS_Giacenze(){
 		this.id = new MsvAS_GiacenzePKey();
 	}
-
-	public MsvAS_Giacenze(MsvAS_GiacenzePKey id, BigDecimal giacenza, BigDecimal disponibilita, BigDecimal difettosi, BigDecimal scorteMin, BigDecimal scorteMax){
-		super();
-		this.id = id;
-		this.giacenza = giacenza;
-		this.disponibilita = disponibilita;
-		this.difettosi = difettosi;
-		this.scorteMin = scorteMin;
-		this.scorteMax = scorteMax;
-	}
-
+	
 	public MsvAS_GiacenzePKey getId(){
 		return id;
 	}
-
+	
 	public void setId(MsvAS_GiacenzePKey id){
 		this.id = id;
 	}
-
+	
 	public BigDecimal getGiacenza(){
 		return giacenza;
 	}
-
+	
 	public void setGiacenza(BigDecimal giacenza){
 		this.giacenza = giacenza;
 	}
-
+	
 	public BigDecimal getDisponibilita(){
 		return disponibilita;
 	}
-
+	
 	public void setDisponibilita(BigDecimal disponibilita){
 		this.disponibilita = disponibilita;
 	}
-
+	
 	public BigDecimal getDifettosi(){
 		return difettosi;
 	}
-
+	
 	public void setDifettosi(BigDecimal difettosi){
 		this.difettosi = difettosi;
 	}
-
+	
 	public BigDecimal getScorteMin(){
 		return scorteMin;
 	}
-
+	
 	public void setScorteMin(BigDecimal scorteMin){
 		this.scorteMin = scorteMin;
 	}
-
+	
 	public BigDecimal getScorteMax(){
 		return scorteMax;
 	}
-
+	
 	public void setScorteMax(BigDecimal scorteMax){
 		this.scorteMax = scorteMax;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -106,7 +106,7 @@ public class MsvAS_Giacenze implements Serializable{
 		result = prime * result + ((scorteMin == null) ? 0 : scorteMin.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof MsvAS_Giacenze){
@@ -118,9 +118,9 @@ public class MsvAS_Giacenze implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "MsvAS_Giacenze [id=" + id + ", giacenza=" + giacenza + ", disponibilita=" + disponibilita + ", difettosi=" + difettosi + ", scorteMin=" + scorteMin + ", scorteMax=" + scorteMax + "]";
-	}	
+	}
 }

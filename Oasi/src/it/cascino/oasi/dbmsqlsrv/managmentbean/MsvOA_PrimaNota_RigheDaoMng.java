@@ -19,39 +19,23 @@ public class MsvOA_PrimaNota_RigheDaoMng implements MsvOA_PrimaNota_RigheDao, Se
 	
 	Logger log = Logger.getLogger(MsvOA_PrimaNota_RigheDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_PrimaNota_Righe> getAll(){
 		List<MsvOA_PrimaNota_Righe> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_PrimaNota_Righe.findAll");
 				o = (List<MsvOA_PrimaNota_Righe>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
-	
-//	public void salva(MsvOA_PrimaNota_Righe o){
-//		try{
-//			try{
-//				utx.begin();
-//				// precodice.setId(null);
-////				log.info("salva: " + o.toString());
-//				em.persist(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.error("salva: " + o.toString());
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public void aggiorna(MsvOA_PrimaNota_Righe o){
 		try{
@@ -67,54 +51,38 @@ public class MsvOA_PrimaNota_RigheDaoMng implements MsvOA_PrimaNota_RigheDao, Se
 		}
 	}
 	
-//	public void elimina(MsvOA_PrimaNota_Righe oElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvOA_PrimaNota_Righe o = em.find(MsvOA_PrimaNota_Righe.class, oElimina.getId());
-//				log.info("elimina: " + o.toString());
-//				em.remove(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_PrimaNota_Righe> getDaNReg(String nReg){
 		List<MsvOA_PrimaNota_Righe> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_PrimaNota_Righe.findByNReg");
 				query.setParameter("nReg", nReg);
 				o = (List<MsvOA_PrimaNota_Righe>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_PrimaNota_Righe> getDaNRegElaborate(String nReg){
 		List<MsvOA_PrimaNota_Righe> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_PrimaNota_Righe.findByNRegElaborate");
 				query.setParameter("nReg", nReg);
 				o = (List<MsvOA_PrimaNota_Righe>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -125,7 +93,6 @@ public class MsvOA_PrimaNota_RigheDaoMng implements MsvOA_PrimaNota_RigheDao, Se
 		MsvOA_PrimaNota_Righe o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_PrimaNota_Righe.findById");
 				query.setParameter("nReg", nReg);
 				query.setParameter("nRiga", nRiga);
@@ -133,26 +100,15 @@ public class MsvOA_PrimaNota_RigheDaoMng implements MsvOA_PrimaNota_RigheDao, Se
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-//	public void svuotaTabella(){
-//		try{
-//			try{
-//				utx.begin();
-//				Query query = em.createNamedQuery("MsvOA_PrimaNota_Righe.svuota");
-//				query.executeUpdate();
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
+	public void detach(Object entity){
+		em.detach(entity);
+	}
 	
 	public void close(){
 		res.close();

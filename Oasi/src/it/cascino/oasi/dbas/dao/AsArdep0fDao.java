@@ -11,10 +11,12 @@ public interface AsArdep0fDao{
 	Boolean aggiorna(AsArdep0f o);
 	
 	List<AsArdep0f> getDaDcoda(String dcoda);
-
+	
 	List<AsArdep0f> getDaDcode(Integer dcode);
-
+	
 	AsArdep0f getDaDcodaAndDcode(String dcoda, Integer dcode);
-
+	
+	void detach(Object entity);
+	
 	void close();
 }

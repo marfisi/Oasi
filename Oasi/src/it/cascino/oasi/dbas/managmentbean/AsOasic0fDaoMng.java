@@ -15,52 +15,37 @@ public class AsOasic0fDaoMng implements AsOasic0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsOasic0fDaoMng.class);
 	
 	private final String oatipo = "";
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsOasic0f> getAll(){
-		List<AsOasic0f> c = null;
+		List<AsOasic0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsOasic0f.findAll");
 				query.setParameter("oatipo", oatipo);
-				c = (List<AsOasic0f>)query.getResultList();
+				o = (List<AsOasic0f>)query.getResultList();
 			}catch(NoResultException e){
-				c = null;
+				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
-		return c;
+		return o;
 	}
 	
-//	public Boolean salva(AsOasic0f c){
-//		try{
-//			try{
-//				utx.begin();
-//				// precodice.setId(null);
-//				log.info("salva: " + c.toString());
-//				em.persist(c);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-	
-	public Boolean aggiorna(AsOasic0f c){
+	public Boolean aggiorna(AsOasic0f o){
 		try{
 			try{
 				utx.begin();
-				log.info("aggiorna: " + c.toString());
-				em.merge(c);
+				log.info("aggiorna: " + o.toString());
+				em.merge(o);
 			}finally{
 				utx.commit();
 			}
@@ -71,72 +56,35 @@ public class AsOasic0fDaoMng implements AsOasic0fDao, Serializable{
 		return true;
 	}
 	
-//	public void elimina(AsOasic0f cElimina){
-//		try{
-//			try{
-//				utx.begin();
-//				AsOasic0f c = em.find(AsOasic0f.class, cElimina.getId());
-//				log.info("elimina: " + c.toString());
-//				em.remove(c);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	public List<AsOasic0f> getCmdByOacass(String lycass){
-//		List<AsOasic0f> c = null;
-//		try{
-//			try{
-//				utx.begin();
-//				Query query = em.createNamedQuery("AsOasic0f.findAll");//findByOacass");
-////				query.setParameter("lycass", lycass);
-////				query.setParameter("lytip", lytip);
-//				c = (List<AsOasic0f>)query.getResultList();
-//			}catch(NoResultException e){
-//				c = null;
-//			}
-//			utx.commit();
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//		return c;
-//	}
-//	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsOasic0f> getCmdToDo(){
-		List<AsOasic0f> c = null;
+		List<AsOasic0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsOasic0f.findByToDo");
 				query.setParameter("oatipo", oatipo);
-				c = (List<AsOasic0f>)query.getResultList();
+				o = (List<AsOasic0f>)query.getResultList();
 			}catch(NoResultException e){
-				c = null;
+				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
-		return c;
+		return o;
 	}
 	
 	public AsOasic0f getDaOaidtr(Integer oaidtr){
 		AsOasic0f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsOasic0f.findByOaidtr");
 				query.setParameter("oaidtr", oaidtr);
 				o = (AsOasic0f)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -144,7 +92,7 @@ public class AsOasic0fDaoMng implements AsOasic0fDao, Serializable{
 	}
 	
 	public String updateRis(AsOasic0f cmd){
-		Integer c = -1;
+		Integer o = -1;
 		try{
 			try{
 				utx.begin();
@@ -153,15 +101,19 @@ public class AsOasic0fDaoMng implements AsOasic0fDao, Serializable{
 				query.setParameter("oaris1", cmd.getOaris1());
 				query.setParameter("oaidtr", cmd.getId().getOaidtr());
 				query.setParameter("oatipo", oatipo);
-				c = query.executeUpdate();
+				o = query.executeUpdate();
 			}catch(NoResultException e){
-				c = -1;
+				o = -1;
 			}
 			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
-		return c.toString();
+		return o.toString();
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

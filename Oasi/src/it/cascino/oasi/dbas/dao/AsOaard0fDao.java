@@ -6,7 +6,7 @@ import it.cascino.oasi.dbas.model.AsOaard0f;
 public interface AsOaard0fDao{
 	List<AsOaard0f> getAll();
 	
-	Boolean aggiorna(AsOaard0f a);
+	Boolean aggiorna(AsOaard0f o);
 	
 	List<AsOaard0f> getDaDcoda(String dcoda);
 
@@ -17,6 +17,8 @@ public interface AsOaard0fDao{
 	List<AsOaard0f> getDaElaborare();
 	
 	void svuotaTabella();
+	
+	void detach(Object entity);
 
 	void close();
 }

@@ -19,39 +19,24 @@ public class AsTabel0fDaoMng implements AsTabel0fDao, Serializable{
 	
 	Logger log = Logger.getLogger(AsTabel0fDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsTabel0f> getAllDaTnota(String tnota){
 		List<AsTabel0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsTabel0f.findAllByTnota");
 				query.setParameter("tnota", tnota);
 				o = (List<AsTabel0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
-	
-//	public Boolean salva(AsTabel0f o){
-//		try{
-//			try{
-//				utx.begin();
-//				// precodice.setId(null);
-//				log.info("salva: " + o.toString());
-//				em.persist(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public Boolean aggiorna(AsTabel0f o){
 		try{
@@ -89,7 +74,7 @@ public class AsTabel0fDaoMng implements AsTabel0fDao, Serializable{
 	public void detach(Object entity){
 		em.detach(entity);
 		
-//		evict non era sufficiente, elimina solo la cahce di 2livello, em.getEntityManagerFactory().getCache().evict(entity.getClass());		
+		// evict non era sufficiente, elimina solo la cahce di 2livello, em.getEntityManagerFactory().getCache().evict(entity.getClass());
 	}
 	
 	public void close(){

@@ -16,22 +16,22 @@ public class AsFisca00fDaoMng implements AsFisca00fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsFisca00fDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsFisca00f> getAll(){
 		List<AsFisca00f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsFisca00f.findAll");
 				o = (List<AsFisca00f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -42,7 +42,6 @@ public class AsFisca00fDaoMng implements AsFisca00fDao, Serializable{
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
 				log.info("salva: " + o.toString());
 				em.persist(o);
 			}finally{
@@ -75,7 +74,6 @@ public class AsFisca00fDaoMng implements AsFisca00fDao, Serializable{
 		AsFisca00f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsFisca00f.findByFiccfoFitcfo");
 				query.setParameter("ficcfo", ficcfo);
 				query.setParameter("fitcfo", fitcfo);
@@ -83,11 +81,14 @@ public class AsFisca00fDaoMng implements AsFisca00fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

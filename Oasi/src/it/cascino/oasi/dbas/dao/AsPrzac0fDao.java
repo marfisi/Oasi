@@ -5,8 +5,10 @@ import it.cascino.oasi.dbas.model.AsPrzac0f;
 
 public interface AsPrzac0fDao{
 	List<AsPrzac0f> getAll();
-
+	
 	AsPrzac0f getDaPzcod(String pzcod);
-
+	
+	void detach(Object entity);
+	
 	void close();
 }

@@ -3,26 +3,34 @@ package it.cascino.oasi.dbmsqlsrv.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-//import java.time.Timestamp;
+// import java.time.Timestamp;
 import javax.persistence.*;
 
 /**
 * The persistent class for the AS_Movimenti database table.
 * 
 */
-@Entity(name="AS_Movimenti")
-@NamedQueries({
-	@NamedQuery(name = "MsvAS_Movimenti.findAll", query = "SELECT a FROM AS_Movimenti a WHERE a.rdIdUnivoco != '' order by a.rdIdUnivoco asc"),
-	@NamedQuery(name = "MsvAS_Movimenti.svuota", query = "DELETE FROM AS_Movimenti a WHERE a.rdIdUnivoco != ''")
-})
+@Entity(
+	name = "AS_Movimenti"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "MsvAS_Movimenti.findAll",
+		query = "SELECT o FROM AS_Movimenti o WHERE o.rdIdUnivoco != '' order by o.rdIdUnivoco asc"
+	), @NamedQuery(
+		name = "MsvAS_Movimenti.svuota",
+		query = "DELETE FROM AS_Movimenti o WHERE o.rdIdUnivoco != ''"
+	)
+	}
+)
 public class MsvAS_Movimenti implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Logger
 	 */
-//	@Inject
-//	private Logger log;
+	// @Inject
+	// private Logger log;
 	
 	private Timestamp rdDataReg;
 	private String rdCausale;
@@ -37,128 +45,111 @@ public class MsvAS_Movimenti implements Serializable{
 	private String rdNroDoc;
 	private Timestamp rdDataDoc;
 	private String rdIdUnivoco;
-
+	
 	public MsvAS_Movimenti(){
 	}
 	
-	public MsvAS_Movimenti(Timestamp rdDataReg, String rdCausale, String rdCodCliFor, String rdCodMag, String rdCodArticolo, BigDecimal rdQta, BigDecimal rdPrezzoNetto, String rdTipoPrezzo, String rdCodiceIva, BigDecimal rdCosto, String rdNroDoc, Timestamp rdDataDoc, String rdIdUnivoco){
-		super();
-		this.rdDataReg = rdDataReg;
-		this.rdCausale = rdCausale;
-		this.rdCodCliFor = rdCodCliFor;
-		this.rdCodMag = rdCodMag;
-		this.rdCodArticolo = rdCodArticolo;
-		this.rdQta = rdQta;
-		this.rdPrezzoNetto = rdPrezzoNetto;
-		this.rdTipoPrezzo = rdTipoPrezzo;
-		this.rdCodiceIva = rdCodiceIva;
-		this.rdCosto = rdCosto;
-		this.rdNroDoc = rdNroDoc;
-		this.rdDataDoc = rdDataDoc;
-		this.rdIdUnivoco = rdIdUnivoco;
-	}
-
 	public Timestamp getRdDataReg(){
 		return rdDataReg;
 	}
-
+	
 	public void setRdDataReg(Timestamp rdDataReg){
 		this.rdDataReg = rdDataReg;
 	}
-
+	
 	public String getRdCausale(){
 		return rdCausale;
 	}
-
+	
 	public void setRdCausale(String rdCausale){
 		this.rdCausale = rdCausale;
 	}
-
+	
 	public String getRdCodCliFor(){
 		return rdCodCliFor;
 	}
-
+	
 	public void setRdCodCliFor(String rdCodCliFor){
 		this.rdCodCliFor = rdCodCliFor;
 	}
-
+	
 	public String getRdCodMag(){
 		return rdCodMag;
 	}
-
+	
 	public void setRdCodMag(String rdCodMag){
 		this.rdCodMag = rdCodMag;
 	}
-
+	
 	public String getRdCodArticolo(){
 		return rdCodArticolo;
 	}
-
+	
 	public void setRdCodArticolo(String rdCodArticolo){
 		this.rdCodArticolo = rdCodArticolo;
 	}
-
+	
 	public BigDecimal getRdQta(){
 		return rdQta;
 	}
-
+	
 	public void setRdQta(BigDecimal rdQta){
 		this.rdQta = rdQta;
 	}
-
+	
 	public BigDecimal getRdPrezzoNetto(){
 		return rdPrezzoNetto;
 	}
-
+	
 	public void setRdPrezzoNetto(BigDecimal rdPrezzoNetto){
 		this.rdPrezzoNetto = rdPrezzoNetto;
 	}
-
+	
 	public String getRdTipoPrezzo(){
 		return rdTipoPrezzo;
 	}
-
+	
 	public void setRdTipoPrezzo(String rdTipoPrezzo){
 		this.rdTipoPrezzo = rdTipoPrezzo;
 	}
-
+	
 	public String getRdCodiceIva(){
 		return rdCodiceIva;
 	}
-
+	
 	public void setRdCodiceIva(String rdCodiceIva){
 		this.rdCodiceIva = rdCodiceIva;
 	}
-
+	
 	public BigDecimal getRdCosto(){
 		return rdCosto;
 	}
-
+	
 	public void setRdCosto(BigDecimal rdCosto){
 		this.rdCosto = rdCosto;
 	}
-
+	
 	public String getRdNroDoc(){
 		return rdNroDoc;
 	}
-
+	
 	public void setRdNroDoc(String rdNroDoc){
 		this.rdNroDoc = rdNroDoc;
 	}
-
+	
 	public Timestamp getRdDataDoc(){
 		return rdDataDoc;
 	}
-
+	
 	public void setRdDataDoc(Timestamp rdDataDoc){
 		this.rdDataDoc = rdDataDoc;
 	}
-
+	
 	@Id
 	public String getRdIdUnivoco(){
 		return rdIdUnivoco;
 	}
-
+	
 	public void setRdIdUnivoco(String rdIdUnivoco){
 		this.rdIdUnivoco = rdIdUnivoco;
 	}
@@ -182,7 +173,7 @@ public class MsvAS_Movimenti implements Serializable{
 		result = prime * result + ((rdTipoPrezzo == null) ? 0 : rdTipoPrezzo.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof MsvAS_Movimenti){

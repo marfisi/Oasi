@@ -15,22 +15,22 @@ public class AsAlmer0fDaoMng implements AsAlmer0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsAlmer0fDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsAlmer0f> getAll(){
 		List<AsAlmer0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsAlmer0f.findAll");
 				o = (List<AsAlmer0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -40,8 +40,6 @@ public class AsAlmer0fDaoMng implements AsAlmer0fDao, Serializable{
 	public Boolean salva(AsAlmer0f o){
 		try{
 			try{
-				utx.begin();
-				// precodice.setId(null);
 				log.info("salva: " + o.toString());
 				em.persist(o);
 			}finally{
@@ -69,20 +67,20 @@ public class AsAlmer0fDaoMng implements AsAlmer0fDao, Serializable{
 		}
 		return true;
 	}
-
-	@SuppressWarnings("unchecked")
+	
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsAlmer0f> getDaAmset(String amset){
 		List<AsAlmer0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsAlmer0f.findByAmset");
 				query.setParameter("amset", amset);
 				o = (List<AsAlmer0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -93,7 +91,6 @@ public class AsAlmer0fDaoMng implements AsAlmer0fDao, Serializable{
 		AsAlmer0f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsAlmer0f.findById");
 				query.setParameter("amset", amset);
 				query.setParameter("amgru", amgru);
@@ -105,31 +102,34 @@ public class AsAlmer0fDaoMng implements AsAlmer0fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-//	public BigDecimal getRRNDaIdgetDaId(String alb){
-//		BigDecimal o = null;
-//		try{
-//			try{
-//				utx.begin();
-//				String sql = "select rrn(almer0f) from almer0f where (amset concat amgru concat amsot concat amfam concat amstf concat amst1) = :alb";
-//                Query query = em.createNativeQuery(sql);
-//				query.setParameter("alb", alb);
-//				o = (BigDecimal)query.getSingleResult();
-//			}catch(NoResultException e){
-//				o = null;
-//			}
-//			utx.commit();
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//		return o;
-//	}
+	// public BigDecimal getRRNDaIdgetDaId(String alb){
+	// BigDecimal o = null;
+	// try{
+	// try{
+	// utx.begin();
+	// String sql = "select rrn(almer0f) from almer0f where (amset concat amgru concat amsot concat amfam concat amstf concat amst1) = :alb";
+	// Query query = em.createNativeQuery(sql);
+	// query.setParameter("alb", alb);
+	// o = (BigDecimal)query.getSingleResult();
+	// }catch(NoResultException e){
+	// o = null;
+	// }
+	// utx.commit();
+	// }catch(Exception e){
+	// log.fatal(e.toString());
+	// }
+	// return o;
+	// }
+	
+	public void detach(Object entity){
+		em.detach(entity);
+	}
 	
 	public void close(){
 		res.close();

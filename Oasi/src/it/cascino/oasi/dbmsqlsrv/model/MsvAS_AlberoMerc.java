@@ -7,19 +7,27 @@ import javax.persistence.*;
 * The persistent class for the AS_AlberoMerc database table.
 * 
 */
-@Entity(name="AS_AlberoMerc")
-@NamedQueries({
-	@NamedQuery(name = "MsvAS_AlberoMerc.findAll", query = "SELECT a FROM AS_AlberoMerc a WHERE a.codice != 'A' order by a.codice asc"),
-	@NamedQuery(name = "MsvAS_AlberoMerc.svuota", query = "DELETE FROM AS_AlberoMerc a WHERE a.codice != ''")
-})
+@Entity(
+	name = "AS_AlberoMerc"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "MsvAS_AlberoMerc.findAll",
+		query = "SELECT o FROM AS_AlberoMerc o WHERE o.codice != 'A' order by o.codice asc"
+	), @NamedQuery(
+		name = "MsvAS_AlberoMerc.svuota",
+		query = "DELETE FROM AS_AlberoMerc o WHERE o.codice != ''"
+	)
+	}
+)
 public class MsvAS_AlberoMerc implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Logger
 	 */
-//	@Inject
-//	private Logger log;
+	// @Inject
+	// private Logger log;
 	
 	private String codice;
 	private String descrizione;
@@ -27,30 +35,23 @@ public class MsvAS_AlberoMerc implements Serializable{
 	public MsvAS_AlberoMerc(){
 	}
 	
-	public MsvAS_AlberoMerc(String codice, String descrizione){
-		super();
-		this.codice = codice;
-		this.descrizione = descrizione;
-	}
-
-	@Id	
+	@Id
 	public String getCodice(){
 		return codice;
 	}
-
+	
 	public void setCodice(String codice){
 		this.codice = codice;
 	}
-
-
+	
 	public String getDescrizione(){
 		return descrizione;
 	}
-
+	
 	public void setDescrizione(String descrizione){
 		this.descrizione = descrizione;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -59,7 +60,7 @@ public class MsvAS_AlberoMerc implements Serializable{
 		result = prime * result + ((descrizione == null) ? 0 : descrizione.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof MsvAS_AlberoMerc){
@@ -71,7 +72,7 @@ public class MsvAS_AlberoMerc implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "MsvAS_AlberoMerc [codice=" + codice + ", descrizione=" + descrizione + "]";

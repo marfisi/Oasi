@@ -15,22 +15,22 @@ public class AsArdep0fDaoMng implements AsArdep0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
 	private Resources res = new Resources();
 	private EntityManager em = res.getEmAs();
-	private EntityTransaction utx = res.getUtxAs();	
+	private EntityTransaction utx = res.getUtxAs();
 	
 	Logger log = Logger.getLogger(AsArdep0fDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsArdep0f> getAll(){
 		List<AsArdep0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsArdep0f.findAll");
 				o = (List<AsArdep0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -69,38 +69,38 @@ public class AsArdep0fDaoMng implements AsArdep0fDao, Serializable{
 		return true;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsArdep0f> getDaDcoda(String dcoda){
 		List<AsArdep0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsArdep0f.findByDcoda");
 				query.setParameter("dcoda", dcoda);
 				o = (List<AsArdep0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<AsArdep0f> getDaDcode(Integer dcode){
 		List<AsArdep0f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsArdep0f.findByDcode");
 				query.setParameter("dcode", dcode);
 				o = (List<AsArdep0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -111,7 +111,6 @@ public class AsArdep0fDaoMng implements AsArdep0fDao, Serializable{
 		AsArdep0f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsArdep0f.findByDcodaAndDcode");
 				query.setParameter("dcoda", dcoda);
 				query.setParameter("dcode", dcode);
@@ -119,11 +118,14 @@ public class AsArdep0fDaoMng implements AsArdep0fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

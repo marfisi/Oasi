@@ -19,46 +19,45 @@ public class MsvAS_GiacenzeDaoMng implements MsvAS_GiacenzeDao, Serializable{
 	
 	Logger log = Logger.getLogger(MsvAS_GiacenzeDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvAS_Giacenze> getAll(){
 		List<MsvAS_Giacenze> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Giacenze.findAll");
 				o = (List<MsvAS_Giacenze>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	public void salva(MsvAS_Giacenze a){
+	public void salva(MsvAS_Giacenze o){
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
-//				log.info("salva: " + a.toString());
-				em.persist(a);
+				// log.info("salva: " + a.toString());
+				em.persist(o);
 			}finally{
 				utx.commit();
 			}
 		}catch(Exception e){
-			log.error("salva: " + a.toString());
+			log.error("salva: " + o.toString());
 			log.fatal(e.toString());
 		}
 	}
 	
-	public void aggiorna(MsvAS_Giacenze a){
+	public void aggiorna(MsvAS_Giacenze o){
 		try{
 			try{
 				utx.begin();
-				log.info("aggiorna: " + a.toString());
-				em.merge(a);
+				log.info("aggiorna: " + o.toString());
+				em.merge(o);
 			}finally{
 				utx.commit();
 			}
@@ -66,28 +65,11 @@ public class MsvAS_GiacenzeDaoMng implements MsvAS_GiacenzeDao, Serializable{
 			log.fatal(e.toString());
 		}
 	}
-	
-//	public void elimina(MsvAS_Giacenze aElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvAS_Giacenze a = em.find(MsvAS_Giacenze.class, aElimina.getMcoda());
-//				log.info("elimina: " + a.toString());
-//				em.remove(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public MsvAS_Giacenze getDaCodArticoloCodDeposito(String codArticolo, String codDeposito){
 		MsvAS_Giacenze o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Giacenze.findByCodArticoloCodDeposito");
 				query.setParameter("codArticolo", codArticolo);
 				query.setParameter("codDeposito", codDeposito);
@@ -95,7 +77,6 @@ public class MsvAS_GiacenzeDaoMng implements MsvAS_GiacenzeDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -114,6 +95,10 @@ public class MsvAS_GiacenzeDaoMng implements MsvAS_GiacenzeDao, Serializable{
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

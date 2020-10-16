@@ -24,65 +24,31 @@ public class MsvAS_MarchiDaoMng implements MsvAS_MarchiDao, Serializable{
 		List<MsvAS_Marchi> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvAS_Marchi.findAll");
 				o = (List<MsvAS_Marchi>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	// TODO @Transactional(rollbackOn = MsvAS_Marchi.class)
-	public void salva(MsvAS_Marchi a){
+	public void salva(MsvAS_Marchi o){
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
 //				log.info("salva: " + a.toString());
-				em.persist(a);
+				em.persist(o);
 			}finally{
 				utx.commit();
 			}
 		}catch(Exception e){
-			log.error("salva: " + a.toString());
+			log.error("salva: " + o.toString());
 			log.fatal(e.toString());
 		}
 	}
-//	
-//	public void aggiorna(MsvAS_Marchi a){
-//		try{
-//			try{
-//				utx.begin();
-//				log.info("aggiorna: " + a.toString());
-//				em.merge(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-//	
-//	public void elimina(MsvAS_Marchi aElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvAS_Marchi a = em.find(MsvAS_Marchi.class, aElimina.getMcoda());
-//				log.info("elimina: " + a.toString());
-//				em.remove(a);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public void svuotaTabella(){
 		try{
@@ -96,6 +62,10 @@ public class MsvAS_MarchiDaoMng implements MsvAS_MarchiDao, Serializable{
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

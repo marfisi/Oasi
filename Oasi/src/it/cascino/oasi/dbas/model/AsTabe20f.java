@@ -8,11 +8,19 @@ import it.cascino.oasi.dbas.model.pkey.AsTabe20fPKey;
 * The persistent class for the cas_dat/Tabe20f database table.
 * 
 */
-@Entity(name="Tabe20f")
-@NamedQueries({
-	@NamedQuery(name = "AsTabe20f.findAllByTbnot", query = "SELECT o FROM Tabe20f o WHERE o.id.tbnot = :tbnot order by o.id.tbele"),
-	@NamedQuery(name = "AsTabe20f.findByTbnotTbele", query = "SELECT o FROM Tabe20f o WHERE o.id.tbnot = :tbnot and o.id.tbele = :tbele")
-})
+@Entity(
+	name = "Tabe20f"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "AsTabe20f.findAllByTbnot",
+		query = "SELECT o FROM Tabe20f o WHERE o.id.tbnot = :tbnot order by o.id.tbele"
+	), @NamedQuery(
+		name = "AsTabe20f.findByTbnotTbele",
+		query = "SELECT o FROM Tabe20f o WHERE o.id.tbnot = :tbnot and o.id.tbele = :tbele"
+	)
+	}
+)
 public class AsTabe20f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -25,13 +33,6 @@ public class AsTabe20f implements Serializable{
 		this.id = new AsTabe20fPKey();
 	}
 	
-	public AsTabe20f(AsTabe20fPKey id, String tbdes, String tbcom){
-		super();
-		this.id = id;
-		this.tbdes = tbdes;
-		this.tbcom = tbcom;
-	}
-	
 	public AsTabe20fPKey getId(){
 		return id;
 	}
@@ -39,23 +40,23 @@ public class AsTabe20f implements Serializable{
 	public void setId(AsTabe20fPKey id){
 		this.id = id;
 	}
-
+	
 	public String getTbdes(){
 		return tbdes;
 	}
-
+	
 	public void setTbdes(String tbdes){
 		this.tbdes = tbdes;
 	}
-
+	
 	public String getTbcom(){
 		return tbcom;
 	}
-
+	
 	public void setTbcom(String tbcom){
 		this.tbcom = tbcom;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -77,7 +78,7 @@ public class AsTabe20f implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "AsTabe20f [id=" + id + ", tbdes=" + tbdes + ", tbcom=" + tbcom + "]";

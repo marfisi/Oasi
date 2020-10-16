@@ -19,56 +19,25 @@ public class MsvOA_TrasferimentiDaoMng implements MsvOA_TrasferimentiDao, Serial
 	
 	Logger log = Logger.getLogger(MsvOA_TrasferimentiDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_Trasferimenti> getAll(){
 		List<MsvOA_Trasferimenti> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_Trasferimenti.findAll");
 				o = (List<MsvOA_Trasferimenti>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-//	public void salva(MsvOA_Trasferimenti o){
-//		try{
-//			try{
-//				utx.begin();
-//				// precodice.setId(null);
-////				log.info("salva: " + o.toString());
-//				em.persist(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.error("salva: " + o.toString());
-//			log.fatal(e.toString());
-//		}
-//	}
-//	
-//	public void aggiorna(MsvOA_Trasferimenti o){
-//		try{
-//			try{
-//				utx.begin();
-//				log.info("aggiorna: " + o.toString());
-//				em.merge(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-	
 	public void elimina(MsvOA_Trasferimenti oElimina){
-		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
 		try{
 			try{
 				utx.begin();
@@ -83,19 +52,9 @@ public class MsvOA_TrasferimentiDaoMng implements MsvOA_TrasferimentiDao, Serial
 		}
 	}
 	
-//	public void svuotaTabella(){
-//		try{
-//			try{
-//				utx.begin();
-//				Query query = em.createNamedQuery("MsvOA_Trasferimenti.svuota");
-//				query.executeUpdate();
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
+	public void detach(Object entity){
+		em.detach(entity);
+	}
 	
 	public void close(){
 		res.close();

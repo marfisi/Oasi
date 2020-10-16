@@ -9,8 +9,10 @@ public interface AsAnma20fDao{
 	Boolean salva(AsAnma20f o);
 	
 	Boolean aggiorna(AsAnma20f o);
-
+	
 	AsAnma20f getDaM2cod(String m2cod);
-
+	
+	void detach(Object entity);
+	
 	void close();
 }

@@ -19,40 +19,23 @@ public class MsvOA_ArticoliDaoMng implements MsvOA_ArticoliDao, Serializable{
 	
 	Logger log = Logger.getLogger(MsvOA_ArticoliDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_Articoli> getAll(){
 		List<MsvOA_Articoli> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_Articoli.findAll");
 				o = (List<MsvOA_Articoli>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
-	
-	// TODO @Transactional(rollbackOn = MsvOA_Articoli.class)
-//	public void salva(MsvOA_Articoli o){
-//		try{
-//			try{
-//				utx.begin();
-//				// precodice.setId(null);
-////				log.info("salva: " + o.toString());
-//				em.persist(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.error("salva: " + o.toString());
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public void aggiorna(MsvOA_Articoli o){
 		try{
@@ -69,7 +52,6 @@ public class MsvOA_ArticoliDaoMng implements MsvOA_ArticoliDao, Serializable{
 	}
 	
 	public void elimina(MsvOA_Articoli oElimina){
-		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
 		try{
 			try{
 				utx.begin();
@@ -88,14 +70,12 @@ public class MsvOA_ArticoliDaoMng implements MsvOA_ArticoliDao, Serializable{
 		MsvOA_Articoli o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_Articoli.findByCodBreveOasi");
 				query.setParameter("codBreveOasi", codBreveOasi);
 				o = (MsvOA_Articoli)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -106,33 +86,21 @@ public class MsvOA_ArticoliDaoMng implements MsvOA_ArticoliDao, Serializable{
 		MsvOA_Articoli o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_Articoli.findByCodArticoloCascino");
 				query.setParameter("codArticoloCascino", codArticoloCascino);
 				o = (MsvOA_Articoli)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-//	public void svuotaTabella(){
-//		try{
-//			try{
-//				utx.begin();
-//				Query query = em.createNamedQuery("MsvOA_Articoli.svuota");
-//				query.executeUpdate();
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
+	public void detach(Object entity){
+		em.detach(entity);
+	}
 	
 	public void close(){
 		res.close();

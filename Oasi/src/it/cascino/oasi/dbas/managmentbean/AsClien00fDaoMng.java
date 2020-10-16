@@ -25,13 +25,11 @@ public class AsClien00fDaoMng implements AsClien00fDao, Serializable{
 		List<AsClien00f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsClien00f.findAll");
 				o = (List<AsClien00f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -42,7 +40,6 @@ public class AsClien00fDaoMng implements AsClien00fDao, Serializable{
 		try{
 			try{
 				utx.begin();
-				// precodice.setId(null);
 				log.info("salva: " + o.toString());
 				em.persist(o);
 			}finally{
@@ -75,14 +72,12 @@ public class AsClien00fDaoMng implements AsClien00fDao, Serializable{
 		AsClien00f o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsClien00f.findByClccli");
 				query.setParameter("clccli", clccli);
 				o = (AsClien00f)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -94,7 +89,6 @@ public class AsClien00fDaoMng implements AsClien00fDao, Serializable{
 		List<AsClien00f> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("AsClien00f.findAggiornatiDopo");
 				query.setParameter("cluins", cluins);
 				query.setParameter("clhins", clhins);
@@ -102,7 +96,6 @@ public class AsClien00fDaoMng implements AsClien00fDao, Serializable{
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
@@ -129,6 +122,10 @@ public class AsClien00fDaoMng implements AsClien00fDao, Serializable{
 			log.fatal(e.toString());
 		}
 		return o;
+	}
+	
+	public void detach(Object entity){
+		em.detach(entity);
 	}
 	
 	public void close(){

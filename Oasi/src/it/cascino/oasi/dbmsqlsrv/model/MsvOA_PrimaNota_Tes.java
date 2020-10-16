@@ -8,30 +8,42 @@ import javax.persistence.*;
 * The persistent class for the OA_PrimaNota_Tes database table.
 * 
 */
-@Entity(name="OA_PrimaNota_Tes")
-@NamedQueries({
-	@NamedQuery(name = "MsvOA_PrimaNota_Tes.findAll", query = "SELECT o FROM OA_PrimaNota_Tes o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.nReg asc"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Tes.findByNReg", query = "SELECT o FROM OA_PrimaNota_Tes o WHERE o.tipoOperazione != 'DEL' and o.nReg = :nReg"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Tes.findByRegIva", query = "SELECT o FROM OA_PrimaNota_Tes o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.regIva = :regIva order by o.nReg asc"),
-	@NamedQuery(name = "MsvOA_PrimaNota_Tes.findByCausale", query = "SELECT o FROM OA_PrimaNota_Tes o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.causale = :causale order by o.nReg asc")
-})
+@Entity(
+	name = "OA_PrimaNota_Tes"
+)
+@NamedQueries(
+	{@NamedQuery(
+		name = "MsvOA_PrimaNota_Tes.findAll",
+		query = "SELECT o FROM OA_PrimaNota_Tes o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.nReg asc"
+	), @NamedQuery(
+		name = "MsvOA_PrimaNota_Tes.findByNReg",
+		query = "SELECT o FROM OA_PrimaNota_Tes o WHERE o.tipoOperazione != 'DEL' and o.nReg = :nReg"
+	), @NamedQuery(
+		name = "MsvOA_PrimaNota_Tes.findByRegIva",
+		query = "SELECT o FROM OA_PrimaNota_Tes o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.regIva = :regIva order by o.nReg asc"
+	), @NamedQuery(
+		name = "MsvOA_PrimaNota_Tes.findByCausale",
+		query = "SELECT o FROM OA_PrimaNota_Tes o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.causale = :causale order by o.nReg asc"
+	)
+	}
+)
 public class MsvOA_PrimaNota_Tes implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Logger
 	 */
-//	@Inject
-//	private Logger log;
+	// @Inject
+	// private Logger log;
 	
 	private String nReg;
-	private String causale;		
+	private String causale;
 	private Timestamp dataReg;
 	private Timestamp dataComp;
 	private String regIva;
 	private String sezionale;
 	private String protocollo;
-	private String tipoConto;	
+	private String tipoConto;
 	private String conto;
 	private Timestamp dataDoc;
 	private String documento;
@@ -39,8 +51,8 @@ public class MsvOA_PrimaNota_Tes implements Serializable{
 	private Timestamp dataLiquidazione;
 	private String fPagamento;
 	private Integer fSplitPayment;
-	private String  tipoOperazione;
-
+	private String tipoOperazione;
+	
 	public MsvOA_PrimaNota_Tes(){
 	}
 	
@@ -48,131 +60,131 @@ public class MsvOA_PrimaNota_Tes implements Serializable{
 	public String getnReg(){
 		return nReg;
 	}
-
+	
 	public void setnReg(String nReg){
 		this.nReg = nReg;
 	}
-
+	
 	public String getCausale(){
 		return causale;
 	}
-
+	
 	public void setCausale(String causale){
 		this.causale = causale;
 	}
-
+	
 	public Timestamp getDataReg(){
 		return dataReg;
 	}
-
+	
 	public void setDataReg(Timestamp dataReg){
 		this.dataReg = dataReg;
 	}
-
+	
 	public Timestamp getDataComp(){
 		return dataComp;
 	}
-
+	
 	public void setDataComp(Timestamp dataComp){
 		this.dataComp = dataComp;
 	}
-
+	
 	public String getRegIva(){
 		return regIva;
 	}
-
+	
 	public void setRegIva(String regIva){
 		this.regIva = regIva;
 	}
-
+	
 	public String getSezionale(){
 		return sezionale;
 	}
-
+	
 	public void setSezionale(String sezionale){
 		this.sezionale = sezionale;
 	}
-
+	
 	public String getProtocollo(){
 		return protocollo;
 	}
-
+	
 	public void setProtocollo(String protocollo){
 		this.protocollo = protocollo;
 	}
-
+	
 	public String getTipoConto(){
 		return tipoConto;
 	}
-
+	
 	public void setTipoConto(String tipoConto){
 		this.tipoConto = tipoConto;
 	}
-
+	
 	public String getConto(){
 		return conto;
 	}
-
+	
 	public void setConto(String conto){
 		this.conto = conto;
 	}
-
+	
 	public Timestamp getDataDoc(){
 		return dataDoc;
 	}
-
+	
 	public void setDataDoc(Timestamp dataDoc){
 		this.dataDoc = dataDoc;
 	}
-
+	
 	public String getDocumento(){
 		return documento;
 	}
-
+	
 	public void setDocumento(String documento){
 		this.documento = documento;
 	}
-
+	
 	public Integer getSegnoDoc(){
 		return segnoDoc;
 	}
-
+	
 	public void setSegnoDoc(Integer segnoDoc){
 		this.segnoDoc = segnoDoc;
 	}
-
+	
 	public Timestamp getDataLiquidazione(){
 		return dataLiquidazione;
 	}
-
+	
 	public void setDataLiquidazione(Timestamp dataLiquidazione){
 		this.dataLiquidazione = dataLiquidazione;
 	}
-
+	
 	public String getfPagamento(){
 		return fPagamento;
 	}
-
+	
 	public void setfPagamento(String fPagamento){
 		this.fPagamento = fPagamento;
 	}
-
+	
 	public Integer getfSplitPayment(){
 		return fSplitPayment;
 	}
-
+	
 	public void setfSplitPayment(Integer fSplitPayment){
 		this.fSplitPayment = fSplitPayment;
 	}
-
+	
 	public String getTipoOperazione(){
 		return tipoOperazione;
 	}
-
+	
 	public void setTipoOperazione(String tipoOperazione){
 		this.tipoOperazione = tipoOperazione;
 	}
-
+	
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -195,7 +207,7 @@ public class MsvOA_PrimaNota_Tes implements Serializable{
 		result = prime * result + ((tipoOperazione == null) ? 0 : tipoOperazione.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof MsvOA_PrimaNota_Tes){
@@ -207,7 +219,7 @@ public class MsvOA_PrimaNota_Tes implements Serializable{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString(){
 		return "MsvOA_PrimaNota_Tes [nReg=" + nReg + ", causale=" + causale + ", dataReg=" + dataReg + ", dataComp=" + dataComp + ", regIva=" + regIva + ", sezionale=" + sezionale + ", protocollo=" + protocollo + ", tipoConto=" + tipoConto + ", conto=" + conto + ", dataDoc=" + dataDoc + ", documento=" + documento + ", segnoDoc=" + segnoDoc + ", dataLiquidazione=" + dataLiquidazione + ", fPagamento=" + fPagamento + ", fSplitPayment=" + fSplitPayment + ", tipoOperazione=" + tipoOperazione + "]";

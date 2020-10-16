@@ -19,39 +19,23 @@ public class MsvOA_PrimaNota_TesDaoMng implements MsvOA_PrimaNota_TesDao, Serial
 	
 	Logger log = Logger.getLogger(MsvOA_PrimaNota_TesDaoMng.class);
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_PrimaNota_Tes> getAll(){
 		List<MsvOA_PrimaNota_Tes> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_PrimaNota_Tes.findAll");
 				o = (List<MsvOA_PrimaNota_Tes>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
-	
-//	public void salva(MsvOA_PrimaNota_Tes o){
-//		try{
-//			try{
-//				utx.begin();
-//				// precodice.setId(null);
-////				log.info("salva: " + o.toString());
-//				em.persist(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.error("salva: " + o.toString());
-//			log.fatal(e.toString());
-//		}
-//	}
 	
 	public void aggiorna(MsvOA_PrimaNota_Tes o){
 		try{
@@ -67,110 +51,82 @@ public class MsvOA_PrimaNota_TesDaoMng implements MsvOA_PrimaNota_TesDao, Serial
 		}
 	}
 	
-//	public void elimina(MsvOA_PrimaNota_Tes oElimina){
-//		// log.info("tmpDEBUGtmp: " + "> " + "elimina(" + produttoreElimina + ")");
-//		try{
-//			try{
-//				utx.begin();
-//				MsvOA_PrimaNota_Tes o = em.find(MsvOA_PrimaNota_Tes.class, oElimina.getnReg());
-//				log.info("elimina: " + o.toString());
-//				em.remove(o);
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
-	
 	public MsvOA_PrimaNota_Tes getDaNReg(String nReg){
 		MsvOA_PrimaNota_Tes o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_PrimaNota_Tes.findByNReg");
 				query.setParameter("nReg", nReg);
 				o = (MsvOA_PrimaNota_Tes)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_PrimaNota_Tes> getDaRegIva(String regIva){
 		List<MsvOA_PrimaNota_Tes> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_PrimaNota_Tes.findByRegIva");
 				query.setParameter("regIva", regIva);
 				o = (List<MsvOA_PrimaNota_Tes>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_PrimaNota_Tes> getDaCausale(String causale){
 		List<MsvOA_PrimaNota_Tes> o = null;
 		try{
 			try{
-				utx.begin();
 				Query query = em.createNamedQuery("MsvOA_PrimaNota_Tes.findByCausale");
 				query.setParameter("causale", causale);
 				o = (List<MsvOA_PrimaNota_Tes>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<MsvOA_PrimaNota_Tes> getDaCausali(String causali){
 		List<MsvOA_PrimaNota_Tes> o = null;
 		try{
 			try{
-				utx.begin();
 				String sql = "SELECT * FROM OA_PrimaNota_Tes o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.causale in (" + causali + ") order by o.dataReg, o.sezionale, o.documento";
 				Query query = em.createNativeQuery(sql, MsvOA_PrimaNota_Tes.class);
 				o = (List<MsvOA_PrimaNota_Tes>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
 			}
-			utx.commit();
 		}catch(Exception e){
 			log.fatal(e.toString());
 		}
 		return o;
 	}
 	
-//	public void svuotaTabella(){
-//		try{
-//			try{
-//				utx.begin();
-//				Query query = em.createNamedQuery("MsvOA_PrimaNota_Tes.svuota");
-//				query.executeUpdate();
-//			}finally{
-//				utx.commit();
-//			}
-//		}catch(Exception e){
-//			log.fatal(e.toString());
-//		}
-//	}
+	public void detach(Object entity){
+		em.detach(entity);
+	}
 	
 	public void close(){
 		res.close();
