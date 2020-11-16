@@ -14,7 +14,6 @@ import it.cascino.oasi.dbas.managmentbean.AsAafor0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsAlmer0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsAncab0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsAnma20fDaoMng;
-import it.cascino.oasi.dbas.model.AsAafor0f;
 import it.cascino.oasi.dbas.model.AsAlmer0f;
 import it.cascino.oasi.dbas.model.AsAncab0f;
 import it.cascino.oasi.dbas.model.AsAnma20f;
@@ -881,6 +880,7 @@ public class Oasi{
 					msvAS_ClientiDao.salva(msvAS_Clienti);
 				}else{ // gia' presente, quindi update
 					msvAS_ClientiDao.aggiorna(msvAS_Clienti);
+					msvAS_ClientiDao.detach(msvAS_ClientiTmp);
 				}
 			}
 			msvAS_ClientiDao.detach(msvAS_Clienti);
@@ -1021,7 +1021,6 @@ public class Oasi{
 					asTabge00fDao.aggiornaPec(codicePadd, "C", emailPec);
 				}
 			}
-			// asTabge00fDao.detach(entity);
 			
 			clccme = "";
 			switch(StringUtils.trim(msvOA_Clienti.getClasseSconto())){
@@ -1142,9 +1141,10 @@ public class Oasi{
 						if(!(asFisca00fDao.aggiorna(asFisca00f))){
 							chiudi();
 						}
+						asFisca00fDao.detach(asFisca00fTmp);
 					}
-					asFisca00fDao.detach(asFisca00f);
 				}
+				asFisca00fDao.detach(asFisca00f);
 			}
 			
 			AsClien00f asClien00f = new AsClien00f();
@@ -1196,6 +1196,7 @@ public class Oasi{
 				if(!(asClien00fDao.aggiorna(asClien00f))){
 					chiudi();
 				}
+				asClien00fDao.detach(asClien00fTmp);
 			}
 			asClien00fDao.detach(asClien00f);
 			
@@ -1334,6 +1335,7 @@ public class Oasi{
 					msvAS_FornitoriDao.salva(msvAS_Fornitori);
 				}else{ // gia' presente, quindi update
 					msvAS_FornitoriDao.aggiorna(msvAS_Fornitori);
+					msvAS_FornitoriDao.detach(msvAS_FornitoriTmp);
 				}
 			}
 			msvAS_FornitoriDao.detach(msvAS_Fornitori);
@@ -1407,13 +1409,16 @@ public class Oasi{
 				
 				// e' in expert, se NO, metto subito Mflag a S e continuo con il prossimo articolo
 				if(asAnmag0fDao.getArticoliDaAS400aOasi(asAnmag0f.getMcoda()) == null){
-					AsOaanm0f asOaanm0f = asOaanm0fDao.getDaMcoda(asAnmag0f.getMcoda());
-					asOaanm0f.setMflag("S");
-					if(!(asOaanm0fDao.aggiorna(asOaanm0f))){
-						chiudi();
+					// se l'articolo non e' di ingrosso, ma e' un articolo cascino (non domex) e che quindi ha il . nel codice lungo, allora lo passo (con flagArtIngrosso = 0)
+					if(!(StringUtils.endsWith(StringUtils.trim(asAnmag0f.getMoalu()), "."))){
+						AsOaanm0f asOaanm0f = asOaanm0fDao.getDaMcoda(asAnmag0f.getMcoda());
+						asOaanm0f.setMflag("S");
+						if(!(asOaanm0fDao.aggiorna(asOaanm0f))){
+							chiudi();
+						}
+						log.info(asAnmag0f.getMcoda() + " non va nei negozi - " + asAnmag0f.getMdesc());
+						continue;
 					}
-					log.info(asAnmag0f.getMcoda() + " non va nei negozi - " + asAnmag0f.getMdesc());
-					continue;
 				}
 				
 				if(asAnmag0f != null){
@@ -1457,23 +1462,24 @@ public class Oasi{
 			
 			codFornitore = StringUtils.trim(asAnmag0f.getMcofo().toString());
 			codArtFornitore = StringUtils.trim(asAnmag0f.getMcoaf());
-			if(StringUtils.equals(codFornitore, "5900")){ // domex
-				AsAafor0f asAafor0f = asAafor0fDao.getArticoloDaAaforAacoa(asAnmag0f.getMcofo(), StringUtils.trim(asAnmag0f.getMcoaf()));
-				if(asAafor0f == null){
-					log.warn("Non presente in aafor - Fornitore=" + asAnmag0f.getMcofo() + ", Articolo=" + StringUtils.trim(asAnmag0f.getMcoaf()) + ", " + asAnmag0f.getMcoda() + " - " + asAnmag0f.getMdesc());
-					// codFornitore = "0";
-					// codArtFornitore = "";
-					// siamo rimasto che codice fornitore metto 1000 e codice articolo lascio quello che e'
-					codFornitore = "1000";
-					// codArtFornitore = "";
-				}
-			}
-			
-			// flagArtIngrosso = 0;
-			// if((Integer.compare(asAnmag0f.getMdepi(), 1) == 0) || (Integer.compare(asAnmag0f.getMdepi(), 3) == 0)){
-			// flagArtIngrosso = 1;
+			// era utile solo all'inizio in fase di passaggio dati iniziale, ormai aafro non e' piu' alimentato da domex
+			// if(StringUtils.equals(codFornitore, "5900")){ // domex
+			// AsAafor0f asAafor0f = asAafor0fDao.getArticoloDaAaforAacoa(asAnmag0f.getMcofo(), StringUtils.trim(asAnmag0f.getMcoaf()));
+			// if(asAafor0f == null){
+			// log.warn("Non presente in aafor - Fornitore=" + asAnmag0f.getMcofo() + ", Articolo=" + StringUtils.trim(asAnmag0f.getMcoaf()) + ", " + asAnmag0f.getMcoda() + " - " + asAnmag0f.getMdesc());
+			// // codFornitore = "0";
+			// // codArtFornitore = "";
+			// // siamo rimasto che codice fornitore metto 1000 e codice articolo lascio quello che e'
+			// codFornitore = "1000";
+			// // codArtFornitore = "";
 			// }
+			// }
+			
 			flagArtIngrosso = 1;
+			// attenzione che non dipende da mdepi 1 o 3, ma dal flag m2oas=O in anma20f
+			if(asAnmag0fDao.getArticoliDaAS400aOasi(asAnmag0f.getMcoda()) == null){
+				flagArtIngrosso = 0;
+			}
 			
 			codIva = StringUtils.trim(asAnmag0f.getMciva());
 			// non va fatta la transcodfica, dobbiamo inviare il cod iva cascino
@@ -1505,7 +1511,6 @@ public class Oasi{
 			
 			if(!(soloAggiornati)){
 				msvAS_ArticoliDao.salva(msvAS_Articoli);
-				msvAS_ArticoliDao.detach(msvAS_Articoli);
 			}else{
 				// articoli
 				MsvAS_Articoli msvAS_ArticoliTmp = msvAS_ArticoliDao.getDaCodice(codArticolo);
@@ -1514,39 +1519,44 @@ public class Oasi{
 					msvAS_ArticoliDao.salva(msvAS_Articoli);
 				}else{ // gia' presente, quindi update
 					msvAS_ArticoliDao.aggiorna(msvAS_Articoli);
+					msvAS_ArticoliDao.detach(msvAS_ArticoliTmp);
 				}
-				msvAS_ArticoliDao.detach(msvAS_Articoli);
 				
-				// barcode
-				AsAncab0f asAncab0f = new AsAncab0f();
-				asAncab0fLs = asAncab0fDao.getDaCcoda(codArticolo);
-				Iterator<AsAncab0f> iter_asAncab0fLs = asAncab0fLs.iterator();
-				iter_asAncab0fLs = asAncab0fLs.iterator();
-				while(iter_asAncab0fLs.hasNext()){
-					asAncab0f = iter_asAncab0fLs.next();
-					
-					String articolo = "";
-					String barcode = "";
-					
-					articolo = StringUtils.trim(asAnmag0f.getMcoda());
-					barcode = StringUtils.trim(asAncab0f.getCcodb());
-					
-					MsvAS_Barcode msvAS_Barcode = new MsvAS_Barcode();
-					msvAS_Barcode.setArticolo(articolo);
-					msvAS_Barcode.setBarcode(barcode);
-					
-					MsvAS_Barcode msvAS_BarcodeTmp = msvAS_BarcodeDao.getDaCodiceBarcode(codArticolo, asAncab0f.getCcodb());
-					if(msvAS_BarcodeTmp == null){ // nuova quindi insert
-						log.info("salva: " + msvAS_Barcode.toString());
-						msvAS_BarcodeDao.salva(msvAS_Barcode);
-					}else{ // gia' presente, quindi update
-						msvAS_BarcodeDao.aggiorna(msvAS_Barcode);
+				// barcode e listini, li passo solo se e' flagArtIngrosso = 1
+				
+				if(Integer.compare(flagArtIngrosso, 1) == 0){
+					// barcode
+					AsAncab0f asAncab0f = new AsAncab0f();
+					asAncab0fLs = asAncab0fDao.getDaCcoda(codArticolo);
+					Iterator<AsAncab0f> iter_asAncab0fLs = asAncab0fLs.iterator();
+					iter_asAncab0fLs = asAncab0fLs.iterator();
+					while(iter_asAncab0fLs.hasNext()){
+						asAncab0f = iter_asAncab0fLs.next();
+						
+						String articolo = "";
+						String barcode = "";
+						
+						articolo = StringUtils.trim(asAnmag0f.getMcoda());
+						barcode = StringUtils.trim(asAncab0f.getCcodb());
+						
+						MsvAS_Barcode msvAS_Barcode = new MsvAS_Barcode();
+						msvAS_Barcode.setArticolo(articolo);
+						msvAS_Barcode.setBarcode(barcode);
+						
+						MsvAS_Barcode msvAS_BarcodeTmp = msvAS_BarcodeDao.getDaCodiceBarcode(codArticolo, asAncab0f.getCcodb());
+						if(msvAS_BarcodeTmp == null){ // nuova quindi insert
+							log.info("salva: " + msvAS_Barcode.toString());
+							msvAS_BarcodeDao.salva(msvAS_Barcode);
+						}else{ // gia' presente, quindi update
+							msvAS_BarcodeDao.aggiorna(msvAS_Barcode);
+							msvAS_BarcodeDao.detach(msvAS_BarcodeTmp);
+						}
+						msvAS_BarcodeDao.detach(msvAS_Barcode);
 					}
-					msvAS_BarcodeDao.detach(msvAS_Barcode);
+					
+					// listini
+					inserisciInASListini(asAnmag0f);
 				}
-				
-				// listini
-				inserisciInASListini(asAnmag0f);
 				
 				AsOaanm0f asOaanm0f = asOaanm0fDao.getDaMcoda(codArticolo);
 				asOaanm0f.setMflag("S");
@@ -1555,6 +1565,7 @@ public class Oasi{
 				}
 				asOaanm0fDao.detach(asOaanm0f);
 			}
+			msvAS_ArticoliDao.detach(msvAS_Articoli);
 		}
 		
 		String strTimestampAs400 = asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
@@ -1674,6 +1685,47 @@ public class Oasi{
 			codAlb = StringUtils.substring(codAlb, 4);
 			mast1 = "";
 			
+			// se questo albero e' madiv = C, scrivo diretto su anmag0f
+			// se e' invece madiv = D dipende se e' gia' D in anmag0f, allora scrivo diretto su anmag0f
+			// ma se e' invece gia' C in anmag0f, allora l'attuale albero C lo passo in anma20f e quello D lo scrivo in anmag0f
+			if(StringUtils.equals(madiv, "D")){
+				AsAnmag0f asAnmag0fAlbero = asAnmag0fDao.getArticoloDaMcoda(mcoda);
+				if((asAnmag0fAlbero != null) && StringUtils.equals(asAnmag0fAlbero.getMadiv(), "C")){
+					AsAnma20f asAnma20f = new AsAnma20f();
+					asAnma20f.setM2cod(mcoda);
+					asAnma20f.setM2div(asAnmag0fAlbero.getMadiv());
+					asAnma20f.setM2gru(asAnmag0fAlbero.getMagru());
+					asAnma20f.setM2sot(asAnmag0fAlbero.getMasot());
+					asAnma20f.setM2fam(asAnmag0fAlbero.getMafam());
+					asAnma20f.setM2stf(asAnmag0fAlbero.getMastf());
+					asAnma20f.setM2st1(asAnmag0fAlbero.getMast1());
+					asAnma20f.setM2b2b("");
+					asAnma20f.setM2cat("");
+					asAnma20f.setM2aag("");
+					asAnma20f.setM2oas("");
+					asAnma20f.setM2kas("");
+					
+					AsAnma20f asAnma20fTmp = asAnma20fDao.getDaM2cod(mcoda);
+					if(asAnma20fTmp == null){ // nuova quindi insert
+						if(!(asAnma20fDao.salva(asAnma20f))){
+							chiudi();
+						}
+					}else{ // gia' presente, quindi update
+							// non modifico i valori che non ricevo definiti
+						asAnma20f.setM2b2b(asAnma20fTmp.getM2b2b());
+						asAnma20f.setM2cat(asAnma20fTmp.getM2cat());
+						asAnma20f.setM2aag(asAnma20fTmp.getM2aag());
+						asAnma20f.setM2oas(asAnma20fTmp.getM2oas());
+						asAnma20f.setM2kas(asAnma20fTmp.getM2kas());
+						if(!(asAnma20fDao.aggiorna(asAnma20f))){
+							chiudi();
+						}
+						asAnma20fDao.detach(asAnma20fTmp);
+					}
+					asAnma20fDao.detach(asAnma20f);
+				}
+			}
+			
 			march = StringUtils.trim(msvOA_Articoli.getCodMarchio());
 			// se ultimo carattere e' . significa che devo prendere il cascino
 			if(StringUtils.endsWith(march, ".")){
@@ -1770,6 +1822,7 @@ public class Oasi{
 				if(!(asAnmag0fDao.aggiorna(asAnmag0f))){
 					chiudi();
 				}
+				asAnmag0fDao.detach(asAnmag0fTmp);
 			}
 			asAnmag0fDao.detach(asAnmag0f);
 			
@@ -1835,6 +1888,7 @@ public class Oasi{
 				if(!(asAnma20fDao.aggiorna(asAnma20f))){
 					chiudi();
 				}
+				asAnma20fDao.detach(asAnma20fTmp);
 			}
 			asAnma20fDao.detach(asAnma20f);
 			
@@ -1981,6 +2035,7 @@ public class Oasi{
 				if(!(asTabe20fDao.aggiorna(asTabe20f))){
 					chiudi();
 				}
+				asTabe20fDao.detach(asTabe20fTmp);
 			}
 			asTabe20fDao.detach(asTabe20f);
 			
@@ -2179,6 +2234,7 @@ public class Oasi{
 				if(!(asAlmer0fDao.aggiorna(asAlmer0f))){
 					chiudi();
 				}
+				asAlmer0fDao.detach(asAlmer0fTmp);
 			}
 			asAlmer0fDao.detach(asAlmer0f);
 			
@@ -2480,7 +2536,6 @@ public class Oasi{
 						
 						if(!(soloAggiornati)){
 							msvAS_GiacenzeDao.salva(msvAS_Giacenze);
-							msvAS_GiacenzeDao.detach(msvAS_Giacenze);
 						}else{
 							MsvAS_Giacenze msvAS_GiacenzeTmp = msvAS_GiacenzeDao.getDaCodArticoloCodDeposito(codArticolo, codDeposito);
 							if(msvAS_GiacenzeTmp == null){ // nuova quindi insert
@@ -2488,8 +2543,8 @@ public class Oasi{
 								msvAS_GiacenzeDao.salva(msvAS_Giacenze);
 							}else{ // gia' presente, quindi update
 								msvAS_GiacenzeDao.aggiorna(msvAS_Giacenze);
+								msvAS_GiacenzeDao.detach(msvAS_GiacenzeTmp);
 							}
-							msvAS_GiacenzeDao.detach(msvAS_Giacenze);
 							
 							AsOaard0f asOaard0f = asOaard0fDao.getDaDcodaDcode(codArticolo, Integer.parseInt(codDeposito));
 							if(asOaard0f != null){
@@ -2500,6 +2555,7 @@ public class Oasi{
 								asOaard0fDao.detach(asOaard0f);
 							}
 						}
+						msvAS_GiacenzeDao.detach(msvAS_Giacenze);
 					}
 				}
 			}
@@ -2722,7 +2778,7 @@ public class Oasi{
 			Integer tipoDocumento = msvOA_MovimentiTestate.getDocumAccomp();
 			
 			// causali da mettere in elaborate, ma che non saranno gestite
-			if(StringUtils.equals(causaleOasi, "RIFS") || StringUtils.equals(causaleOasi, "RIFV") || StringUtils.equals(causaleOasi, "RVTF") || StringUtils.equals(causaleOasi, "ACFF") || StringUtils.equals(causaleOasi, "SCMR") || StringUtils.equals(causaleOasi, "RSMR") || StringUtils.equals(causaleOasi, "SCCA") || StringUtils.equals(causaleOasi, "RSTR") || StringUtils.equals(causaleOasi, "RIFE")){
+			if(StringUtils.equals(causaleOasi, "RIFS") || StringUtils.equals(causaleOasi, "RIFV") || StringUtils.equals(causaleOasi, "RVTF") || StringUtils.equals(causaleOasi, "ACFF") || StringUtils.equals(causaleOasi, "SCMR") || StringUtils.equals(causaleOasi, "RSMR") || StringUtils.equals(causaleOasi, "SCCA") || StringUtils.equals(causaleOasi, "RSTR") || StringUtils.equals(causaleOasi, "RIFE") || StringUtils.equals(causaleOasi, "NCPR")){
 				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiTestate.getTipoOperazione(), 2));
 				msvOA_MovimentiTestate.setTipoOperazione(tipoOperazione);
 				msvOA_MovimentiTestateDao.aggiorna(msvOA_MovimentiTestate);
@@ -3298,6 +3354,7 @@ public class Oasi{
 					}else{
 						ardepDaAggiornare = false;
 					}
+					asMovma0fDao.detach(asMovma0fTmp);
 				}
 				asMovma0fDao.detach(asMovma0f);
 				
@@ -3460,6 +3517,7 @@ public class Oasi{
 					if(!(asBolem0fDao.aggiorna(asBolem0f))){
 						chiudi();
 					}
+					asBolem0fDao.detach(asBolem0fTmp);
 				}
 				asBolem0fDao.detach(asBolem0f);
 				
@@ -3525,6 +3583,7 @@ public class Oasi{
 					if(!(asBofor0fDao.aggiorna(asBofor0f))){
 						chiudi();
 					}
+					asBofor0fDao.detach(asBofor0fTmp);
 				}
 				asBofor0fDao.detach(asBofor0f);
 				
@@ -3839,6 +3898,7 @@ public class Oasi{
 						if(!(asMovtr0fDao.aggiorna(asMovtr0f))){
 							chiudi();
 						}
+						asMovtr0fDao.detach(asMovtr0fTmp);
 					}
 					asMovtr0fDao.detach(asMovtr0f);
 				}
@@ -4179,6 +4239,7 @@ public class Oasi{
 						if(!(asMovma0fDao.aggiorna(asMovma0f))){
 							chiudi();
 						}
+						asMovma0fDao.detach(asMovma0fTmp);
 					}
 					asMovma0fDao.detach(asMovma0f);
 					
@@ -4502,6 +4563,7 @@ public class Oasi{
 					chiudi();
 				}
 				log.error("non deve essere possibile, sempre trasferimenti nuovi");
+				asMovtr0fDao.detach(asMovtr0fTmp);
 			}
 			asMovtr0fDao.detach(asMovtr0f);
 			
@@ -4991,6 +5053,7 @@ public class Oasi{
 				if(!(asFatem0fDao.aggiorna(asFatem0f))){
 					chiudi();
 				}
+				asFatem0fDao.detach(asFatem0fTmp);
 			}
 			asFatem0fDao.detach(asFatem0f);
 			
@@ -5351,6 +5414,7 @@ public class Oasi{
 						if(!(asFinaz0fDao.aggiorna(asFinaz0f))){
 							chiudi();
 						}
+						asFinaz0fDao.detach(asFinaz0fTmp);
 					}
 					asFinaz0fDao.detach(asFinaz0f);
 					
@@ -5410,6 +5474,7 @@ public class Oasi{
 				if(!(asScocr0fDao.aggiorna(asScocr0f))){
 					chiudi();
 				}
+				asScocr0fDao.detach(asScocr0fTmp);
 			}
 			
 			if(StringUtils.equals(StringUtils.left(causale, 2), "AC")){
@@ -5782,7 +5847,9 @@ public class Oasi{
 					if(!(asCcmca0fDao.aggiorna(asCcmca0f))){
 						chiudi();
 					}
+					asCcmca0fDao.detach(asCcmca0fTmp);
 				}
+				asCcmca0fDao.detach(asCcmca0f);
 				
 				if(StringUtils.equals(cacre, "L2")){
 					log.info("cacre: L2, in pagamento precedente");
@@ -5791,8 +5858,8 @@ public class Oasi{
 					if(!(asCcmca0fDao.aggiorna(asCcmca0fTmp))){
 						chiudi();
 					}
+					asCcmca0fDao.detach(asCcmca0fTmp);
 				}
-				asCcmca0fDao.detach(asCcmca0f);
 				
 				// al posto di eliminare metto tipoOperazione = '*XY' (elaborata)
 				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_PrimaNota_Righe.getTipoOperazione(), 2));
@@ -6028,6 +6095,7 @@ public class Oasi{
 					if(!(asCcmca0fDao.aggiorna(asCcmca0f))){
 						chiudi();
 					}
+					asCcmca0fDao.detach(asCcmca0fTmp);
 				}
 				asCcmca0fDao.detach(asCcmca0f);
 				
@@ -6099,6 +6167,7 @@ public class Oasi{
 							if(!(asCcmca0fDao.aggiorna(asCcmca0f))){
 								chiudi();
 							}
+							asCcmca0fDao.detach(asCcmca0fTmp);
 						}
 						asCcmca0fDao.detach(asCcmca0f);
 					}
@@ -6150,6 +6219,7 @@ public class Oasi{
 							if(!(asCcmca0fDao.aggiorna(asCcmca0f))){
 								chiudi();
 							}
+							asCcmca0fDao.detach(asCcmca0fTmp);
 						}
 						asCcmca0fDao.detach(asCcmca0f);
 					}
@@ -6196,6 +6266,7 @@ public class Oasi{
 					if(!(asCcmca0fDao.aggiorna(asCcmca0f))){
 						chiudi();
 					}
+					asCcmca0fDao.detach(asCcmca0fTmp);
 				}
 				asCcmca0fDao.detach(asCcmca0f);
 			}
@@ -6680,6 +6751,7 @@ public class Oasi{
 				msvAS_ListiniDao.salva(msvAS_Listini);
 			}else{ // gia' presente, quindi update
 				msvAS_ListiniDao.aggiorna(msvAS_Listini);
+				msvAS_ListiniDao.detach(msvAS_ListiniTmp);
 			}
 			msvAS_ListiniDao.detach(msvAS_Listini);
 		}
@@ -6736,6 +6808,7 @@ public class Oasi{
 				msvAS_ListiniDao.salva(msvAS_Listini);
 			}else{ // gia' presente, quindi update
 				msvAS_ListiniDao.aggiorna(msvAS_Listini);
+				msvAS_ListiniDao.detach(msvAS_ListiniTmp);
 			}
 			msvAS_ListiniDao.detach(msvAS_Listini);
 		}
@@ -6792,6 +6865,7 @@ public class Oasi{
 				msvAS_ListiniDao.salva(msvAS_Listini);
 			}else{ // gia' presente, quindi update
 				msvAS_ListiniDao.aggiorna(msvAS_Listini);
+				msvAS_ListiniDao.detach(msvAS_ListiniTmp);
 			}
 			msvAS_ListiniDao.detach(msvAS_Listini);
 		}
@@ -6834,6 +6908,7 @@ public class Oasi{
 			msvAS_ListiniDao.salva(msvAS_Listini);
 		}else{ // gia' presente, quindi update
 			msvAS_ListiniDao.aggiorna(msvAS_Listini);
+			msvAS_ListiniDao.detach(msvAS_ListiniTmp);
 		}
 		msvAS_ListiniDao.detach(msvAS_Listini);
 	}
