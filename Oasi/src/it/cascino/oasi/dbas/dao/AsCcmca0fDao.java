@@ -17,7 +17,7 @@ public interface AsCcmca0fDao{
 	
 	// Integer delByCadarCanup(Integer cadar, String canup);
 	
-	List<AsCcmca0f> getDaCadarCanup(Integer cadar, String canup);
+	List<AsCcmca0f> getDaCadarCanumCanupCacon(Integer cadar, Integer canum, String canup, String cacon);
 	
 	void detach(Object entity);
 	

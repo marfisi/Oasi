@@ -3,35 +3,35 @@ package it.cascino.oasi.dbmsqlsrv.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.*;
-import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvOA_MovimentiRighePKey;
+import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvOA_CarichiRighePKey;
 
 /**
-* The persistent class for the OA_MovimentiRighe database table.
+* The persistent class for the OA_CarichiRighe database table.
 * 
 */
 @Entity(
-	name = "OA_MovimentiRighe"
+	name = "OA_CarichiRighe"
 )
 @NamedQueries(
 	{@NamedQuery(
-		name = "MsvOA_MovimentiRighe.findAll",
-		query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.id.idUnivocoTes, o.id.idUnivocoRiga"
+		name = "MsvOA_CarichiRighe.findAll",
+		query = "SELECT o FROM OA_CarichiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' order by o.id.idUnivocoTes, o.id.idUnivocoRiga"
 	), @NamedQuery(
-		name = "MsvOA_MovimentiRighe.findByIdUnivocoTes",
-		query = "SELECT o FROM OA_MovimentiRighe o WHERE o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"
+		name = "MsvOA_CarichiRighe.findByIdUnivocoTes",
+		query = "SELECT o FROM OA_CarichiRighe o WHERE o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"
 	), @NamedQuery(
-		name = "MsvOA_MovimentiRighe.findByIdUnivocoTesNonElaborate",
-		query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"
+		name = "MsvOA_CarichiRighe.findByIdUnivocoTesNonElaborate",
+		query = "SELECT o FROM OA_CarichiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"
 	), @NamedQuery(
-		name = "MsvOA_MovimentiRighe.findByIdUnivocoTesElaborate",
-		query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"
+		name = "MsvOA_CarichiRighe.findByIdUnivocoTesElaborate",
+		query = "SELECT o FROM OA_CarichiRighe o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes order by o.id.idUnivocoRiga"
 	), @NamedQuery(
-		name = "MsvOA_MovimentiRighe.findByIdUnivocoTesIdUnivocoRiga",
-		query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes and o.id.idUnivocoRiga = :idUnivocoRiga"
+		name = "MsvOA_CarichiRighe.findByIdUnivocoTesIdUnivocoRiga",
+		query = "SELECT o FROM OA_CarichiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes and o.id.idUnivocoRiga = :idUnivocoRiga"
 	)
 	}
 )
-public class MsvOA_MovimentiRighe implements Serializable{
+public class MsvOA_CarichiRighe implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -41,7 +41,7 @@ public class MsvOA_MovimentiRighe implements Serializable{
 	// private Logger log;
 	
 	@EmbeddedId
-	private MsvOA_MovimentiRighePKey id;
+	private MsvOA_CarichiRighePKey id;
 	private String codArticoloOasi;
 	private String codLungoOasi;
 	private String codArticoloCascino;
@@ -51,18 +51,16 @@ public class MsvOA_MovimentiRighe implements Serializable{
 	private String codIvaRiga;
 	private BigDecimal costo;
 	private String codOperatore;
-	private BigDecimal valoreOmaggio;
-	private BigDecimal scontoOmaggio;
 	private String tipoOperazione;
 	
-	public MsvOA_MovimentiRighe(){
+	public MsvOA_CarichiRighe(){
 	}
 	
-	public MsvOA_MovimentiRighePKey getId(){
+	public MsvOA_CarichiRighePKey getId(){
 		return id;
 	}
 	
-	public void setId(MsvOA_MovimentiRighePKey id){
+	public void setId(MsvOA_CarichiRighePKey id){
 		this.id = id;
 	}
 	
@@ -138,22 +136,6 @@ public class MsvOA_MovimentiRighe implements Serializable{
 		this.codOperatore = codOperatore;
 	}
 	
-	public BigDecimal getValoreOmaggio(){
-		return valoreOmaggio;
-	}
-	
-	public void setValoreOmaggio(BigDecimal valoreOmaggio){
-		this.valoreOmaggio = valoreOmaggio;
-	}
-	
-	public BigDecimal getScontoOmaggio(){
-		return scontoOmaggio;
-	}
-	
-	public void setScontoOmaggio(BigDecimal scontoOmaggio){
-		this.scontoOmaggio = scontoOmaggio;
-	}
-	
 	public String getTipoOperazione(){
 		return tipoOperazione;
 	}
@@ -176,16 +158,14 @@ public class MsvOA_MovimentiRighe implements Serializable{
 		result = prime * result + ((prezzoNetto == null) ? 0 : prezzoNetto.hashCode());
 		result = prime * result + ((prezzoNettoIvaTes == null) ? 0 : prezzoNettoIvaTes.hashCode());
 		result = prime * result + ((qta == null) ? 0 : qta.hashCode());
-		result = prime * result + ((scontoOmaggio == null) ? 0 : scontoOmaggio.hashCode());
 		result = prime * result + ((tipoOperazione == null) ? 0 : tipoOperazione.hashCode());
-		result = prime * result + ((valoreOmaggio == null) ? 0 : valoreOmaggio.hashCode());
 		return result;
 	}
 	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof MsvOA_MovimentiRighe){
-			if(this.id == ((MsvOA_MovimentiRighe)obj).id){
+		if(obj instanceof MsvOA_CarichiRighe){
+			if(this.id == ((MsvOA_CarichiRighe)obj).id){
 				return true;
 			}else{
 				return false;
@@ -196,6 +176,6 @@ public class MsvOA_MovimentiRighe implements Serializable{
 	
 	@Override
 	public String toString(){
-		return "MsvOA_MovimentiRighe [id=" + id + ", codArticoloOasi=" + codArticoloOasi + ", codLungoOasi=" + codLungoOasi + ", codArticoloCascino=" + codArticoloCascino + ", qta=" + qta + ", prezzoNetto=" + prezzoNetto + ", prezzoNettoIvaTes=" + prezzoNettoIvaTes + ", codIvaRiga=" + codIvaRiga + ", costo=" + costo + ", codOperatore=" + codOperatore + ", valoreOmaggio=" + valoreOmaggio + ", scontoOmaggio=" + scontoOmaggio + ", tipoOperazione=" + tipoOperazione + "]";
+		return "MsvOA_CarichiRighe [id=" + id + ", codArticoloOasi=" + codArticoloOasi + ", codLungoOasi=" + codLungoOasi + ", codArticoloCascino=" + codArticoloCascino + ", qta=" + qta + ", prezzoNetto=" + prezzoNetto + ", prezzoNettoIvaTes=" + prezzoNettoIvaTes + ", codIvaRiga=" + codIvaRiga + ", costo=" + costo + ", codOperatore=" + codOperatore + ", tipoOperazione=" + tipoOperazione + "]";
 	}
 }

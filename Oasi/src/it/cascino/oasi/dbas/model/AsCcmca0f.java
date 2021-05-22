@@ -17,8 +17,8 @@ import it.cascino.oasi.dbas.model.pkey.AsCcmca0fPKey;
 		name = "AsCcmca0f.findById",
 		query = "SELECT o FROM Ccmca0f o WHERE o.id.cadar = :cadar and o.id.canum = :canum and o.id.carig = :carig"
 	), @NamedQuery(
-		name = "AsCcmca0f.findByCadarCanup",
-		query = "SELECT o FROM Ccmca0f o WHERE o.id.cadar = :cadar and o.canup = :canup and cacon = ''"
+		name = "AsCcmca0f.findByCadarCanumCanupCacon",
+		query = "SELECT o FROM Ccmca0f o WHERE o.id.cadar = :cadar and o.id.canum = :canum and o.canup = :canup and trim(o.cacon) like :cacon"
 	)
 	}
 )

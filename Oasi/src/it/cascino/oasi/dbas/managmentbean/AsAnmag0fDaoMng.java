@@ -226,7 +226,7 @@ public class AsAnmag0fDaoMng implements AsAnmag0fDao, Serializable{
 		List<AsAnmag0f> o = null;
 		try{
 			try{
-				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda in (select m2cod from anma20f where m2oas = 'O')";
+				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda in (select m2cod from anma20f where m2oas = 'O') order by mcoda";
 				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
 				o = (List<AsAnmag0f>)query.getResultList();
 			}catch(NoResultException e){
@@ -242,7 +242,7 @@ public class AsAnmag0fDaoMng implements AsAnmag0fDao, Serializable{
 		AsAnmag0f o = null;
 		try{
 			try{
-				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda = :mcoda and mcoda in (select m2cod from anma20f where m2oas = 'O')";
+				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda = :mcoda and mcoda in (select m2cod from anma20f where m2oas = 'O') order by mcoda";
 				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
 				query.setParameter("mcoda", mcoda);
 				o = (AsAnmag0f)query.getSingleResult();
@@ -262,7 +262,9 @@ public class AsAnmag0fDaoMng implements AsAnmag0fDao, Serializable{
 		List<AsAnmag0f> o = null;
 		try{
 			try{
-				String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda in (select m2cod from anma20f where m2oas = 'G')";
+				// String sql = "select * from anmag0f where atama in (' ', 'A') and mcoda in (select m2cod from anma20f where m2gia = '1')";
+				// String sql = "select * from anmag0f where atama in (' ', 'A') and mcofo = 5900 and moalu != '' and moalu not like '%.%' and mcoda in (select distinct dcoda from ardep0f where dcode in (1, 3)) and mcoda not in (select m2cod from anma20f where m2oas = 'O') order by mcoda";
+				String sql = "select * from (select * from anmag0f where mcofo = 5900 and moalu != '' and moalu not like '%.%' and mcoda in (select distinct dcoda from ardep0f where dcode in (1, 3)) union select * from anmag0f where mcofo != 5900 and moalu != '' and moalu     like '%.%' and mcoda in (select distinct dcoda from ardep0f where dcode in (1, 3) and dgiac > 0) and mclin = '') t1 where atama in (' ', 'A') and mcoda not in (select m2cod from anma20f where m2oas = 'O') order by mcoda";
 				Query query = em.createNativeQuery(sql, AsAnmag0f.class);
 				o = (List<AsAnmag0f>)query.getResultList();
 			}catch(NoResultException e){

@@ -24,7 +24,7 @@ public class Support{
 		return fToStr;
 	}
 	
-	public static void arrotonda(BigDecimal val, Integer precisione){
-		val.setScale(precisione, BigDecimal.ROUND_HALF_UP);
+	public static BigDecimal arrotonda(BigDecimal val, Integer precisione){
+		return val.setScale(precisione, RoundingMode.HALF_UP);
 	}
 }

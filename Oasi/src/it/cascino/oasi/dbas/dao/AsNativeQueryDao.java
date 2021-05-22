@@ -20,6 +20,8 @@ public interface AsNativeQueryDao{
 	
 	List<Object[]> getStoricoMovimenti();
 	
+	List<Object[]> getMovimentiDepIngArtDomex(Integer vdatr);
+	
 	List<Object[]> getChiusuraCassaSede(Integer mcdac);
 	
 	void detach(Object entity);

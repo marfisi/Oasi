@@ -54,6 +54,16 @@ public class MsvNativeQueryDaoMng implements MsvNativeQueryDao, Serializable{
 				query = em.createNativeQuery(sql);
 				o = query.executeUpdate();
 				log.info("Eliminate " + o + " righe da " + "OA_PrimaNota_Scad");
+				
+				sql = "DELETE FROM OA_CarichiRighe where IdUnivocoTes in (SELECT IdUnivocoTes FROM OA_CarichiTestate where DataReg <= '" + data + "')";
+				query = em.createNativeQuery(sql);
+				o = query.executeUpdate();
+				log.info("Eliminate " + o + " righe da " + "OA_CarichiRighe");
+				
+				sql = "DELETE FROM OA_CarichiTestate where DataReg <= '" + data + "'";
+				query = em.createNativeQuery(sql);
+				o = query.executeUpdate();
+				log.info("Eliminate " + o + " righe da " + "OA_CarichiTestate");
 			}catch(NoResultException e){
 				o = -1;
 			}

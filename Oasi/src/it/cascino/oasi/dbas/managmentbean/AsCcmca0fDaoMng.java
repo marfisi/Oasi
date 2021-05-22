@@ -124,13 +124,15 @@ public class AsCcmca0fDaoMng implements AsCcmca0fDao, Serializable{
 	@SuppressWarnings(
 		"unchecked"
 	)
-	public List<AsCcmca0f> getDaCadarCanup(Integer cadar, String canup){
+	public List<AsCcmca0f> getDaCadarCanumCanupCacon(Integer cadar, Integer canum, String canup, String cacon){
 		List<AsCcmca0f> o = null;
 		try{
 			try{
-				Query query = em.createNamedQuery("AsCcmca0f.findByCadarCanup");
+				Query query = em.createNamedQuery("AsCcmca0f.findByCadarCanumCanupCacon");
 				query.setParameter("cadar", cadar);
+				query.setParameter("canum", canum);
 				query.setParameter("canup", canup);
+				query.setParameter("cacon", cacon);
 				o = (List<AsCcmca0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;

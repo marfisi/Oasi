@@ -185,11 +185,31 @@ public class AsNativeQueryDaoMng implements AsNativeQueryDao, Serializable{
 	@SuppressWarnings(
 		"unchecked"
 	)
+	public List<Object[]> getMovimentiDepIngArtDomex(Integer vdatr){
+		List<Object[]> o = null;
+		try{
+			try{
+				String sql = "select vdatr, vorin, vcaus, vnura, vnumd, vprog, vndep, vcoda, vquan, vprez, vsco1, vsco2, vsco3, vcost, valiv, vcocf from movma0f where vndep = 3 and vdatr = :vdatr and left(vcaus, 1) in ('D', 'M', 'E', 'I') and vcoda in (select mcoda from anmag0f where mcofo = 5900 and moalu != '' and moalu not like '%.%') order by vdatr, vcaus, vnura, vnumd, vprog";
+				Query query = em.createNativeQuery(sql);
+				query.setParameter("vdatr", vdatr);
+				o = (List<Object[]>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+
+	@SuppressWarnings(
+		"unchecked"
+	)
 	public List<Object[]> getChiusuraCassaSede(Integer mcdac){
 		List<Object[]> o = null;
 		try{
 			try{
-				String sql = "select (mcscc + mcrtc) cassa, (mcscp - mcrtc) pos from mocac0f where mcnuc = 101 and mcdac = :mcdac";
+				String sql = "select (mcscc + mcrtc) cassa, (mcscp - mcrtc) pos, mcnuc from mocac0f where mcdac = :mcdac";
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("mcdac", mcdac);
 				o = (List<Object[]>)query.getResultList();

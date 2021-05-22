@@ -40,6 +40,7 @@ public class AsAlmer0fDaoMng implements AsAlmer0fDao, Serializable{
 	public Boolean salva(AsAlmer0f o){
 		try{
 			try{
+				utx.begin();
 				log.info("salva: " + o.toString());
 				em.persist(o);
 			}finally{
