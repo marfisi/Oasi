@@ -17,11 +17,15 @@ import it.cascino.oasi.dbas.model.pkey.AsCcmca0fPKey;
 		name = "AsCcmca0f.findById",
 		query = "SELECT o FROM Ccmca0f o WHERE o.id.cadar = :cadar and o.id.canum = :canum and o.id.carig = :carig"
 	), @NamedQuery(
-		name = "AsCcmca0f.findByCadarCanumCanupCacon",
-		query = "SELECT o FROM Ccmca0f o WHERE o.id.cadar = :cadar and o.id.canum = :canum and o.canup = :canup and trim(o.cacon) like :cacon"
+		name = "AsCcmca0f.findByCadarCanumCanup",
+		query = "SELECT o FROM Ccmca0f o WHERE o.id.cadar = :cadar and o.id.canum = :canum and o.canup = :canup"
 	)
 	}
 )
+//NamedQuery(
+//name = "AsCcmca0f.findByCadarCanumCanupCacon",
+//query = "SELECT o FROM Ccmca0f o WHERE o.id.cadar = :cadar and o.id.canum = :canum and o.canup = :canup and trim(o.cacon) like :cacon"
+//)
 public class AsCcmca0f implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

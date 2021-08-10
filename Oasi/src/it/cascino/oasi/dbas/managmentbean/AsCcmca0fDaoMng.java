@@ -121,18 +121,39 @@ public class AsCcmca0fDaoMng implements AsCcmca0fDao, Serializable{
 	// return o;
 	// }
 	
+	// @SuppressWarnings(
+	// "unchecked"
+	// )
+	// public List<AsCcmca0f> getDaCadarCanumCanupCacon(Integer cadar, Integer canum, String canup, String cacon){
+	// List<AsCcmca0f> o = null;
+	// try{
+	// try{
+	// Query query = em.createNamedQuery("AsCcmca0f.findByCadarCanumCanupCacon");
+	// query.setParameter("cadar", cadar);
+	// query.setParameter("canum", canum);
+	// query.setParameter("canup", canup);
+	// query.setParameter("cacon", cacon);
+	// o = (List<AsCcmca0f>)query.getResultList();
+	// }catch(NoResultException e){
+	// o = null;
+	// }
+	// }catch(Exception e){
+	// log.fatal(e.toString());
+	// }
+	// return o;
+	// }
+	
 	@SuppressWarnings(
 		"unchecked"
 	)
-	public List<AsCcmca0f> getDaCadarCanumCanupCacon(Integer cadar, Integer canum, String canup, String cacon){
+	public List<AsCcmca0f> getDaCadarCanumCanup(Integer cadar, Integer canum, String canup){
 		List<AsCcmca0f> o = null;
 		try{
 			try{
-				Query query = em.createNamedQuery("AsCcmca0f.findByCadarCanumCanupCacon");
+				Query query = em.createNamedQuery("AsCcmca0f.findByCadarCanumCanup");
 				query.setParameter("cadar", cadar);
 				query.setParameter("canum", canum);
 				query.setParameter("canup", canup);
-				query.setParameter("cacon", cacon);
 				o = (List<AsCcmca0f>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;
