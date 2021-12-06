@@ -51,20 +51,20 @@ public class MsvOA_ClientiDaoMng implements MsvOA_ClientiDao, Serializable{
 		}
 	}
 	
-	// public void elimina(MsvOA_Clienti oElimina){
-	// try{
-	// try{
-	// utx.begin();
-	// MsvOA_Clienti o = em.find(MsvOA_Clienti.class, oElimina.getCodice());
-	// log.info("elimina: " + o.toString());
-	// em.remove(o);
-	// }finally{
-	// utx.commit();
-	// }
-	// }catch(Exception e){
-	// log.fatal(e.toString());
-	// }
-	// }
+	public void elimina(MsvOA_Clienti oElimina){
+		try{
+			try{
+				utx.begin();
+				MsvOA_Clienti o = em.find(MsvOA_Clienti.class, oElimina.getCodice());
+				log.info("elimina: " + o.toString());
+				em.remove(o);
+			}finally{
+				utx.commit();
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+	}
 	
 	public MsvOA_Clienti getDaCodice(String codice){
 		MsvOA_Clienti o = null;

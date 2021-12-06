@@ -8,7 +8,7 @@ public interface MsvOA_ClientiDao{
 	
 	void aggiorna(MsvOA_Clienti o);
 	
-	// void elimina(MsvOA_Clienti o);
+	void elimina(MsvOA_Clienti o);
 	
 	MsvOA_Clienti getDaCodice(String codice);
 	

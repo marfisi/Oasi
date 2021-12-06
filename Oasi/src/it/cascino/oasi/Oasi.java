@@ -103,6 +103,7 @@ import it.cascino.oasi.dbmsqlsrv.dao.MsvAS_TrasferimentiDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvAS_Vendite008Dao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvNativeQueryDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_AnagLivelliDao;
+import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_AnagCausContDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_AnagMarchiDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_AnagSottofamDao;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_ArticoliDao;
@@ -128,6 +129,7 @@ import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvAS_TrasferimentiDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvAS_Vendite008DaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvNativeQueryDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvOA_AnagLivelliDaoMng;
+import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvOA_AnagCausContDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvOA_AnagMarchiDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvOA_AnagSottofamDaoMng;
 import it.cascino.oasi.dbmsqlsrv.managmentbean.MsvOA_ArticoliDaoMng;
@@ -152,6 +154,7 @@ import it.cascino.oasi.dbmsqlsrv.model.MsvAS_Movimenti;
 import it.cascino.oasi.dbmsqlsrv.model.MsvAS_Trasferimenti;
 import it.cascino.oasi.dbmsqlsrv.model.MsvAS_Vendite008;
 import it.cascino.oasi.dbmsqlsrv.model.MsvOA_AnagLivelli;
+import it.cascino.oasi.dbmsqlsrv.model.MsvOA_AnagCausCont;
 import it.cascino.oasi.dbmsqlsrv.model.MsvOA_AnagMarchi;
 import it.cascino.oasi.dbmsqlsrv.model.MsvOA_AnagSottofam;
 import it.cascino.oasi.dbmsqlsrv.model.MsvOA_Articoli;
@@ -326,6 +329,9 @@ public class Oasi{
 	private final MsvOA_AnagLivelliDao msvOA_AnagLivelliDao = new MsvOA_AnagLivelliDaoMng();
 	private List<MsvOA_AnagLivelli> msvOA_AnagLivelliLs;
 	
+	private final MsvOA_AnagCausContDao msvOA_AnagCausContDao = new MsvOA_AnagCausContDaoMng();
+	// private List<MsvOA_AnagCausCont> msvOA_AnagCausContLs;
+	
 	private final MsvOA_AnagSottofamDao msvOA_AnagSottofamDao = new MsvOA_AnagSottofamDaoMng();
 	private List<MsvOA_AnagSottofam> msvOA_AnagSottofamLs;
 	
@@ -417,6 +423,8 @@ public class Oasi{
 		initTranscodifica();
 		
 		// elaboraChiusuraCassa();
+		// testCodice();
+		// elaboraCrediti();
 		
 		String argomenti = "";
 		AsOasic0f cmd = null;
@@ -636,6 +644,7 @@ public class Oasi{
 		msvOA_ArticoliDao.close();
 		msvOA_AnagMarchiDao.close();
 		msvOA_AnagLivelliDao.close();
+		msvOA_AnagCausContDao.close();
 		msvOA_AnagSottofamDao.close();
 		msvOA_TrasferimentiDao.close();
 		Date dataMov = msvOA_MovimentiTestateDao.getMaxDataReg();
@@ -1242,12 +1251,12 @@ public class Oasi{
 			asClien00fDao.detach(asClien00f);
 			
 			// elimina dalla tabella scritta da oasi
-			// msvOA_ClientiDao.elimina(msvOA_Clienti);
-			// al posto di eliminare metto tipoOperazione = '*XY' (elaborata)
-			tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_Clienti.getTipoOperazione(), 2));
-			msvOA_Clienti.setTipoOperazione(tipoOperazione);
-			msvOA_ClientiDao.aggiorna(msvOA_Clienti);
+			msvOA_ClientiDao.elimina(msvOA_Clienti);
 			msvOA_ClientiDao.detach(msvOA_Clienti);
+			// al posto di eliminare metto tipoOperazione = '*XY' (elaborata)
+			// tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_Clienti.getTipoOperazione(), 2));
+			// msvOA_Clienti.setTipoOperazione(tipoOperazione);
+			// msvOA_ClientiDao.aggiorna(msvOA_Clienti);
 		}
 		
 		asClien00fDao.aggiornaCampiMancanti();
@@ -2886,7 +2895,7 @@ public class Oasi{
 		
 		// solo alcuni movimenti
 		// msvOA_MovimentiTestateLs.clear();
-		// msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C01816039"));
+		// msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C03326000"));
 		
 		String strTimestampAs400 = asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -3118,6 +3127,8 @@ public class Oasi{
 			}else if(StringUtils.equalsIgnoreCase(msvOA_MovimentiTestate.getIpaCodiceCUP(), "domex")){
 				voven = "BX";
 			}else if(StringUtils.equalsIgnoreCase(msvOA_MovimentiTestate.getIpaCodiceCUP(), "mepa")){
+				voven = "PA";
+			}else if(StringUtils.equalsIgnoreCase(msvOA_MovimentiTestate.getIpaCodiceCUP(), "b2e")){
 				voven = "BE";
 			}
 			
@@ -3299,8 +3310,11 @@ public class Oasi{
 				while(iter_msvOA_PrimaNota_IvaLs.hasNext()){
 					msvOA_PrimaNota_Iva = iter_msvOA_PrimaNota_IvaLs.next();
 					
-					BigDecimal importoAccontoPerAliquota = importoAcconto.multiply(msvOA_PrimaNota_Iva.getImponibile());
-					importoAccontoPerAliquota = importoAccontoPerAliquota.divide(importoDocumento, 2, RoundingMode.HALF_UP);
+					BigDecimal importoAccontoPerAliquota = importoAcconto;
+					if((importoDocumento.compareTo(new BigDecimal(0)) > 0) && (msvOA_PrimaNota_Iva.getImponibile().compareTo(new BigDecimal(0)) > 0)){
+						importoAccontoPerAliquota = importoAcconto.multiply(msvOA_PrimaNota_Iva.getImponibile());
+						importoAccontoPerAliquota = importoAccontoPerAliquota.divide(importoDocumento, 2, RoundingMode.HALF_UP);
+					}
 					
 					numRighe++;
 					
@@ -3514,6 +3528,13 @@ public class Oasi{
 				}else{ // gia' presente, quindi update
 					BigDecimal vquanVecchia = asMovma0fTmp.getVquan();
 					
+					// non modifico il canale, se quello gia' presente in movma non e' NG e quello ricevuto e' NG
+					// quindi se ho impostato a mano un canale, ad es. BE su delle vendite, ma oasi mi dice che e' NG, allora non lo cambio, mantenendo BE
+					if(!(StringUtils.equals(asMovma0fTmp.getVoven(), "NG")) && StringUtils.equals(asMovma0f.getVoven(), "NG")){
+						log.info("Mantengo il canale a " + asMovma0fTmp.getVoven() + ", non lo imposto a " + asMovma0f.getVoven());
+						asMovma0f.setVoven(asMovma0fTmp.getVoven());
+					}
+					
 					if(!(asMovma0fDao.aggiorna(asMovma0f))){
 						chiudi();
 					}
@@ -3534,7 +3555,7 @@ public class Oasi{
 				String voanm = "";
 				String voads = "";
 				Integer voadd = 0;
-
+				
 				voaca = msvOA_MovimentiTestate.getCausaleOasi();
 				voanm = msvOA_MovimentiTestate.getnMovDdt();
 				voads = msvOA_MovimentiTestate.getNroDoc();
@@ -3547,7 +3568,7 @@ public class Oasi{
 				asMovoa0f.setVoanm(voanm);
 				asMovoa0f.setVoads(voads);
 				asMovoa0f.setVoadd(voadd);
-												
+				
 				AsMovoa0f asMovoa0fTmp = asMovoa0fDao.getDaId(vidoa);
 				if(asMovoa0fTmp == null){ // nuova quindi insert
 					if(!(asMovoa0fDao.salva(asMovoa0f))){
@@ -4308,7 +4329,17 @@ public class Oasi{
 			vdain = vdatr;
 			vorin = 1;
 			
-			vndep = Integer.parseInt(transDeposito(StringUtils.trim(msvOA_MovimentiTestate.getCodCliFor()), "oasi2as"));
+			String codCliFor = StringUtils.trim(msvOA_MovimentiTestate.getCodCliFor());
+			if(StringUtils.equals(codCliFor, "008")){
+				log.warn("Deposito " + codCliFor + ", non consetito con queste causali");
+				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiTestate.getTipoOperazione(), 2));
+				msvOA_MovimentiTestate.setTipoOperazione(tipoOperazione);
+				msvOA_MovimentiTestateDao.aggiorna(msvOA_MovimentiTestate);
+				msvOA_MovimentiTestateDao.detach(msvOA_MovimentiTestate);
+				continue;
+			}
+			
+			vndep = Integer.parseInt(transDeposito(codCliFor, "oasi2as"));
 			
 			vcaus = StringUtils.join(vcaus, StringUtils.leftPad(vndep.toString(), 2, "0"));
 			
@@ -5353,7 +5384,7 @@ public class Oasi{
 		msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getFatture("'CORC', 'VEND', 'VEDD', 'ACFF', 'RSCL', 'RSCO', 'RSCM'");
 		
 		// solo una fattura
-		// msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C00347994");
+		// msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C03051210");
 		
 		String strTimestampAs400 = asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -5413,9 +5444,20 @@ public class Oasi{
 			
 			String causaleOasi = msvOA_MovimentiTestate.getCausaleOasi();
 			
+			Boolean acconto = false;
+			if(StringUtils.equals(causaleOasi, "ACFF")){
+				acconto = true;
+			}
+			
 			MsvOA_MovimentiRighe msvOA_MovimentiRighe = null;
 			try{
-				msvOA_MovimentiRighe = msvOA_MovimentiRigheDao.getDaIdUnivocoTesElaborate(msvOA_MovimentiTestate.getIdUnivocoTes()).get(0);
+				if(acconto){
+					// se e' acconto, non c'e' stato il caricamento delle righe e quindi non sono elaborate e non iniziano con *
+					msvOA_MovimentiRigheLs = msvOA_MovimentiRigheDao.getDaIdUnivocoTes(msvOA_MovimentiTestate.getIdUnivocoTes());
+					msvOA_MovimentiRighe = msvOA_MovimentiRigheLs.get(0);
+				}else{
+					msvOA_MovimentiRighe = msvOA_MovimentiRigheDao.getDaIdUnivocoTesElaborate(msvOA_MovimentiTestate.getIdUnivocoTes()).get(0);
+				}
 			}catch(IndexOutOfBoundsException e){
 				log.info("Elaboro: " + msvOA_MovimentiTestate.getIdUnivocoTes());
 				chiudi();
@@ -5430,11 +5472,6 @@ public class Oasi{
 				if(StringUtils.equals(msvOA_MovimentiRighe.getCodArticoloOasi(), "G0XLX")){ // articolo abbuono
 					abbuono = true;
 				}
-			}
-			
-			Boolean acconto = false;
-			if(StringUtils.equals(causaleOasi, "ACFF")){
-				acconto = true;
 			}
 			
 			MsvOA_PrimaNota_Tes msvOA_PrimaNota_Tes = msvOA_PrimaNota_TesDao.getDaNReg(msvOA_MovimentiTestate.getIdPntNReg());
@@ -5548,7 +5585,7 @@ public class Oasi{
 							msvOA_MovimentiRighe = iter_msvOA_MovimentiRigheLs.next();
 							
 							if((msvOA_MovimentiRighe.getPrezzoNetto().compareTo(new BigDecimal(0)) == 0) && (msvOA_MovimentiRighe.getValoreOmaggio().compareTo(new BigDecimal(0)) > 0)){
-								importoOmaggio = importoOmaggio.add(msvOA_MovimentiRighe.getValoreOmaggio());							
+								importoOmaggio = importoOmaggio.add(msvOA_MovimentiRighe.getValoreOmaggio());
 							}
 						}
 						log.info("Omaggio: " + importoOmaggio);
@@ -5697,16 +5734,16 @@ public class Oasi{
 			}
 			
 			// gestione cessione del credito
-			if(Integer.compare(fcopa, 55) == 0){	// 50%
+			if(Integer.compare(fcopa, 55) == 0){ // 50%
 				facco = fimpf.multiply(new BigDecimal(0.5));
 				facco = Support.arrotonda(facco, 2);
-			}else if(Integer.compare(fcopa, 56) == 0){	// 65%
+			}else if(Integer.compare(fcopa, 56) == 0){ // 65%
 				facco = fimpf.multiply(new BigDecimal(0.65));
 				facco = Support.arrotonda(facco, 2);
-			}else if(Integer.compare(fcopa, 57) == 0){	// 40%
+			}else if(Integer.compare(fcopa, 57) == 0){ // 40%
 				facco = fimpf.multiply(new BigDecimal(0.4));
 				facco = Support.arrotonda(facco, 2);
-			}else if(Integer.compare(fcopa, 58) == 0){	// 52%
+			}else if(Integer.compare(fcopa, 58) == 0){ // 52%
 				facco = fimpf.multiply(new BigDecimal(0.52));
 				facco = Support.arrotonda(facco, 2);
 			}
@@ -5778,6 +5815,10 @@ public class Oasi{
 			// msvOA_MovimentiTestateDao.elimina(msvOA_MovimentiTestate);
 			// al posto di eliminare metto tipoOperazione = '*XY' (elaborata)
 			tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_PrimaNota_Tes.getTipoOperazione(), 2));
+			if(acconto){
+				// se e' acconto, dato che il pagamento lo gestisco con elaboraPagamenti con le FACx, non gli devo mettere l'asterisco di elaborato
+				tipoOperazione = msvOA_PrimaNota_Tes.getTipoOperazione();
+			}
 			msvOA_PrimaNota_Tes.setTipoOperazione(tipoOperazione);
 			msvOA_PrimaNota_TesDao.aggiorna(msvOA_PrimaNota_Tes);
 			msvOA_PrimaNota_TesDao.detach(msvOA_PrimaNota_Tes);
@@ -5792,6 +5833,10 @@ public class Oasi{
 		MsvOA_PrimaNota_Tes msvOA_PrimaNota_Tes = new MsvOA_PrimaNota_Tes();
 		
 		msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesDao.getDaRegIva("03");
+		
+		// solo alcuni movimenti
+		// msvOA_PrimaNota_TesLs.clear();
+		// msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00152590"));
 		
 		String strTimestampAs400 = asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -5841,15 +5886,24 @@ public class Oasi{
 				reso = true;
 			}
 			
-			if(StringUtils.equals(StringUtils.left(causale, 3), "NCC")){
+			log.info("Elaboro: " + msvOA_PrimaNota_Tes.getnReg());
+			
+			MsvOA_AnagCausCont msvOA_AnagCausCont = msvOA_AnagCausContDao.getDaCatCodice(causale);
+			if((msvOA_AnagCausCont != null) && (StringUtils.startsWith(msvOA_AnagCausCont.getCatDescrizione(), "Storno Acconto"))){
+				log.warn("Trascuro la causale " + causale + ", " + msvOA_PrimaNota_RigheDao.getDaNReg(msvOA_PrimaNota_Tes.getnReg()).get(0).toString());
+				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_PrimaNota_Tes.getTipoOperazione(), 2));
+				msvOA_PrimaNota_Tes.setTipoOperazione(tipoOperazione);
+				msvOA_PrimaNota_TesDao.aggiorna(msvOA_PrimaNota_Tes);
+				msvOA_PrimaNota_TesDao.detach(msvOA_PrimaNota_Tes);
+				continue;			
+			}else if((msvOA_AnagCausCont != null) && (StringUtils.startsWith(msvOA_AnagCausCont.getCatDescrizione(), "Nota Credito Corrispettivi"))){	// if(StringUtils.equals(StringUtils.left(causale, 3), "NCC")){
+				log.warn("Trascuro la causale " + causale);
 				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_PrimaNota_Tes.getTipoOperazione(), 2));
 				msvOA_PrimaNota_Tes.setTipoOperazione(tipoOperazione);
 				msvOA_PrimaNota_TesDao.aggiorna(msvOA_PrimaNota_Tes);
 				msvOA_PrimaNota_TesDao.detach(msvOA_PrimaNota_Tes);
 				continue;
 			}
-			
-			log.info("Elaboro: " + msvOA_PrimaNota_Tes.getnReg());
 			
 			Boolean fattura = false;
 			
@@ -5930,7 +5984,7 @@ public class Oasi{
 			switch(tcoel){
 				case "SC11":
 					tcoel = "SCA";
-					break;				
+					break;
 				default:
 					break;
 			}
@@ -6012,7 +6066,7 @@ public class Oasi{
 							msvOA_MovimentiRighe = iter_msvOA_MovimentiRigheLs.next();
 							
 							if((msvOA_MovimentiRighe.getPrezzoNetto().compareTo(new BigDecimal(0)) == 0) && (msvOA_MovimentiRighe.getValoreOmaggio().compareTo(new BigDecimal(0)) > 0)){
-								importoOmaggio = importoOmaggio.add(msvOA_MovimentiRighe.getValoreOmaggio());							
+								importoOmaggio = importoOmaggio.add(msvOA_MovimentiRighe.getValoreOmaggio());
 							}
 						}
 						log.info("Omaggio: " + importoOmaggio);
@@ -6134,11 +6188,37 @@ public class Oasi{
 					fntab = "";
 					fnta2 = "";
 					if(msvOA_MovimentiTestate != null){
-						if(StringUtils.isNotBlank(msvOA_MovimentiTestate.getNotaFZ())){
-							String fnnupfntab = StringUtils.upperCase(StringUtils.normalizeSpace(msvOA_MovimentiTestate.getNotaFZ()));
-							fnnup = StringUtils.right(StringUtils.substringBefore(fnnupfntab, " "), 15);
-							fntab = StringUtils.left(StringUtils.substringAfterLast(fnnupfntab, " "), 4);
-							fnta2 = fntab;
+						String notaFZ = StringUtils.upperCase(StringUtils.normalizeSpace(msvOA_MovimentiTestate.getNotaFZ()));
+						if(StringUtils.isNotBlank(notaFZ)){
+							String notaFZarr[] = StringUtils.split(notaFZ, " ");
+							
+							// importo
+							if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZarr[0]))){
+								BigDecimal fnifiOriginale = fnifi;
+								String notaFZimp = StringUtils.replace(notaFZarr[0], ",", ".");
+								notaFZimp = StringUtils.replacePattern(notaFZimp, "[^\\d.-]", "");
+								try{
+									fnifi = new BigDecimal(notaFZimp);
+								}catch(NumberFormatException e){
+									fnifi = new BigDecimal(0);
+								}
+								
+								if(fnifi.compareTo(new BigDecimal(0)) <= 0){
+									log.warn("Nota FZ: " + notaFZ + ", sembra non formattata correttamente. Ripristino il valore finanziaria a " + fnifiOriginale);
+									fnifi = fnifiOriginale;
+								}
+							}
+							
+							// codice pratica
+							if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZarr[1]))){
+								fnnup = StringUtils.right(notaFZarr[1], 15);
+							}
+							
+							// codice tabella
+							if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZarr[2]))){
+								fntab = StringUtils.left(notaFZarr[2], 4);
+								fnta2 = fntab;
+							}
 						}
 					}
 					fndep = scdep;
@@ -6283,6 +6363,11 @@ public class Oasi{
 			// msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACL4"));
 			// msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACL5"));
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INB1"));
+			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC1"));
+			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC2"));
+			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC3"));
+			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC4"));
+			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC9"));
 		}else{
 			msvOA_PrimaNota_TesLs.add(o);
 		}
@@ -6542,9 +6627,9 @@ public class Oasi{
 								case "00932": // termini
 									cadmo = "CASSA 0103";
 									break;
-							case "00946": // palermo gdm
-								cadmo = "CASSA 0903";
-								break;
+								case "00946": // palermo gdm
+									cadmo = "CASSA 0903";
+									break;
 								default:
 									cadmo = "CASSA INDEFINITA";
 									break;
@@ -6583,6 +6668,12 @@ public class Oasi{
 						case "00160":
 							cacre = "F1";
 							cacon = "1620005000";
+							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
+							break;
+						// bonus rottamazione tv
+						case "00161":
+							cacre = "F1";
+							cacon = "1620005001";
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							break;
 						// incasso SumUp
@@ -6851,6 +6942,12 @@ public class Oasi{
 						case "00160":
 							cacre = "F1";
 							cacon = "1620005000";
+							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
+							break;
+						// bonus rottamazione tv
+						case "00161":
+							cacre = "F1";
+							cacon = "1620005001";
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							break;
 						// // buono estensione garanzia
@@ -7739,4 +7836,7 @@ public class Oasi{
 		}
 		msvAS_ListiniDao.detach(msvAS_Listini);
 	}
+	
+	// private void testCodice(){
+	// }
 }
