@@ -6192,10 +6192,14 @@ public class Oasi{
 						if(StringUtils.isNotBlank(notaFZ)){
 							String notaFZarr[] = StringUtils.split(notaFZ, " ");
 							
+							String finImp = notaFZarr[0];
+							String finCod = notaFZarr[1];
+							String finTab = notaFZarr[2];
+							
 							// importo
-							if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZarr[0]))){
+							if((notaFZarr.length > 0) && (StringUtils.isNotBlank(finImp))){
 								BigDecimal fnifiOriginale = fnifi;
-								String notaFZimp = StringUtils.replace(notaFZarr[0], ",", ".");
+								String notaFZimp = StringUtils.replace(finImp, ",", ".");
 								notaFZimp = StringUtils.replacePattern(notaFZimp, "[^\\d.-]", "");
 								try{
 									fnifi = new BigDecimal(notaFZimp);
@@ -6203,20 +6207,23 @@ public class Oasi{
 									fnifi = new BigDecimal(0);
 								}
 								
-								if(fnifi.compareTo(new BigDecimal(0)) <= 0){
+								if((fnifi.compareTo(new BigDecimal(0)) <= 0) || (fnifi.compareTo(new BigDecimal(9999999.99)) >= 0)){
 									log.warn("Nota FZ: " + notaFZ + ", sembra non formattata correttamente. Ripristino il valore finanziaria a " + fnifiOriginale);
 									fnifi = fnifiOriginale;
+									// probabilmente manca l'importo, quindi nel primo campo presumibilmente c'e' il codice pratica
+									finCod = notaFZarr[0];
+									finTab = notaFZarr[1];
 								}
 							}
 							
 							// codice pratica
-							if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZarr[1]))){
-								fnnup = StringUtils.right(notaFZarr[1], 15);
+							if((notaFZarr.length > 1) && (StringUtils.isNotBlank(finCod))){
+								fnnup = StringUtils.right(finCod, 15);
 							}
 							
 							// codice tabella
-							if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZarr[2]))){
-								fntab = StringUtils.left(notaFZarr[2], 4);
+							if((notaFZarr.length > 2) && (StringUtils.isNotBlank(finTab))){
+								fntab = StringUtils.left(finTab, 4);
 								fnta2 = fntab;
 							}
 						}
