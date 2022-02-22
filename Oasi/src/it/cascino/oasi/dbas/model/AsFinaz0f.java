@@ -36,6 +36,7 @@ public class AsFinaz0f implements Serializable{
 	private String fnute;
 	private String fntab;
 	private String fnta2;
+	private Integer fnnpa;
 	
 	public AsFinaz0f(){
 	}
@@ -144,6 +145,14 @@ public class AsFinaz0f implements Serializable{
 		this.fnta2 = fnta2;
 	}
 	
+	public Integer getFnnpa(){
+		return fnnpa;
+	}
+
+	public void setFnnpa(Integer fnnpa){
+		this.fnnpa = fnnpa;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -160,6 +169,7 @@ public class AsFinaz0f implements Serializable{
 		result = prime * result + ((fnta2 == null) ? 0 : fnta2.hashCode());
 		result = prime * result + ((fntab == null) ? 0 : fntab.hashCode());
 		result = prime * result + ((fnute == null) ? 0 : fnute.hashCode());
+		result = prime * result + ((fnnpa == null) ? 0 : fnnpa.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -178,6 +188,6 @@ public class AsFinaz0f implements Serializable{
 	
 	@Override
 	public String toString(){
-		return "AsFinaz0f [id=" + id + ", fncoc=" + fncoc + ", fnnoc=" + fnnoc + ", fnloc=" + fnloc + ", fncfi=" + fncfi + ", fnnur=" + fnnur + ", fnifi=" + fnifi + ", fncag=" + fncag + ", fnnup=" + fnnup + ", fndep=" + fndep + ", fnute=" + fnute + ", fntab=" + fntab + ", fnta2=" + fnta2 + "]";
+		return "AsFinaz0f [id=" + id + ", fncoc=" + fncoc + ", fnnoc=" + fnnoc + ", fnloc=" + fnloc + ", fncfi=" + fncfi + ", fnnur=" + fnnur + ", fnifi=" + fnifi + ", fncag=" + fncag + ", fnnup=" + fnnup + ", fndep=" + fndep + ", fnute=" + fnute + ", fntab=" + fntab + ", fnta2=" + fnta2 + ", fnnpa=" + fnnpa + "]";
 	}
 }

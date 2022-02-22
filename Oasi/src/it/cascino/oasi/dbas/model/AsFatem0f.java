@@ -66,8 +66,10 @@ public class AsFatem0f implements Serializable{
 	private BigDecimal fnupa;
 	private BigDecimal fanpa;
 	private String futen;
+	private String fdeme;
 	private String fcauc;
 	private String fcapa;
+	private String ftpag;
 	private String fccam;
 	private BigDecimal facco;
 	
@@ -394,6 +396,14 @@ public class AsFatem0f implements Serializable{
 		this.futen = futen;
 	}
 	
+	public String getFdeme(){
+		return fdeme;
+	}
+
+	public void setFdeme(String fdeme){
+		this.fdeme = fdeme;
+	}
+	
 	public String getFcauc(){
 		return fcauc;
 	}
@@ -408,6 +418,14 @@ public class AsFatem0f implements Serializable{
 	
 	public void setFcapa(String fcapa){
 		this.fcapa = fcapa;
+	}
+	
+	public String getFtpag(){
+		return ftpag;
+	}
+
+	public void setFtpag(String ftpag){
+		this.ftpag = ftpag;
 	}
 	
 	public String getFccam(){
@@ -430,9 +448,11 @@ public class AsFatem0f implements Serializable{
 	public int hashCode(){
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((facco == null) ? 0 : facco.hashCode());
 		result = prime * result + ((fanpa == null) ? 0 : fanpa.hashCode());
 		result = prime * result + ((fcapa == null) ? 0 : fcapa.hashCode());
 		result = prime * result + ((fcauc == null) ? 0 : fcauc.hashCode());
+		result = prime * result + ((fccam == null) ? 0 : fccam.hashCode());
 		result = prime * result + ((fces1 == null) ? 0 : fces1.hashCode());
 		result = prime * result + ((fces2 == null) ? 0 : fces2.hashCode());
 		result = prime * result + ((fciv1 == null) ? 0 : fciv1.hashCode());
@@ -445,6 +465,7 @@ public class AsFatem0f implements Serializable{
 		result = prime * result + ((fcos1 == null) ? 0 : fcos1.hashCode());
 		result = prime * result + ((fcos2 == null) ? 0 : fcos2.hashCode());
 		result = prime * result + ((fcos3 == null) ? 0 : fcos3.hashCode());
+		result = prime * result + ((fdeme == null) ? 0 : fdeme.hashCode());
 		result = prime * result + ((fime1 == null) ? 0 : fime1.hashCode());
 		result = prime * result + ((fime2 == null) ? 0 : fime2.hashCode());
 		result = prime * result + ((fimp1 == null) ? 0 : fimp1.hashCode());
@@ -470,8 +491,8 @@ public class AsFatem0f implements Serializable{
 		result = prime * result + ((fndep == null) ? 0 : fndep.hashCode());
 		result = prime * result + ((fnupa == null) ? 0 : fnupa.hashCode());
 		result = prime * result + ((ftifa == null) ? 0 : ftifa.hashCode());
+		result = prime * result + ((ftpag == null) ? 0 : ftpag.hashCode());
 		result = prime * result + ((futen == null) ? 0 : futen.hashCode());
-		result = prime * result + ((fccam == null) ? 0 : fccam.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -490,6 +511,6 @@ public class AsFatem0f implements Serializable{
 	
 	@Override
 	public String toString(){
-		return "AsFatem0f [id=" + id + ", fcocl=" + fcocl + ", fndep=" + fndep + ", ftifa=" + ftifa + ", fcopa=" + fcopa + ", fimpf=" + fimpf + ", fmer1=" + fmer1 + ", fmer2=" + fmer2 + ", fmer3=" + fmer3 + ", fmer4=" + fmer4 + ", fmer5=" + fmer5 + ", fcos1=" + fcos1 + ", fisp1=" + fisp1 + ", fcos2=" + fcos2 + ", fisp2=" + fisp2 + ", fcos3=" + fcos3 + ", fisp3=" + fisp3 + ", fciv1=" + fciv1 + ", fimp1=" + fimp1 + ", fiva1=" + fiva1 + ", fciv2=" + fciv2 + ", fimp2=" + fimp2 + ", fiva2=" + fiva2 + ", fciv3=" + fciv3 + ", fimp3=" + fimp3 + ", fiva3=" + fiva3 + ", fciv4=" + fciv4 + ", fimp4=" + fimp4 + ", fiva4=" + fiva4 + ", fciv5=" + fciv5 + ", fimp5=" + fimp5 + ", fiva5=" + fiva5 + ", fces1=" + fces1 + ", fime1=" + fime1 + ", fces2=" + fces2 + ", fime2=" + fime2 + ", fipos=" + fipos + ", fnupa=" + fnupa + ", fanpa=" + fanpa + ", futen=" + futen + ", fcauc=" + fcauc + ", fcapa=" + fcapa + ", fccam=" + fccam + ", facco=" + facco + "]";
+		return "AsFatem0f [id=" + id + ", fcocl=" + fcocl + ", fndep=" + fndep + ", ftifa=" + ftifa + ", fcopa=" + fcopa + ", fimpf=" + fimpf + ", fmer1=" + fmer1 + ", fmer2=" + fmer2 + ", fmer3=" + fmer3 + ", fmer4=" + fmer4 + ", fmer5=" + fmer5 + ", fcos1=" + fcos1 + ", fisp1=" + fisp1 + ", fcos2=" + fcos2 + ", fisp2=" + fisp2 + ", fcos3=" + fcos3 + ", fisp3=" + fisp3 + ", fciv1=" + fciv1 + ", fimp1=" + fimp1 + ", fiva1=" + fiva1 + ", fciv2=" + fciv2 + ", fimp2=" + fimp2 + ", fiva2=" + fiva2 + ", fciv3=" + fciv3 + ", fimp3=" + fimp3 + ", fiva3=" + fiva3 + ", fciv4=" + fciv4 + ", fimp4=" + fimp4 + ", fiva4=" + fiva4 + ", fciv5=" + fciv5 + ", fimp5=" + fimp5 + ", fiva5=" + fiva5 + ", fces1=" + fces1 + ", fime1=" + fime1 + ", fces2=" + fces2 + ", fime2=" + fime2 + ", fipos=" + fipos + ", fnupa=" + fnupa + ", fanpa=" + fanpa + ", futen=" + futen + ", fdeme=" + fdeme + ", fcauc=" + fcauc + ", fcapa=" + fcapa + ", ftpag=" + ftpag + ", fccam=" + fccam + ", facco=" + facco + "]";
 	}
 }

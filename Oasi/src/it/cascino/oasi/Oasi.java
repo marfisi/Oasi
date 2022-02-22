@@ -1681,7 +1681,7 @@ public class Oasi{
 				atama = "A";
 			}
 			
-			mcoda = StringUtils.upperCase(StringUtils.trim(msvOA_Articoli.getCodArticoloCascino()));
+			mcoda = StringUtils.left(StringUtils.upperCase(StringUtils.trim(msvOA_Articoli.getCodArticoloCascino())), 10);
 			if(StringUtils.isBlank(mcoda)){
 				mcoda = StringUtils.join("OA", StringUtils.trim(msvOA_Articoli.getCodBreveOasi()));
 			}
@@ -5437,8 +5437,10 @@ public class Oasi{
 			BigDecimal fnupa = new BigDecimal(0);
 			BigDecimal fanpa = new BigDecimal(0);
 			String futen = "";
+			String fdeme = "";
 			String fcauc = "";
 			String fcapa = "";
+			String ftpag = "";
 			String fccam = "";
 			BigDecimal facco = new BigDecimal(0);
 			
@@ -5474,6 +5476,12 @@ public class Oasi{
 				}
 			}
 			
+			Boolean notaDebito = false;
+			// controllo se e' onere finanziario
+			if(StringUtils.equals(msvOA_MovimentiRighe.getCodArticoloCascino(), "ONERIFIN")){
+				notaDebito = true;
+			}
+			
 			MsvOA_PrimaNota_Tes msvOA_PrimaNota_Tes = msvOA_PrimaNota_TesDao.getDaNReg(msvOA_MovimentiTestate.getIdPntNReg());
 			
 			if((msvOA_PrimaNota_Tes == null) || (StringUtils.startsWith(msvOA_PrimaNota_Tes.getTipoOperazione(), "*"))){
@@ -5505,6 +5513,10 @@ public class Oasi{
 				ftifa = "S";
 				fccam = "";
 			}
+			if(notaDebito){
+				ftifa = "P";
+				fccam = "";
+			}
 			
 			String fcopaTxt = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
 			if(StringUtils.containsOnly(fcopaTxt, "0123456789")){
@@ -5524,12 +5536,6 @@ public class Oasi{
 			
 			fimpf = new BigDecimal(0);
 			BigDecimal importoOmaggio = new BigDecimal(0);
-			
-			fcos1 = "";
-			fisp1 = msvOA_MovimentiTestate.getValTrasporto();
-			if(fisp1.compareTo(new BigDecimal(0)) > 0){
-				fcos1 = "TRA";
-			}
 			
 			MsvOA_PrimaNota_Iva msvOA_PrimaNota_Iva = new MsvOA_PrimaNota_Iva();
 			
@@ -5657,6 +5663,19 @@ public class Oasi{
 				msvOA_PrimaNota_IvaDao.detach(msvOA_PrimaNota_Iva);
 			}
 			
+			fcos1 = "";
+			fisp1 = msvOA_MovimentiTestate.getValTrasporto();
+			if(fisp1.compareTo(new BigDecimal(0)) > 0){
+				fcos1 = "TRA";
+			}
+			
+			if(notaDebito){
+				fcos1 = "IQ";
+				fisp1 = fimp1;
+				fdeme = "ONERI BANCARI SU CESSIONE CREDITO";
+				ftpag = "PC";
+			}
+			
 			fmer1 = fimp1.subtract(fisp1);
 			
 			fimpf = Support.arrotonda(fimpf, 2);
@@ -5702,6 +5721,9 @@ public class Oasi{
 					break;
 				case "S":
 					tcommcauc = StringUtils.substring(tcomm, 22, 24);
+					break;
+				case "P":
+					tcommcauc = "DY";
 					break;
 				default:
 					tcommcauc = StringUtils.substring(tcomm, 13, 15);
@@ -5793,8 +5815,10 @@ public class Oasi{
 			asFatem0f.setFnupa(fnupa);
 			asFatem0f.setFanpa(fanpa);
 			asFatem0f.setFuten(futen);
+			asFatem0f.setFdeme(fdeme);
 			asFatem0f.setFcauc(fcauc);
 			asFatem0f.setFcapa(fcapa);
+			asFatem0f.setFtpag(ftpag);
 			asFatem0f.setFccam(fccam);
 			asFatem0f.setFacco(facco);
 			
@@ -6112,6 +6136,7 @@ public class Oasi{
 				String fnute = "";
 				String fntab = "";
 				String fnta2 = "";
+				Integer fnnpa = 0;
 				
 				fnifi = scims.subtract(importoAcconto);
 				
@@ -6192,14 +6217,26 @@ public class Oasi{
 						if(StringUtils.isNotBlank(notaFZ)){
 							String notaFZarr[] = StringUtils.split(notaFZ, " ");
 							
-							String finImp = notaFZarr[0];
-							String finCod = notaFZarr[1];
-							String finTab = notaFZarr[2];
+							String notaFZ1 = "";
+							String notaFZ2 = "";
+							String notaFZ3 = "";
+							// importo
+							if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZarr[0]))){
+								notaFZ1 = notaFZarr[0];
+							}
+							// codice pratica
+							if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZarr[1]))){
+								notaFZ2 = notaFZarr[1];
+							}							
+							// codice tabella
+							if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZarr[2]))){
+								notaFZ3 = notaFZarr[2];
+							}
 							
 							// importo
-							if((notaFZarr.length > 0) && (StringUtils.isNotBlank(finImp))){
+							if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZ1))){
 								BigDecimal fnifiOriginale = fnifi;
-								String notaFZimp = StringUtils.replace(finImp, ",", ".");
+								String notaFZimp = StringUtils.replace(notaFZ1, ",", ".");
 								notaFZimp = StringUtils.replacePattern(notaFZimp, "[^\\d.-]", "");
 								try{
 									fnifi = new BigDecimal(notaFZimp);
@@ -6211,25 +6248,32 @@ public class Oasi{
 									log.warn("Nota FZ: " + notaFZ + ", sembra non formattata correttamente. Ripristino il valore finanziaria a " + fnifiOriginale);
 									fnifi = fnifiOriginale;
 									// probabilmente manca l'importo, quindi nel primo campo presumibilmente c'e' il codice pratica
-									finCod = notaFZarr[0];
-									finTab = notaFZarr[1];
+									notaFZ3 = notaFZ2;	
+									notaFZ2 = notaFZ1;
 								}
 							}
 							
 							// codice pratica
-							if((notaFZarr.length > 1) && (StringUtils.isNotBlank(finCod))){
-								fnnup = StringUtils.right(finCod, 15);
+							if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZ2))){
+								fnnup = StringUtils.right(notaFZ2, 15);
 							}
 							
 							// codice tabella
-							if((notaFZarr.length > 2) && (StringUtils.isNotBlank(finTab))){
-								fntab = StringUtils.left(finTab, 4);
+							if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZ3))){
+								fntab = StringUtils.left(notaFZ3, 4);
 								fnta2 = fntab;
 							}
 						}
 					}
 					fndep = scdep;
 					fnute = scute;
+					
+					// se importo scontrino a credito e importo finanziaria non coincidono, allora sia lo scocr0f che finaz0f le intesto al codice cliente
+					if(scims.compareTo(fnifi) != 0){
+						sccoc = asClien00f.getClccli().intValue();
+						fncoc = sccoc;
+						fnnpa = scnum;
+					}
 					
 					AsFinaz0fPKey idF = new AsFinaz0fPKey();
 					idF.setFndat(fndat);
@@ -6248,6 +6292,7 @@ public class Oasi{
 					asFinaz0f.setFnute(fnute);
 					asFinaz0f.setFntab(fntab);
 					asFinaz0f.setFnta2(fnta2);
+					asFinaz0f.setFnnpa(fnnpa);
 					
 					AsFinaz0f asFinaz0fTmp = asFinaz0fDao.getDaId(fndat, fnnum);
 					if(asFinaz0fTmp == null){ // nuova quindi insert
