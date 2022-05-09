@@ -3,7 +3,8 @@ package it.cascino.oasi.dbmsqlsrv.managmentbean;
 import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvAS_Vendite008Dao;
 import it.cascino.oasi.dbmsqlsrv.model.MsvAS_Vendite008;
 import it.cascino.oasi.utils.Resources;
@@ -14,7 +15,7 @@ public class MsvAS_Vendite008DaoMng implements MsvAS_Vendite008Dao, Serializable
 	private EntityManager em = res.getEmMSsqlSrv();
 	private EntityTransaction utx = res.getUtxMSsqlSrv();
 	
-	Logger log = Logger.getLogger(MsvAS_Vendite008DaoMng.class);
+	Logger log = LogManager.getLogger(MsvAS_Vendite008DaoMng.class);
 	
 	public void salva(MsvAS_Vendite008 o){
 		try{

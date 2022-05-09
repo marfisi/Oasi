@@ -10,7 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
@@ -18,7 +19,7 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 	private EntityManager em = res.getEmAs();
 	private EntityTransaction utx = res.getUtxAs();
 	
-	Logger log = Logger.getLogger(AsMovma0fDaoMng.class);
+	Logger log = LogManager.getLogger(AsMovma0fDaoMng.class);
 	
 	@SuppressWarnings(
 		"unchecked"

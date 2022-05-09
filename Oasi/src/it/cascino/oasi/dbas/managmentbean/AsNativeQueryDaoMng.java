@@ -9,7 +9,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import it.cascino.oasi.dbas.dao.AsNativeQueryDao;
 import it.cascino.oasi.dbas.model.AsMovtr0f;
 import it.cascino.oasi.utils.Resources;
@@ -20,7 +21,7 @@ public class AsNativeQueryDaoMng implements AsNativeQueryDao, Serializable{
 	private EntityManager em = res.getEmAs();
 	// private EntityTransaction utx = res.getUtxAs();
 	
-	Logger log = Logger.getLogger(AsNativeQueryDaoMng.class);
+	Logger log = LogManager.getLogger(AsNativeQueryDaoMng.class);
 	
 	// in trasferimento verso deposito in Arrivo
 	public BigDecimal getDaMovtr0f_MtquaDaMtcodAndMtdpa(String mtcod, Integer mtdpa){

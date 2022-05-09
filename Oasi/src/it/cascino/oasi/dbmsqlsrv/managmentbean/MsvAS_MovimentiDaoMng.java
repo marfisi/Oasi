@@ -6,7 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvAS_MovimentiDao;
 import it.cascino.oasi.dbmsqlsrv.model.MsvAS_Movimenti;
 import it.cascino.oasi.utils.Resources;
@@ -17,7 +18,7 @@ public class MsvAS_MovimentiDaoMng implements MsvAS_MovimentiDao, Serializable{
 	private EntityManager em = res.getEmMSsqlSrv();
 	private EntityTransaction utx = res.getUtxMSsqlSrv();
 	
-	Logger log = Logger.getLogger(MsvAS_MovimentiDaoMng.class);
+	Logger log = LogManager.getLogger(MsvAS_MovimentiDaoMng.class);
 	
 	@SuppressWarnings(
 		"unchecked"

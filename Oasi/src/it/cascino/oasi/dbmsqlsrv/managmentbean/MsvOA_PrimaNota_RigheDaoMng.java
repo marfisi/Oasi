@@ -6,7 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_PrimaNota_RigheDao;
 import it.cascino.oasi.dbmsqlsrv.model.MsvOA_PrimaNota_Righe;
 import it.cascino.oasi.utils.Resources;
@@ -17,7 +18,7 @@ public class MsvOA_PrimaNota_RigheDaoMng implements MsvOA_PrimaNota_RigheDao, Se
 	private EntityManager em = res.getEmMSsqlSrv();
 	private EntityTransaction utx = res.getUtxMSsqlSrv();
 	
-	Logger log = Logger.getLogger(MsvOA_PrimaNota_RigheDaoMng.class);
+	Logger log = LogManager.getLogger(MsvOA_PrimaNota_RigheDaoMng.class);
 	
 	@SuppressWarnings(
 		"unchecked"

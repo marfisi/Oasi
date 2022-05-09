@@ -5,7 +5,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvNativeQueryDao;
 import it.cascino.oasi.utils.Resources;
 
@@ -15,7 +16,7 @@ public class MsvNativeQueryDaoMng implements MsvNativeQueryDao, Serializable{
 	private EntityManager em = res.getEmMSsqlSrv();
 	private EntityTransaction utx = res.getUtxMSsqlSrv();
 	
-	Logger log = Logger.getLogger(MsvNativeQueryDaoMng.class);
+	Logger log = LogManager.getLogger(MsvNativeQueryDaoMng.class);
 	
 	public Integer rimuoviRigheVecchie(String data){
 		Integer o = -1;

@@ -5,7 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_AnagSottofamDao;
 import it.cascino.oasi.dbmsqlsrv.model.MsvOA_AnagSottofam;
 import it.cascino.oasi.utils.Resources;
@@ -16,7 +17,7 @@ public class MsvOA_AnagSottofamDaoMng implements MsvOA_AnagSottofamDao, Serializ
 	private EntityManager em = res.getEmMSsqlSrv();
 	// private EntityTransaction utx = res.getUtxMSsqlSrv();
 	
-	Logger log = Logger.getLogger(MsvOA_AnagSottofamDaoMng.class);
+	Logger log = LogManager.getLogger(MsvOA_AnagSottofamDaoMng.class);
 	
 	@SuppressWarnings(
 		"unchecked"

@@ -16,6 +16,9 @@ import it.cascino.oasi.dbas.model.pkey.AsFinaz0fPKey;
 	{@NamedQuery(
 		name = "AsFinaz0f.findById",
 		query = "SELECT o FROM Finaz0f o WHERE o.id.fndat = :fndat and o.id.fnnum = :fnnum"
+	), @NamedQuery(
+		name = "AsFinaz0f.findByFndatFncfiFnnup",
+		query = "SELECT o FROM Finaz0f o WHERE o.id.fndat = :fndat and o.fncfi = :fncfi and o.fnnup = :fnnup"
 	)
 	}
 )

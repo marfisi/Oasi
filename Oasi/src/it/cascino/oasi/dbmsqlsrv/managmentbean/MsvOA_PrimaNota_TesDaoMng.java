@@ -6,7 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import it.cascino.oasi.dbmsqlsrv.dao.MsvOA_PrimaNota_TesDao;
 import it.cascino.oasi.dbmsqlsrv.model.MsvOA_PrimaNota_Tes;
 import it.cascino.oasi.utils.Resources;
@@ -17,7 +18,7 @@ public class MsvOA_PrimaNota_TesDaoMng implements MsvOA_PrimaNota_TesDao, Serial
 	private EntityManager em = res.getEmMSsqlSrv();
 	private EntityTransaction utx = res.getUtxMSsqlSrv();
 	
-	Logger log = Logger.getLogger(MsvOA_PrimaNota_TesDaoMng.class);
+	Logger log = LogManager.getLogger(MsvOA_PrimaNota_TesDaoMng.class);
 	
 	@SuppressWarnings(
 		"unchecked"

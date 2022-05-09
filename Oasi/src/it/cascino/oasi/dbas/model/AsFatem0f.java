@@ -66,6 +66,7 @@ public class AsFatem0f implements Serializable{
 	private BigDecimal fnupa;
 	private BigDecimal fanpa;
 	private String futen;
+	private String fnote;
 	private String fdeme;
 	private String fcauc;
 	private String fcapa;
@@ -396,6 +397,14 @@ public class AsFatem0f implements Serializable{
 		this.futen = futen;
 	}
 	
+	public String getFnote(){
+		return fnote;
+	}
+
+	public void setFnote(String fnote){
+		this.fnote = fnote;
+	}
+
 	public String getFdeme(){
 		return fdeme;
 	}
@@ -511,6 +520,6 @@ public class AsFatem0f implements Serializable{
 	
 	@Override
 	public String toString(){
-		return "AsFatem0f [id=" + id + ", fcocl=" + fcocl + ", fndep=" + fndep + ", ftifa=" + ftifa + ", fcopa=" + fcopa + ", fimpf=" + fimpf + ", fmer1=" + fmer1 + ", fmer2=" + fmer2 + ", fmer3=" + fmer3 + ", fmer4=" + fmer4 + ", fmer5=" + fmer5 + ", fcos1=" + fcos1 + ", fisp1=" + fisp1 + ", fcos2=" + fcos2 + ", fisp2=" + fisp2 + ", fcos3=" + fcos3 + ", fisp3=" + fisp3 + ", fciv1=" + fciv1 + ", fimp1=" + fimp1 + ", fiva1=" + fiva1 + ", fciv2=" + fciv2 + ", fimp2=" + fimp2 + ", fiva2=" + fiva2 + ", fciv3=" + fciv3 + ", fimp3=" + fimp3 + ", fiva3=" + fiva3 + ", fciv4=" + fciv4 + ", fimp4=" + fimp4 + ", fiva4=" + fiva4 + ", fciv5=" + fciv5 + ", fimp5=" + fimp5 + ", fiva5=" + fiva5 + ", fces1=" + fces1 + ", fime1=" + fime1 + ", fces2=" + fces2 + ", fime2=" + fime2 + ", fipos=" + fipos + ", fnupa=" + fnupa + ", fanpa=" + fanpa + ", futen=" + futen + ", fdeme=" + fdeme + ", fcauc=" + fcauc + ", fcapa=" + fcapa + ", ftpag=" + ftpag + ", fccam=" + fccam + ", facco=" + facco + "]";
+		return "AsFatem0f [id=" + id + ", fcocl=" + fcocl + ", fndep=" + fndep + ", ftifa=" + ftifa + ", fcopa=" + fcopa + ", fimpf=" + fimpf + ", fmer1=" + fmer1 + ", fmer2=" + fmer2 + ", fmer3=" + fmer3 + ", fmer4=" + fmer4 + ", fmer5=" + fmer5 + ", fcos1=" + fcos1 + ", fisp1=" + fisp1 + ", fcos2=" + fcos2 + ", fisp2=" + fisp2 + ", fcos3=" + fcos3 + ", fisp3=" + fisp3 + ", fciv1=" + fciv1 + ", fimp1=" + fimp1 + ", fiva1=" + fiva1 + ", fciv2=" + fciv2 + ", fimp2=" + fimp2 + ", fiva2=" + fiva2 + ", fciv3=" + fciv3 + ", fimp3=" + fimp3 + ", fiva3=" + fiva3 + ", fciv4=" + fciv4 + ", fimp4=" + fimp4 + ", fiva4=" + fiva4 + ", fciv5=" + fciv5 + ", fimp5=" + fimp5 + ", fiva5=" + fiva5 + ", fces1=" + fces1 + ", fime1=" + fime1 + ", fces2=" + fces2 + ", fime2=" + fime2 + ", fipos=" + fipos + ", fnupa=" + fnupa + ", fanpa=" + fanpa + ", futen=" + futen + ", fnote=" + fnote + ", fdeme=" + fdeme + ", fcauc=" + fcauc + ", fcapa=" + fcapa + ", ftpag=" + ftpag + ", fccam=" + fccam + ", facco=" + facco + "]";
 	}
 }

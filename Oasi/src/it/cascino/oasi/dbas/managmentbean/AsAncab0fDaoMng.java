@@ -5,7 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import it.cascino.oasi.dbas.dao.AsAncab0fDao;
 import it.cascino.oasi.dbas.model.AsAncab0f;
 import it.cascino.oasi.utils.Resources;
@@ -16,7 +17,7 @@ public class AsAncab0fDaoMng implements AsAncab0fDao, Serializable{
 	private EntityManager em = res.getEmAs();
 	// private EntityTransaction utx = res.getUtxAs();
 	
-	Logger log = Logger.getLogger(AsAncab0fDaoMng.class);
+	Logger log = LogManager.getLogger(AsAncab0fDaoMng.class);
 	
 	@SuppressWarnings(
 		"unchecked"

@@ -8,7 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AsScocr0fDaoMng implements AsScocr0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
@@ -16,7 +17,7 @@ public class AsScocr0fDaoMng implements AsScocr0fDao, Serializable{
 	private EntityManager em = res.getEmAs();
 	private EntityTransaction utx = res.getUtxAs();
 	
-	Logger log = Logger.getLogger(AsScocr0fDaoMng.class);
+	Logger log = LogManager.getLogger(AsScocr0fDaoMng.class);
 	
 	public Boolean salva(AsScocr0f o){
 		try{

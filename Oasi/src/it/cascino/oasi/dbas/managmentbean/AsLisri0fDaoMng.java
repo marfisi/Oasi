@@ -4,7 +4,8 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import it.cascino.oasi.dbas.dao.AsLisri0fDao;
 import it.cascino.oasi.dbas.model.AsLisri0f;
 import it.cascino.oasi.utils.Resources;
@@ -15,7 +16,7 @@ public class AsLisri0fDaoMng implements AsLisri0fDao, Serializable{
 	private EntityManager em = res.getEmAs();
 	// private EntityTransaction utx = res.getUtxAs();
 	
-	Logger log = Logger.getLogger(AsLisri0fDaoMng.class);
+	Logger log = LogManager.getLogger(AsLisri0fDaoMng.class);
 	
 	public AsLisri0f getDaId(String lscoa, Integer idlis, String lstve){
 		AsLisri0f o = null;

@@ -8,7 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AsFinaz0fDaoMng implements AsFinaz0fDao, Serializable{
 	private static final long serialVersionUID = 1L;
@@ -16,7 +17,7 @@ public class AsFinaz0fDaoMng implements AsFinaz0fDao, Serializable{
 	private EntityManager em = res.getEmAs();
 	private EntityTransaction utx = res.getUtxAs();
 	
-	Logger log = Logger.getLogger(AsFinaz0fDaoMng.class);
+	Logger log = LogManager.getLogger(AsFinaz0fDaoMng.class);
 	
 	public Boolean salva(AsFinaz0f o){
 		try{
@@ -57,6 +58,24 @@ public class AsFinaz0fDaoMng implements AsFinaz0fDao, Serializable{
 				Query query = em.createNamedQuery("AsFinaz0f.findById");
 				query.setParameter("fndat", fndat);
 				query.setParameter("fnnum", fnnum);
+				o = (AsFinaz0f)query.getSingleResult();
+			}catch(NoResultException e){
+				o = null;
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
+	public AsFinaz0f getDaFndatFncfiFnnup(Integer fndat, String fncfi, String fnnup){
+		AsFinaz0f o = null;
+		try{
+			try{
+				Query query = em.createNamedQuery("AsFinaz0f.findByFndatFncfiFnnup");
+				query.setParameter("fndat", fndat);
+				query.setParameter("fncfi", fncfi);
+				query.setParameter("fnnup", fnnup);
 				o = (AsFinaz0f)query.getSingleResult();
 			}catch(NoResultException e){
 				o = null;

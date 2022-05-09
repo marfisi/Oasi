@@ -8,7 +8,9 @@ public interface AsFinaz0fDao{
 	Boolean aggiorna(AsFinaz0f o);
 	
 	AsFinaz0f getDaId(Integer fndat, Integer fnnum);
-	
+
+	AsFinaz0f getDaFndatFncfiFnnup(Integer fndat, String fncfi, String fnnup);
+
 	void detach(Object entity);
 	
 	void close();

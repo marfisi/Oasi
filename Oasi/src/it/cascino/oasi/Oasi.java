@@ -190,11 +190,12 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Oasi{
 	
-	private final Logger log = Logger.getLogger(Oasi.class);
+	private final Logger log = LogManager.getLogger(Oasi.class);
 	
 	StringBuilder stringBuilder = new StringBuilder();
 	
@@ -274,7 +275,7 @@ public class Oasi{
 	private final AsScocr0fDao asScocr0fDao = new AsScocr0fDaoMng();
 	// private List<AsScocr0f> asScocr0fLs;
 	
-	private final AsFinaz0fDao asFinaz0fDao = new AsFinaz0fDaoMng();
+	// private final AsFinaz0fDao asFinaz0fDao = new AsFinaz0fDaoMng();
 	// private List<AsFinaz0f> asFinaz0fLs;
 	
 	private final AsLisri0fDao asLisri0fDao = new AsLisri0fDaoMng();
@@ -425,6 +426,7 @@ public class Oasi{
 		// elaboraChiusuraCassa();
 		// testCodice();
 		// elaboraCrediti();
+		// elaboraFatture();
 		
 		String argomenti = "";
 		AsOasic0f cmd = null;
@@ -625,7 +627,7 @@ public class Oasi{
 		asBofor0fDao.close();
 		asFatem0fDao.close();
 		asScocr0fDao.close();
-		asFinaz0fDao.close();
+		// asFinaz0fDao.close();
 		asLisri0fDao.close();
 		asCcmca0fDao.close();
 		
@@ -659,7 +661,7 @@ public class Oasi{
 		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(dataMov);
-		calendar.add(Calendar.MONTH, -3);
+		calendar.add(Calendar.MONTH, -5);
 		dataMov = calendar.getTime();
 		String dataTxt = formatter.format(dataMov);
 		msvNativeQueryDao.rimuoviRigheVecchie(dataTxt);
@@ -5384,7 +5386,7 @@ public class Oasi{
 		msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getFatture("'CORC', 'VEND', 'VEDD', 'ACFF', 'RSCL', 'RSCO', 'RSCM'");
 		
 		// solo una fattura
-		// msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C03051210");
+		// msvOA_MovimentiTestateLs = msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C03745900");
 		
 		String strTimestampAs400 = asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -5437,6 +5439,7 @@ public class Oasi{
 			BigDecimal fnupa = new BigDecimal(0);
 			BigDecimal fanpa = new BigDecimal(0);
 			String futen = "";
+			String fnote = "";
 			String fdeme = "";
 			String fcauc = "";
 			String fcapa = "";
@@ -5815,6 +5818,7 @@ public class Oasi{
 			asFatem0f.setFnupa(fnupa);
 			asFatem0f.setFanpa(fanpa);
 			asFatem0f.setFuten(futen);
+			asFatem0f.setFnote(fnote);
 			asFatem0f.setFdeme(fdeme);
 			asFatem0f.setFcauc(fcauc);
 			asFatem0f.setFcapa(fcapa);
@@ -5834,6 +5838,34 @@ public class Oasi{
 				asFatem0fDao.detach(asFatem0fTmp);
 			}
 			asFatem0fDao.detach(asFatem0f);
+			
+			String fPagamento = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
+			Boolean finanziaria = false;
+			if(StringUtils.equals(fPagamento, "FAGI") || StringUtils.equals(fPagamento, "FCOI") || StringUtils.equals(fPagamento, "FINI") || StringUtils.equals(fPagamento, "FPAI")){
+				finanziaria = true;
+			}else{
+				if((StringUtils.equals(fPagamento, "055") || StringUtils.equals(fPagamento, "056")) && (!(StringUtils.isBlank(msvOA_MovimentiTestate.getNotaFN())) || !(StringUtils.isBlank(msvOA_MovimentiTestate.getNotaFZ())))){
+					finanziaria = true;
+				}
+			}
+			if(finanziaria){
+				BigDecimal importoDocumento = fimpf;
+				BigDecimal importoFinanziaria = fimpf;
+				Integer dataFin = null;
+				Integer numFin = null;
+				Object paramRitorno[] = new Object[3];
+				elaboraFinanziaria(msvOA_PrimaNota_Tes, msvOA_MovimentiTestate, fcocl.intValue(), true, importoDocumento, importoFinanziaria, fnupa.intValue(), fndep.intValue(), futen, paramRitorno);
+				importoFinanziaria = (BigDecimal)paramRitorno[0];
+				dataFin = (Integer)paramRitorno[1];
+				numFin = (Integer)paramRitorno[2];
+				fnote = StringUtils.join("FIN ", numFin, " ", dataFin);
+				asFatem0f = asFatem0fDao.getDaId(fdatd, fnura, fnumd);
+				asFatem0f.setFnote(fnote);
+				if(!(asFatem0fDao.aggiorna(asFatem0f))){
+					chiudi();
+				}
+				asFatem0fDao.detach(asFatem0f);
+			}
 			
 			// elimina dalla tabella scritta da oasi
 			// msvOA_MovimentiTestateDao.elimina(msvOA_MovimentiTestate);
@@ -5860,7 +5892,7 @@ public class Oasi{
 		
 		// solo alcuni movimenti
 		// msvOA_PrimaNota_TesLs.clear();
-		// msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00152590"));
+		// msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00182975"));
 		
 		String strTimestampAs400 = asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -5919,7 +5951,7 @@ public class Oasi{
 				msvOA_PrimaNota_Tes.setTipoOperazione(tipoOperazione);
 				msvOA_PrimaNota_TesDao.aggiorna(msvOA_PrimaNota_Tes);
 				msvOA_PrimaNota_TesDao.detach(msvOA_PrimaNota_Tes);
-				continue;			
+				continue;
 			}else if((msvOA_AnagCausCont != null) && (StringUtils.startsWith(msvOA_AnagCausCont.getCatDescrizione(), "Nota Credito Corrispettivi"))){	// if(StringUtils.equals(StringUtils.left(causale, 3), "NCC")){
 				log.warn("Trascuro la causale " + causale);
 				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_PrimaNota_Tes.getTipoOperazione(), 2));
@@ -6121,195 +6153,24 @@ public class Oasi{
 			sctpc = "C";
 			scdaf = 0; // finaz0f.fndat
 			scnuf = 0; // finaz0f.fnnum
-			if(finanziaria){
-				Integer fndat = 0;
-				Integer fnnum = 0;
-				Integer fncoc = 0;
-				String fnnoc = "";
-				String fnloc = "";
-				String fncfi = "";
-				Integer fnnur = 0;
-				BigDecimal fnifi = new BigDecimal(0);
-				String fncag = "";
-				String fnnup = "";
-				Integer fndep = 0;
-				String fnute = "";
-				String fntab = "";
-				String fnta2 = "";
-				Integer fnnpa = 0;
-				
-				fnifi = scims.subtract(importoAcconto);
-				
-				if(fnifi.compareTo(new BigDecimal(0)) > 0){
-					sctpc = "F";
-					sccoc = 0;
-					
-					String fndatTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_PrimaNota_Tes.getDataReg());
-					fndat = Integer.parseInt(fndatTxt);
-					
-					fnnum = 0;
-					asTabel0f = asTabel0fDao.getDaTnotaTcoel("NUZ", "PFI");
-					tcomm = StringUtils.trim(asTabel0f.getTcomm());
-					tcommmtnum = StringUtils.left(tcomm, 5);
-					tcommmtdat = StringUtils.substring(tcomm, 5, 11);
-					tcommmtnuz = StringUtils.substring(tcomm, 11, 13);
-					tcommresto = StringUtils.substring(tcomm, 13);
-					tcommcauc = StringUtils.substring(tcomm, 13, 15);
-					
-					mtnumBD = new BigDecimal(tcommmtnum);
-					mtnumBD = mtnumBD.add(new BigDecimal(1));
-					
-					tcommmtnum = StringUtils.leftPad(mtnumBD.toString(), 5, "0");
-					tcommmtdat = new SimpleDateFormat("ddMMyy").format(msvOA_PrimaNota_Tes.getDataReg());
-					
-					tcomm = StringUtils.join(tcommmtnum, tcommmtdat, tcommmtnuz, tcommresto);
-					
-					asTabel0f.setTcomm(tcomm);
-					if(!(asTabel0fDao.aggiorna(asTabel0f))){
-						chiudi();
-					}
-					asTabel0fDao.detach(asTabel0f);
-					
-					fnnum = mtnumBD.intValue();
-					// fncag = tcommcauc;
-					
-					fncoc = 0;
-					if(fattura){
-						fncoc = asClien00f.getClccli().intValue();
-					}
-					
-					fnnoc = asClien00f.getCldrso();
-					if(!(StringUtils.isBlank(msvOA_MovimentiTestate.getNotaFN()))){
-						fnnoc = StringUtils.left(StringUtils.upperCase(StringUtils.trim(msvOA_MovimentiTestate.getNotaFN())), 30);
-					}
-					fnloc = asClien00f.getCldloc();
-					
-					fncfi = transFinanziarie(msvOA_PrimaNota_Tes.getfPagamento(), "oasi2as");
-					
-					fnnur = 0;
-					asTabel0f = asTabel0fDao.getDaTnotaTcoel("FIN", fncfi);
-					tcomm = StringUtils.trim(asTabel0f.getTcomm());
-					String tcomminit = StringUtils.left(tcomm, 3);
-					tcommmtnum = StringUtils.substring(tcomm, 3, 8);
-					tcommresto = StringUtils.substring(tcomm, 8);
-					
-					mtnumBD = new BigDecimal(tcommmtnum);
-					mtnumBD = mtnumBD.add(new BigDecimal(1));
-					
-					tcommmtnum = StringUtils.leftPad(mtnumBD.toString(), 5, "0");
-					
-					tcomm = StringUtils.join(tcomminit, tcommmtnum, tcommresto);
-					
-					asTabel0f.setTcomm(tcomm);
-					if(!(asTabel0fDao.aggiorna(asTabel0f))){
-						chiudi();
-					}
-					asTabel0fDao.detach(asTabel0f);
-					
-					fnnur = mtnumBD.intValue();
-					fncag = StringUtils.left(tcomminit, 2);
-					
-					fnnup = "";
-					fntab = "";
-					fnta2 = "";
-					if(msvOA_MovimentiTestate != null){
-						String notaFZ = StringUtils.upperCase(StringUtils.normalizeSpace(msvOA_MovimentiTestate.getNotaFZ()));
-						if(StringUtils.isNotBlank(notaFZ)){
-							String notaFZarr[] = StringUtils.split(notaFZ, " ");
-							
-							String notaFZ1 = "";
-							String notaFZ2 = "";
-							String notaFZ3 = "";
-							// importo
-							if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZarr[0]))){
-								notaFZ1 = notaFZarr[0];
-							}
-							// codice pratica
-							if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZarr[1]))){
-								notaFZ2 = notaFZarr[1];
-							}							
-							// codice tabella
-							if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZarr[2]))){
-								notaFZ3 = notaFZarr[2];
-							}
-							
-							// importo
-							if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZ1))){
-								BigDecimal fnifiOriginale = fnifi;
-								String notaFZimp = StringUtils.replace(notaFZ1, ",", ".");
-								notaFZimp = StringUtils.replacePattern(notaFZimp, "[^\\d.-]", "");
-								try{
-									fnifi = new BigDecimal(notaFZimp);
-								}catch(NumberFormatException e){
-									fnifi = new BigDecimal(0);
-								}
-								
-								if((fnifi.compareTo(new BigDecimal(0)) <= 0) || (fnifi.compareTo(new BigDecimal(9999999.99)) >= 0)){
-									log.warn("Nota FZ: " + notaFZ + ", sembra non formattata correttamente. Ripristino il valore finanziaria a " + fnifiOriginale);
-									fnifi = fnifiOriginale;
-									// probabilmente manca l'importo, quindi nel primo campo presumibilmente c'e' il codice pratica
-									notaFZ3 = notaFZ2;	
-									notaFZ2 = notaFZ1;
-								}
-							}
-							
-							// codice pratica
-							if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZ2))){
-								fnnup = StringUtils.right(notaFZ2, 15);
-							}
-							
-							// codice tabella
-							if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZ3))){
-								fntab = StringUtils.left(notaFZ3, 4);
-								fnta2 = fntab;
-							}
-						}
-					}
-					fndep = scdep;
-					fnute = scute;
-					
-					// se importo scontrino a credito e importo finanziaria non coincidono, allora sia lo scocr0f che finaz0f le intesto al codice cliente
-					if(scims.compareTo(fnifi) != 0){
-						sccoc = asClien00f.getClccli().intValue();
-						fncoc = sccoc;
-						fnnpa = scnum;
-					}
-					
-					AsFinaz0fPKey idF = new AsFinaz0fPKey();
-					idF.setFndat(fndat);
-					idF.setFnnum(fnnum);
-					AsFinaz0f asFinaz0f = new AsFinaz0f();
-					asFinaz0f.setId(idF);
-					asFinaz0f.setFncoc(fncoc);
-					asFinaz0f.setFnnoc(fnnoc);
-					asFinaz0f.setFnloc(fnloc);
-					asFinaz0f.setFncfi(fncfi);
-					asFinaz0f.setFnnur(fnnur);
-					asFinaz0f.setFnifi(fnifi);
-					asFinaz0f.setFncag(fncag);
-					asFinaz0f.setFnnup(fnnup);
-					asFinaz0f.setFndep(fndep);
-					asFinaz0f.setFnute(fnute);
-					asFinaz0f.setFntab(fntab);
-					asFinaz0f.setFnta2(fnta2);
-					asFinaz0f.setFnnpa(fnnpa);
-					
-					AsFinaz0f asFinaz0fTmp = asFinaz0fDao.getDaId(fndat, fnnum);
-					if(asFinaz0fTmp == null){ // nuova quindi insert
-						if(!(asFinaz0fDao.salva(asFinaz0f))){
-							chiudi();
-						}
-					}else{ // gia' presente, quindi update
-						if(!(asFinaz0fDao.aggiorna(asFinaz0f))){
-							chiudi();
-						}
-						asFinaz0fDao.detach(asFinaz0fTmp);
-					}
-					asFinaz0fDao.detach(asFinaz0f);
-					
-					scdaf = fndat;
-					scnuf = fnnum;
+			if(finanziaria){ 
+				BigDecimal importoDocumento = scims;
+				BigDecimal importoFinanziaria = scims.subtract(importoAcconto);
+				Integer dataFin = null;
+				Integer numFin = null;
+				Object paramRitorno[] = new Object[3];
+				sctpc = "F";
+				sccoc = 0;
+				elaboraFinanziaria(msvOA_PrimaNota_Tes, msvOA_MovimentiTestate, asClien00f.getClccli().intValue(), fattura, importoDocumento, importoFinanziaria, scnum, scdep, scute, paramRitorno);
+				// se importo scontrino a credito e importo finanziaria non coincidono, allora sia lo scocr0f che finaz0f le intesto al codice cliente
+				importoFinanziaria = (BigDecimal)paramRitorno[0];
+				dataFin = (Integer)paramRitorno[1];
+				numFin = (Integer)paramRitorno[2];
+				if(importoDocumento.compareTo(importoFinanziaria) != 0){
+					sccoc = asClien00f.getClccli().intValue();
 				}
+				scdaf = dataFin;
+				scnuf = numFin;
 			}
 			
 			scnot = StringUtils.left(msvOA_PrimaNota_Tes.getProtocollo(), 25);
@@ -6836,6 +6697,221 @@ public class Oasi{
 		}
 		
 		log.info("]" + "elaboraPagamenti");
+	}
+	
+	private void elaboraFinanziaria(MsvOA_PrimaNota_Tes msvOA_PrimaNota_Tes, MsvOA_MovimentiTestate msvOA_MovimentiTestate, Integer codCliente, Boolean fattura, BigDecimal importoDocumento, BigDecimal importoFinanziaria, Integer numPartita, Integer deposito, String utente, Object paramRitorno[]){
+		log.info("[" + "elaboraFinanziaria");
+		
+		AsFinaz0fDao asFinaz0fDao = new AsFinaz0fDaoMng();
+		
+		paramRitorno[0] = new BigDecimal(0);
+		paramRitorno[1] = Integer.valueOf(0);
+		paramRitorno[2] = Integer.valueOf(0);
+		
+		Integer fndat = 0;
+		Integer fnnum = 0;
+		Integer fncoc = 0;
+		String fnnoc = "";
+		String fnloc = "";
+		String fncfi = "";
+		Integer fnnur = 0;
+		BigDecimal fnifi = new BigDecimal(0);
+		String fncag = "";
+		String fnnup = "";
+		Integer fndep = 0;
+		String fnute = "";
+		String fntab = "";
+		String fnta2 = "";
+		Integer fnnpa = 0;
+		
+		fnifi = importoFinanziaria;
+		
+		if(fnifi.compareTo(new BigDecimal(0)) > 0){
+			String fndatTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_PrimaNota_Tes.getDataReg());
+			fndat = Integer.parseInt(fndatTxt);
+			
+			fnnum = 0;
+			AsTabel0f asTabel0f = asTabel0fDao.getDaTnotaTcoel("NUZ", "PFI");
+			String tcomm = StringUtils.trim(asTabel0f.getTcomm());
+			String tcommmtnum = StringUtils.left(tcomm, 5);
+			String tcommmtdat = StringUtils.substring(tcomm, 5, 11);
+			String tcommmtnuz = StringUtils.substring(tcomm, 11, 13);
+			String tcommresto = StringUtils.substring(tcomm, 13);
+			// String tcommcauc = StringUtils.substring(tcomm, 13, 15);
+			
+			BigDecimal mtnumBD = new BigDecimal(tcommmtnum);
+			mtnumBD = mtnumBD.add(new BigDecimal(1));
+			
+			tcommmtnum = StringUtils.leftPad(mtnumBD.toString(), 5, "0");
+			tcommmtdat = new SimpleDateFormat("ddMMyy").format(msvOA_PrimaNota_Tes.getDataReg());
+			
+			tcomm = StringUtils.join(tcommmtnum, tcommmtdat, tcommmtnuz, tcommresto);
+			
+			asTabel0f.setTcomm(tcomm);
+			if(!(asTabel0fDao.aggiorna(asTabel0f))){
+				chiudi();
+			}
+			asTabel0fDao.detach(asTabel0f);
+			
+			fnnum = mtnumBD.intValue();
+			// fncag = tcommcauc;
+			
+			AsClien00f asClien00f = asClien00fDao.getDaClccli(new BigDecimal(codCliente));
+			
+			fncoc = 0;
+			if(fattura){
+				fncoc = asClien00f.getClccli().intValue();
+			}
+			
+			fnnoc = asClien00f.getCldrso();
+			if(!(StringUtils.isBlank(msvOA_MovimentiTestate.getNotaFN()))){
+				fnnoc = StringUtils.left(StringUtils.upperCase(StringUtils.trim(msvOA_MovimentiTestate.getNotaFN())), 30);
+			}
+			fnloc = asClien00f.getCldloc();
+			
+			fncfi = transFinanziarie(msvOA_PrimaNota_Tes.getfPagamento(), "oasi2as");
+			
+			fnnup = "";
+			fntab = "";
+			fnta2 = "";
+			if(msvOA_MovimentiTestate != null){
+				String notaFZ = StringUtils.upperCase(StringUtils.normalizeSpace(msvOA_MovimentiTestate.getNotaFZ()));
+				if(StringUtils.isNotBlank(notaFZ)){
+					String notaFZarr[] = StringUtils.split(notaFZ, " ");
+					
+					String notaFZ1 = "";
+					String notaFZ2 = "";
+					String notaFZ3 = "";
+					// importo
+					if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZarr[0]))){
+						notaFZ1 = notaFZarr[0];
+					}
+					// codice pratica
+					if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZarr[1]))){
+						notaFZ2 = notaFZarr[1];
+					}							
+					// codice tabella
+					if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZarr[2]))){
+						notaFZ3 = notaFZarr[2];
+					}
+					
+					// importo
+					if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZ1))){
+						BigDecimal fnifiOriginale = fnifi;
+						String notaFZimp = StringUtils.replace(notaFZ1, ",", ".");
+						notaFZimp = StringUtils.replacePattern(notaFZimp, "[^\\d.-]", "");
+						try{
+							fnifi = new BigDecimal(notaFZimp);
+						}catch(NumberFormatException e){
+							fnifi = new BigDecimal(0);
+						}
+						
+						if((fnifi.compareTo(new BigDecimal(0)) <= 0) || (fnifi.compareTo(new BigDecimal(9999999.99)) >= 0)){
+							log.warn("Nota FZ: " + notaFZ + ", sembra non formattata correttamente. Ripristino il valore finanziaria a " + fnifiOriginale);
+							fnifi = fnifiOriginale;
+							// probabilmente manca l'importo, quindi nel primo campo presumibilmente c'e' il codice pratica
+							notaFZ3 = notaFZ2;	
+							notaFZ2 = notaFZ1;
+						}
+					}
+					
+					// codice pratica
+					if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZ2))){
+						fnnup = StringUtils.right(notaFZ2, 15);
+					}
+					
+					// codice tabella
+					if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZ3))){
+						fntab = StringUtils.left(notaFZ3, 4);
+						fnta2 = fntab;
+					}
+				}
+			}
+			fndep = deposito;
+			fnute = utente;
+			
+			importoFinanziaria = fnifi;
+			paramRitorno[0] = importoFinanziaria;
+			// se importo scontrino a credito e importo finanziaria non coincidono, allora sia lo scocr0f che finaz0f le intesto al codice cliente
+			if(importoDocumento.compareTo(importoFinanziaria) != 0){
+				fncoc = asClien00f.getClccli().intValue();
+			}
+			fnnpa = numPartita;
+			
+			// nel caso che con la stessa pratica, vengano chiuse diverse commissioni (anche a nomi diversi), si devono registrare piu' finaz con fnnur uguale
+			// per determinare se la finanziaria e' la stessa faccio la selezione per tipo finanziaria (fncfi) e codice finanziaria (fnnup)
+			AsFinaz0f asFinaz0fFnnur = asFinaz0fDao.getDaFndatFncfiFnnup(fndat, fncfi, fnnup);
+			if(asFinaz0fFnnur == null){
+				fnnur = 0;
+				asTabel0f = asTabel0fDao.getDaTnotaTcoel("FIN", fncfi);
+				tcomm = StringUtils.trim(asTabel0f.getTcomm());
+				String tcomminit = StringUtils.left(tcomm, 3);
+				tcommmtnum = StringUtils.substring(tcomm, 3, 8);
+				tcommresto = StringUtils.substring(tcomm, 8);
+				
+				mtnumBD = new BigDecimal(tcommmtnum);
+				mtnumBD = mtnumBD.add(new BigDecimal(1));
+				
+				tcommmtnum = StringUtils.leftPad(mtnumBD.toString(), 5, "0");
+				
+				tcomm = StringUtils.join(tcomminit, tcommmtnum, tcommresto);
+				
+				asTabel0f.setTcomm(tcomm);
+				if(!(asTabel0fDao.aggiorna(asTabel0f))){
+					chiudi();
+				}
+				asTabel0fDao.detach(asTabel0f);
+				
+				fnnur = mtnumBD.intValue();
+				fncag = StringUtils.left(tcomminit, 2);				
+			}else{
+				log.info("Fianziaria gia' esistente, uso lo stesso FNNUR - " + asFinaz0fFnnur);
+				fnnur = asFinaz0fFnnur.getFnnur();
+				fncag = asFinaz0fFnnur.getFncag();
+				asFinaz0fDao.detach(asFinaz0fFnnur);
+			}
+			
+			AsFinaz0fPKey idF = new AsFinaz0fPKey();
+			idF.setFndat(fndat);
+			idF.setFnnum(fnnum);
+			AsFinaz0f asFinaz0f = new AsFinaz0f();
+			asFinaz0f.setId(idF);
+			asFinaz0f.setFncoc(fncoc);
+			asFinaz0f.setFnnoc(fnnoc);
+			asFinaz0f.setFnloc(fnloc);
+			asFinaz0f.setFncfi(fncfi);
+			asFinaz0f.setFnnur(fnnur);
+			asFinaz0f.setFnifi(fnifi);
+			asFinaz0f.setFncag(fncag);
+			asFinaz0f.setFnnup(fnnup);
+			asFinaz0f.setFndep(fndep);
+			asFinaz0f.setFnute(fnute);
+			asFinaz0f.setFntab(fntab);
+			asFinaz0f.setFnta2(fnta2);
+			asFinaz0f.setFnnpa(fnnpa);
+			
+			AsFinaz0f asFinaz0fTmp = asFinaz0fDao.getDaId(fndat, fnnum);
+			if(asFinaz0fTmp == null){ // nuova quindi insert
+				if(!(asFinaz0fDao.salva(asFinaz0f))){
+					chiudi();
+				}
+			}else{ // gia' presente, quindi update
+				if(!(asFinaz0fDao.aggiorna(asFinaz0f))){
+					chiudi();
+				}
+				asFinaz0fDao.detach(asFinaz0fTmp);
+			}
+			asFinaz0fDao.detach(asFinaz0f);
+			
+//			dataFin = fndat;
+//			numFin = fnnum;
+			paramRitorno[1] = fndat;
+			paramRitorno[2] = fnnum;
+		}
+		
+		asFinaz0fDao.close();
+		
+		log.info("]" + "elaboraFinanziaria");
 	}
 	
 	private void elaboraChiusuraCassa(){
