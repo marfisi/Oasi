@@ -126,6 +126,25 @@ public class MsvOA_MovimentiRigheDaoMng implements MsvOA_MovimentiRigheDao, Seri
 		return o;
 	}
 	
+	@SuppressWarnings(
+		"unchecked"
+	)
+	public List<MsvOA_MovimentiRighe> getDaIdUnivocoTesElaborateGaranzia(String idUnivocoTes){
+		List<MsvOA_MovimentiRighe> o = null;
+		try{
+			try{
+				Query query = em.createNamedQuery("MsvOA_MovimentiRighe.findByIdUnivocoTesElaborateGaranzia");
+				query.setParameter("idUnivocoTes", idUnivocoTes);
+				o = (List<MsvOA_MovimentiRighe>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public void detach(Object entity){
 		em.detach(entity);
 	}

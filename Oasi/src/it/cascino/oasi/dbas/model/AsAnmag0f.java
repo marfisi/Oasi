@@ -20,7 +20,7 @@ import javax.persistence.*;
 		query = "SELECT o FROM Anmag0f o WHERE o.atama != 'S' and o.mcoda = :mcoda "
 	), @NamedQuery(
 		name = "AsAnmag0f.findAllIngrosso",
-		query = "SELECT o FROM Anmag0f o WHERE o.atama in (' ', 'A') and ((o.mdepi = 1) or (o.mdepi = 3)) order by o.mcoda asc"
+		query = "SELECT o FROM Anmag0f o WHERE o.atama in (' ', 'A') and ((o.mdepi = 1) or (o.mdepi = 3) or (o.mdepi = 30)) order by o.mcoda asc"
 	), @NamedQuery(
 		name = "AsAnmag0f.findAttivi",
 		query = "SELECT o FROM Anmag0f o WHERE o.atama = ' ' order by o.mcoda asc"

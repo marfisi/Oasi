@@ -19,6 +19,9 @@ import it.cascino.oasi.dbas.model.pkey.AsMovma0fPKey;
 	), @NamedQuery(
 		name = "AsMovma0f.findById",
 		query = "SELECT o FROM Movma0f o WHERE o.id.vdatr = :vdatr and o.id.vcaus = :vcaus and o.id.vnura = :vnura and o.id.vnumd = :vnumd and o.id.vprog = :vprog"
+	), @NamedQuery(
+		name = "AsMovma0f.findByVidoa",
+		query = "SELECT o FROM Movma0f o WHERE o.vidoa = :vidoa order by vprog"
 	)
 	}
 )

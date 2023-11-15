@@ -16,6 +16,8 @@ public interface MsvOA_MovimentiRigheDao{
 	
 	MsvOA_MovimentiRighe getDaIdUnivocoTesIdUnivocoRiga(String idUnivocoTes, String idUnivocoRiga);
 	
+	List<MsvOA_MovimentiRighe> getDaIdUnivocoTesElaborateGaranzia(String idUnivocoTes);
+	
 	void detach(Object entity);
 	
 	void close();

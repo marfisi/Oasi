@@ -116,8 +116,26 @@ public class MsvOA_MovimentiTestateDaoMng implements MsvOA_MovimentiTestateDao, 
 		List<MsvOA_MovimentiTestate> o = null;
 		try{
 			try{
-				String sql = "SELECT * FROM OA_MovimentiTestate o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.causaleOasi in ('CORC', 'VEDD', 'VEND', 'CFOR', 'CARF', 'RFOR') and o.idUnivocoTes in (SELECT idUnivocoTes FROM OA_MovimentiRighe r WHERE r.tipoOperazione in ('INS', 'UPD')) order by o.dataReg, o.idUnivocoTes";
+				String sql = "SELECT * FROM OA_MovimentiTestate o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.causaleOasi in ('CORC', 'VEDD', 'VEND', 'CFOR', 'CARF', 'RFOR', 'SCIA') and o.idUnivocoTes in (SELECT idUnivocoTes FROM OA_MovimentiRighe r WHERE r.tipoOperazione in ('INS', 'UPD')) order by o.dataReg, o.idUnivocoTes";
 				Query query = em.createNativeQuery(sql, MsvOA_MovimentiTestate.class);
+				o = (List<MsvOA_MovimentiTestate>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
+	@SuppressWarnings(
+		"unchecked"
+	)
+	public List<MsvOA_MovimentiTestate> getAssistenzeInterne(){
+		List<MsvOA_MovimentiTestate> o = null;
+		try{
+			try{
+				Query query = em.createNamedQuery("MsvOA_MovimentiTestate.findByAssistenzeInterne");
 				o = (List<MsvOA_MovimentiTestate>)query.getResultList();
 			}catch(NoResultException e){
 				o = null;

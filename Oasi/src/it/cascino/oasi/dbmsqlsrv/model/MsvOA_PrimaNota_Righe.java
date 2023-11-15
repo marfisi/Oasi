@@ -28,6 +28,7 @@ import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvOA_PrimaNota_RighePKey;
 	)
 	}
 )
+//public class MsvOA_PrimaNota_Righe implements Serializable, Cloneable{
 public class MsvOA_PrimaNota_Righe implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -145,4 +146,9 @@ public class MsvOA_PrimaNota_Righe implements Serializable{
 	public String toString(){
 		return "MsvOA_PrimaNota_Righe [id=" + id + ", tipoConto=" + tipoConto + ", cliFor=" + cliFor + ", dare=" + dare + ", avere=" + avere + ", nota1=" + nota1 + ", nota2=" + nota2 + ", tipoOperazione=" + tipoOperazione + "]";
 	}
+	
+//	@Override
+//	public Object clone() throws CloneNotSupportedException{
+//		return super.clone();
+//	}
 }

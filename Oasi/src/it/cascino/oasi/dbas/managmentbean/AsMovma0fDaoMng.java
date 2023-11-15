@@ -174,6 +174,45 @@ public class AsMovma0fDaoMng implements AsMovma0fDao, Serializable{
 		return o;
 	}
 	
+	@SuppressWarnings(
+		"unchecked"
+	)
+	public List<AsMovma0f> getDaVidoa(String vidoa){
+		List<AsMovma0f> o = null;
+		try{
+			try{
+				Query query = em.createNamedQuery("AsMovma0f.findByVidoa");
+				query.setParameter("vidoa", vidoa);
+				o = (List<AsMovma0f>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
+	public Integer aggiornaVcausInAssistenzeGaranzia(String vcaus, String vidoa){
+		Integer o = null;
+		try{
+			try{
+				utx.begin();
+				String sql = "update movma0f set vcaus = :vcaus where vidoa = :vidoa and vtimo = 'A'";
+				Query query = em.createNativeQuery(sql);
+				query.setParameter("vcaus", vcaus);
+				query.setParameter("vidoa", vidoa);
+				o = query.executeUpdate();
+			}catch(NoResultException e){
+				o = -1;
+			}
+			utx.commit();
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public void detach(Object entity){
 		em.detach(entity);
 	}

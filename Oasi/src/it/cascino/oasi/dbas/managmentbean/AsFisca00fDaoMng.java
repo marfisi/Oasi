@@ -43,7 +43,7 @@ public class AsFisca00fDaoMng implements AsFisca00fDao, Serializable{
 		try{
 			try{
 				utx.begin();
-				log.info("salva: " + o.toString());
+				// log.info("salva: " + o.toString());
 				em.persist(o);
 			}finally{
 				utx.commit();

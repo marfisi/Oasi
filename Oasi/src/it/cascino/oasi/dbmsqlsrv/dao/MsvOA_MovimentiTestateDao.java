@@ -16,6 +16,8 @@ public interface MsvOA_MovimentiTestateDao{
 	MsvOA_MovimentiTestate getDaIdPntNReg(String idPntNReg);
 	
 	List<MsvOA_MovimentiTestate> getTestateConRigheAggiornate();
+
+	List<MsvOA_MovimentiTestate> getAssistenzeInterne();
 	
 	Timestamp getMaxDataReg();
 	

@@ -22,6 +22,9 @@ import javax.persistence.*;
 	), @NamedQuery(
 		name = "MsvOA_MovimentiTestate.findByIdPntNReg",
 		query = "SELECT o FROM OA_MovimentiTestate o WHERE o.idPntNReg = :idPntNReg"
+	), @NamedQuery(
+		name = "MsvOA_MovimentiTestate.findByAssistenzeInterne",
+		query = "SELECT o FROM OA_MovimentiTestate o WHERE o.tipoOperazione = '*IN' and o.tipoOperazione != 'DEL' and  NroDoc like '%#INT#%' order by o.dataReg desc, o.idUnivocoTes"
 	)
 	}
 )

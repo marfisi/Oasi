@@ -92,7 +92,7 @@ public class AsNativeQueryDaoMng implements AsNativeQueryDao, Serializable{
 		List<Object[]> o = null;
 		try{
 			try{
-				String sql = "select case when gia.dcoda is not null then gia.dcoda else sco.arcod end art, case when gia.dcode is not null then gia.dcode else sco.ardep end dep, gia.dgiac, gia.dgdif, sco.arsmi, sco.arsmx from ardep0f gia full join arren0f sco on gia.dcoda = sco.arcod and gia.dcode = sco.ardep where gia.dcoda = :articolo and gia.dcode in (" + depIngrosso + ")";
+				String sql = "select art, case when dep = 30 then 3 else dep end dep, sum(dgiac) dgiac, sum(dgdif) dgdif, max(arsmi) arsmi, min(arsmx) arsmx from (select art, case when dep = 30 then 3 else dep end dep, dgiac, dgdif, arsmi, arsmx from (select case when gia.dcoda is not null then gia.dcoda else sco.arcod end art, case when gia.dcode is not null then gia.dcode else sco.ardep end dep, gia.dgiac, gia.dgdif, sco.arsmi, sco.arsmx from ardep0f gia full join arren0f sco on gia.dcoda = sco.arcod and gia.dcode = sco.ardep where gia.dcoda = :articolo and gia.dcode in (" + depIngrosso + ")) t1) t2 group by art, dep order by dep";
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("articolo", articolo);
 				o = (List<Object[]>)query.getResultList();

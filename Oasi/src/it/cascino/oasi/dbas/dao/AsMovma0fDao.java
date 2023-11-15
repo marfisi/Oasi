@@ -23,6 +23,10 @@ public interface AsMovma0fDao{
 	
 	Integer aggiornaVcomm(Integer vdatr, String vcaus, Integer vnura, Integer vnumd, String vcomm);
 	
+	List<AsMovma0f> getDaVidoa(String vidoa);
+	
+	Integer aggiornaVcausInAssistenzeGaranzia(String vcaus, String vidoa);
+
 	void detach(Object entity);
 	
 	void close();

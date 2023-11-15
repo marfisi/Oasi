@@ -5,16 +5,31 @@
 	
 	<persistence-unit name="DB2AS400" transaction-type="RESOURCE_LOCAL">
 		<properties>
-			<property name="hibernate.connection.url" value="jdbc:as400://10.0.21.20/cas_dat;transaction isolation=none" />
+			<!-- property name="hibernate.connection.url" value="jdbc:as400://10.0.21.20;naming=system;libraries=cas_dat,sysibm;" />  /cas_dat  -->
+			<property name="hibernate.connection.url" value="jdbc:as400://10.0.21.20;libraries=cas_dat" />
 			<property name="hibernate.connection.driver_class" value="com.ibm.as400.access.AS400JDBCDriver" />
 			<property name="hibernate.connection.username" value="JAVAPGM" />
 			<property name="hibernate.connection.password" value="J4V4PGM" />
-			<property name="hibernate.connection.pool_size" value="1" />
+			<!--  property name="hibernate.default_schema" value="CAS_DAT" / -->
 			<property name="hibernate.dialect" value="org.hibernate.dialect.DB2400Dialect" />
+			<property name="hibernate.connection.isolation" value="0" />	<!-- isolation=NONE -->
+			<property name="hibernate.connection.pool_size" value="1" />
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.generate_statistics" value="false" />
 			<property name="hibernate.use_sql_comments" value="false" />
-			<property name="hibernate.connection.shutdown" value="true" />
+			<!-- property name="hibernate.connection.shutdown" value="true" /-->
+			
+			<!-- c3p0 config http://www.hibernate.org/214.html -->
+	        <property name="connection.provider_class" value="org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider" />
+	        <property name="hibernate.c3p0.acquire_increment" value="1" />
+	        <property name="hibernate.c3p0.idle_test_period" value="60" />
+	        <property name="hibernate.c3p0.min_size" value="1" />
+	        <property name="hibernate.c3p0.max_size" value="2" />
+	        <property name="hibernate.c3p0.max_statements" value="0" />
+	        <property name="hibernate.c3p0.maxStatementsPerConnection" value="0" />
+	        <property name="hibernate.c3p0.timeout" value="0" />
+	        <property name="hibernate.c3p0.acquireRetryAttempts" value="1" />
+	        <property name="hibernate.c3p0.acquireRetryDelay" value="250" />
 		</properties>
 	</persistence-unit>
 	
@@ -24,12 +39,13 @@
 			<property name="hibernate.connection.driver_class" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
 			<property name="hibernate.connection.username" value="scambio" />
 			<property name="hibernate.connection.password" value="C4sc1n0&amp;" />
+			<!-- property name="hibernate.default_schema" value="SCAMBIODATI.dbo" /-->
+			<property name="hibernate.connection.isolation" value="0" />	<!-- isolation=NONE -->
 			<property name="hibernate.connection.pool_size" value="1" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
-			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.generate_statistics" value="false" />
 			<property name="hibernate.use_sql_comments" value="false" />
-			<property name="hibernate.default_schema" value="dbo" />
 		</properties>
 	</persistence-unit>
 	
