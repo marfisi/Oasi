@@ -186,11 +186,11 @@ public class AsNativeQueryDaoMng implements AsNativeQueryDao, Serializable{
 	@SuppressWarnings(
 		"unchecked"
 	)
-	public List<Object[]> getMovimentiDepIngArtDomex(Integer vdatr){
+	public List<Object[]> getMovimentiDepIngArtDomex(Integer vdatr, String depIngrosso){
 		List<Object[]> o = null;
 		try{
 			try{
-				String sql = "select vdatr, vorin, vcaus, vnura, vnumd, vprog, vndep, vcoda, vquan, vprez, vsco1, vsco2, vsco3, vcost, valiv, vcocf from movma0f where vndep = 3 and vdatr = :vdatr and left(vcaus, 1) in ('D', 'M', 'E', 'I') and vcoda in (select mcoda from anmag0f where mcofo = 5900 and moalu != '' and moalu not like '%.%') order by vdatr, vcaus, vnura, vnumd, vprog";
+				String sql = "select vdatr, vorin, vcaus, vnura, vnumd, vprog, vndep, vcoda, vquan, vprez, vsco1, vsco2, vsco3, vcost, valiv, vcocf from movma0f where vndep in (" + depIngrosso + ") and vdatr = :vdatr and left(vcaus, 1) in ('G', 'D', 'M', 'E', 'I') and vcoda in (select mcoda from anmag0f where mcofo = 5900 and moalu != '' and moalu not like '%.%') order by vdatr, vcaus, vnura, vnumd, vprog";
 				Query query = em.createNativeQuery(sql);
 				query.setParameter("vdatr", vdatr);
 				o = (List<Object[]>)query.getResultList();

@@ -24,8 +24,10 @@ import javax.persistence.*;
 	), @NamedQuery(
 		name = "MsvOA_PrimaNota_Tes.findByCausale",
 		query = "SELECT o FROM OA_PrimaNota_Tes o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.causale = :causale order by o.nReg asc"
-	)
-	}
+	), @NamedQuery(
+		name = "MsvOA_PrimaNota_Tes.findByDataRegRegIvaSezionale",
+		query = "SELECT o FROM OA_PrimaNota_Tes o WHERE o.tipoOperazione != 'DEL' and o.dataReg = :dataReg and o.regIva = :regIva and o.sezionale = :sezionale order by o.nReg asc"
+)	}
 )
 public class MsvOA_PrimaNota_Tes implements Serializable{
 	private static final long serialVersionUID = 1L;

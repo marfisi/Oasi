@@ -40,7 +40,8 @@ public class AsArdep0f implements Serializable{
 	private String datin;
 	private BigDecimal dscmi;
 	private BigDecimal dscma;
-	private BigDecimal damma;
+	private BigDecimal dauco;	// Autoconsumo                                        P     7 2
+	private BigDecimal damma;	// Ammanchi di inventario                             P     7 2  
 	
 	public AsArdep0f(){
 	}
@@ -109,6 +110,14 @@ public class AsArdep0f implements Serializable{
 		this.dscma = dscma;
 	}
 	
+	public BigDecimal getDauco(){
+		return dauco;
+	}
+
+	public void setDauco(BigDecimal dauco){
+		this.dauco = dauco;
+	}
+
 	public BigDecimal getDamma(){
 		return damma;
 	}
@@ -147,6 +156,6 @@ public class AsArdep0f implements Serializable{
 	
 	@Override
 	public String toString(){
-		return "AsArdep0f [id=" + id + ", dgiac=" + dgiac + ", dgdif=" + dgdif + ", datuc=" + datuc + ", datus=" + datus + ", datin=" + datin + ", dscmi=" + dscmi + ", dscma=" + dscma + ", damma=" + damma + "]";
+		return "AsArdep0f [id=" + id + ", dgiac=" + dgiac + ", dgdif=" + dgdif + ", datuc=" + datuc + ", datus=" + datus + ", datin=" + datin + ", dscmi=" + dscmi + ", dscma=" + dscma + ", dauco=" + dauco + ", damma=" + damma + "]";
 	}
 }

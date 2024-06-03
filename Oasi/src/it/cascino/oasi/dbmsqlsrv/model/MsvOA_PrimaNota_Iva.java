@@ -22,8 +22,10 @@ import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvOA_PrimaNota_IvaPKey;
 	), @NamedQuery(
 		name = "MsvOA_PrimaNota_Iva.findByNRegNriga",
 		query = "SELECT o FROM OA_PrimaNota_Iva o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.nReg = :nReg and o.id.nRiga = :nRiga"
-	)
-	}
+	), @NamedQuery(
+		name = "MsvOA_PrimaNota_Iva.findByNRegNoTipoOperazione",
+		query = "SELECT o FROM OA_PrimaNota_Iva o WHERE o.tipoOperazione != 'DEL' and o.id.nReg = :nReg order by o.id.nRiga"
+)	}
 )
 public class MsvOA_PrimaNota_Iva implements Serializable{
 	private static final long serialVersionUID = 1L;

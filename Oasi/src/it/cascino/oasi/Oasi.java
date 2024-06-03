@@ -21,6 +21,7 @@ import it.cascino.oasi.dbas.dao.AsBofor0fDao;
 import it.cascino.oasi.dbas.dao.AsBolem0fDao;
 import it.cascino.oasi.dbas.dao.AsCcmca0fDao;
 import it.cascino.oasi.dbas.dao.AsClien00fDao;
+import it.cascino.oasi.dbas.dao.AsCorri0fDao;
 import it.cascino.oasi.dbas.dao.AsFatem0fDao;
 import it.cascino.oasi.dbas.dao.AsFinaz0fDao;
 import it.cascino.oasi.dbas.dao.AsFisca00fDao;
@@ -41,6 +42,7 @@ import it.cascino.oasi.dbas.managmentbean.AsBofor0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsBolem0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsCcmca0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsClien00fDaoMng;
+import it.cascino.oasi.dbas.managmentbean.AsCorri0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsFatem0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsFinaz0fDaoMng;
 import it.cascino.oasi.dbas.managmentbean.AsFisca00fDaoMng;
@@ -61,6 +63,7 @@ import it.cascino.oasi.dbas.model.AsBofor0f;
 import it.cascino.oasi.dbas.model.AsBolem0f;
 import it.cascino.oasi.dbas.model.AsCcmca0f;
 import it.cascino.oasi.dbas.model.AsClien00f;
+import it.cascino.oasi.dbas.model.AsCorri0f;
 import it.cascino.oasi.dbas.model.AsFatem0f;
 import it.cascino.oasi.dbas.model.AsFinaz0f;
 import it.cascino.oasi.dbas.model.AsFisca00f;
@@ -81,6 +84,7 @@ import it.cascino.oasi.dbas.model.pkey.AsArdep0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsBofor0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsBolem0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsCcmca0fPKey;
+import it.cascino.oasi.dbas.model.pkey.AsCorri0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsFatem0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsFinaz0fPKey;
 import it.cascino.oasi.dbas.model.pkey.AsFisca00fPKey;
@@ -187,6 +191,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -282,6 +287,8 @@ public class Oasi{
 	// private final AsCcmca0fDao asCcmca0fDao = new AsCcmca0fDaoMng();
 	// private List<AsCcmca0f> asCcmca0fLs;
 	
+	private final AsCorri0fDao asCorri0fDao = new AsCorri0fDaoMng();
+	
 	// MSSqlSrv AS a OA
 	// private final MsvAS_ClientiDao msvAS_ClientiDao = new MsvAS_ClientiDaoMng();
 	// private List<MsvAS_Clienti> msvAS_ClientiLs;
@@ -361,6 +368,16 @@ public class Oasi{
 	
 	private final MsvNativeQueryDao msvNativeQueryDao = new MsvNativeQueryDaoMng();
 	
+	// nuovo deposito - definire il nuovo valore
+	// in tabel0f - xx=numero deposito - 
+	// NUZ - Axx - bolle fornitore (acquisto)
+	// NUZ - Bxx - bolle clienti (vendita)
+	// NUZ - Fxx - fatture vendite
+	// NUZ - Txx - trasferimenti deposito (dep partenza)
+	// NUZ - SCy - scontrini a credito - A=pagdm, C=milazzo, D=sciacca, E=padante
+	// MCO - ' xx'
+	// DEC - ' xx'
+	
 	// variabili
 	private String funzione = "";
 	// private String dataPartenza = "";
@@ -394,6 +411,8 @@ public class Oasi{
 	private String finanziarieCascino[];
 	private String finanziarieOasi[];
 	
+	private List<String> corrispettiviDaElaborareLs = null;
+	
 	public Oasi(String args[]){
 		log.info("[" + "Oasi");
 		
@@ -423,10 +442,12 @@ public class Oasi{
 		initTranscodifica();
 		
 		// elaboraChiusuraCassa();
-		// testCodice();
 		// elaboraCrediti();
 		// elaboraFatture();
 		// elaboraPagamenti();
+		// elaboraAssistenzeInterne();
+		// elaboraCorrispettiviContabilizzazione();
+		// testCodice();
 		
 		String argomenti = "";
 		AsOasic0f cmd = null;
@@ -859,7 +880,10 @@ public class Oasi{
 					break;
 			}
 			
-			reverseCharge = 0; // a tutti no
+			reverseCharge = 0;
+			if(StringUtils.equals(StringUtils.trim(asClien00f.getClcnor()), "90") || StringUtils.equals(StringUtils.trim(asClien00f.getClcnor()), "91")){  // reverse charge - 90 cellulari - 91 informatica
+				reverseCharge = 1;
+			}
 			
 			// speseTrasporto = asClien00f.getClcpor();
 			// if(StringUtils.isBlank(speseTrasporto)){
@@ -881,6 +905,7 @@ public class Oasi{
 					break;
 				case "8":
 					speseTrasportoPercentuale = new BigDecimal(3);
+					break;
 				case "9":
 					speseTrasportoPercentuale = new BigDecimal(2.5);
 					break;
@@ -1022,7 +1047,7 @@ public class Oasi{
 			String ragSoc = StringUtils.trim(StringUtils.join(StringUtils.upperCase(StringUtils.trim(msvOA_Clienti.getRagSoc1())), " ", StringUtils.upperCase(StringUtils.trim(msvOA_Clienti.getRagSoc2()))));
 			ragSoc = StringUtils.removeEnd(ragSoc, "-"); // trattino finale solo per far scattare la modifca su oasi
 			
-			clfann = "V";	// per esportazione sirio a docfinance
+			clfann = "V"; // per esportazione sirio a docfinance
 			cltcli = "C";
 			
 			cldrso = StringUtils.left(ragSoc, 30);
@@ -1142,6 +1167,11 @@ public class Oasi{
 			}
 			
 			// reverseCharge
+			clcnor = "";
+			if(msvOA_Clienti.getReverseCharge().compareTo(1) == 0){
+				clcnor = "90";
+				// non ho modo di distinguere se deve essere 90 o 91, metto 90 
+			}
 			
 			clcpor = "";
 			BigDecimal clcporBigDec = msvOA_Clienti.getSpeseTrasportoImporto();
@@ -1251,7 +1281,7 @@ public class Oasi{
 			}else{ // gia' presente, quindi update
 					// non modifico i valori che non ricevo definiti
 				asClien00f.setClcpor(asClien00fTmp.getClcpor());
-				asClien00f.setClcnor(asClien00fTmp.getClcnor());
+				// asClien00f.setClcnor(asClien00fTmp.getClcnor());	// commentato perche' e' gestito il reverse
 				asClien00f.setClcag1(asClien00fTmp.getClcag1());
 				if(StringUtils.equals(asClien00fTmp.getClccme(), "RA")){
 					asClien00f.setClccme(asClien00fTmp.getClccme());
@@ -1507,7 +1537,7 @@ public class Oasi{
 					}
 				}
 				
-				// se è un articolo seconhand (marchio: usato garantito), non lo passo a oasi, perché non voglio sovrascrivere la descrizione che in oasi è di 50char e in as400 è troncata a 35char
+				// se e' un articolo seconhand (marchio: usato garantito), non lo passo a oasi, perché non voglio sovrascrivere la descrizione che in oasi e' di 50char e in as400 e' troncata a 35char
 				if(StringUtils.equals(StringUtils.trim(asAnmag0f.getMarch()), "UGR")){
 					AsOaanm0f asOaanm0f = asOaanm0fDao.getDaMcoda(asAnmag0f.getMcoda());
 					asOaanm0f.setMflag("S");
@@ -1516,7 +1546,7 @@ public class Oasi{
 					}
 					log.info(asAnmag0f.getMcoda() + " non lo passo perche' la descrizione e' corta - " + asAnmag0f.getMdesc());
 					continue;
-				}				
+				}
 				
 				if(asAnmag0f != null){
 					asAnmag0fLs.add(asAnmag0f);
@@ -2070,6 +2100,7 @@ public class Oasi{
 		
 		getArticoliPerOasi(); // setta asAnmag0fLs e codiciMarchiLs
 		
+		AsTabe20f asTabe20f = null;
 		String codiceMarchio = null;
 		Iterator<String> iter_codiciMarchiLs = codiciMarchiLs.iterator();
 		while(iter_codiciMarchiLs.hasNext()){
@@ -2078,10 +2109,10 @@ public class Oasi{
 			String codice = "";
 			String descrizione = "";
 			
-			AsTabe20f asTabe20fNew = getCodiceMarchio(StringUtils.trim(codiceMarchio));
+			asTabe20f = getCodiceMarchio(StringUtils.trim(codiceMarchio));
 			
-			codice = StringUtils.trim(asTabe20fNew.getId().getTbele());
-			descrizione = StringUtils.trim(asTabe20fNew.getTbdes());
+			codice = StringUtils.trim(asTabe20f.getId().getTbele());
+			descrizione = StringUtils.trim(asTabe20f.getTbdes());
 			
 			MsvAS_Marchi msvAS_Marchi = new MsvAS_Marchi();
 			msvAS_Marchi.setCodice(codice);
@@ -2923,13 +2954,12 @@ public class Oasi{
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
 		strTimestampAs400 = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400, "."), " "), "-"), ":");
 		// strTimestampAs400 = "20201211";
-		List<Object[]> asMovLs = asNativeQueryDao.getMovimentiDepIngArtDomex(Integer.parseInt(StringUtils.left(strTimestampAs400, 8)));
+		List<Object[]> asMovLs = asNativeQueryDao.getMovimentiDepIngArtDomex(Integer.parseInt(StringUtils.left(strTimestampAs400, 8)), depositiIngrosso);
 		
 		Object[] asMov = new Object[16];
-		Iterator<Object[]> iter_asArdepArrenLs = asMovLs.iterator();
-		iter_asArdepArrenLs = asMovLs.iterator();
-		while(iter_asArdepArrenLs.hasNext()){
-			asMov = iter_asArdepArrenLs.next();
+		Iterator<Object[]> iter_asMovLs = asMovLs.iterator();
+		while(iter_asMovLs.hasNext()){
+			asMov = iter_asMovLs.next();
 			
 			String idTes = "";
 			String idRig = "";
@@ -3095,7 +3125,7 @@ public class Oasi{
 			Integer tipoDocumento = msvOA_MovimentiTestate.getDocumAccomp();
 			
 			// causali da mettere in elaborate, ma che non saranno gestite
-			if(StringUtils.equals(causaleOasi, "RIFS") || StringUtils.equals(causaleOasi, "RIFV") || StringUtils.equals(causaleOasi, "RVTF") || StringUtils.equals(causaleOasi, "ACFF") || StringUtils.equals(causaleOasi, "SCMR") || StringUtils.equals(causaleOasi, "RSMR") || StringUtils.equals(causaleOasi, "SCCA") || StringUtils.equals(causaleOasi, "RSTR") || StringUtils.equals(causaleOasi, "RIFE") || StringUtils.equals(causaleOasi, "NCPR") || StringUtils.equals(causaleOasi, "RIFK") || StringUtils.equals(causaleOasi, "RIRN") || StringUtils.equals(causaleOasi, "RIRP") || StringUtils.equals(causaleOasi, "CACM") || StringUtils.equals(causaleOasi, "SCBR")){
+			if(StringUtils.equals(causaleOasi, "RIFS") || StringUtils.equals(causaleOasi, "RIFV") || StringUtils.equals(causaleOasi, "RVTF") || StringUtils.equals(causaleOasi, "ACFF") || StringUtils.equals(causaleOasi, "SCMR") || StringUtils.equals(causaleOasi, "SCCA") || StringUtils.equals(causaleOasi, "RSTR") || StringUtils.equals(causaleOasi, "RIFE") || StringUtils.equals(causaleOasi, "NCPR") || StringUtils.equals(causaleOasi, "RIFK") || StringUtils.equals(causaleOasi, "RIRN") || StringUtils.equals(causaleOasi, "RIRP") || StringUtils.equals(causaleOasi, "CACM") || StringUtils.equals(causaleOasi, "SCBR")){
 				tipoOperazione = StringUtils.join("*", StringUtils.left(msvOA_MovimentiTestate.getTipoOperazione(), 2));
 				msvOA_MovimentiTestate.setTipoOperazione(tipoOperazione);
 				msvOA_MovimentiTestateDao.aggiorna(msvOA_MovimentiTestate);
@@ -3167,7 +3197,7 @@ public class Oasi{
 				
 				vtimo = "F";
 			}
-			if(StringUtils.equals(causaleOasi, "RFOR") || StringUtils.equals(causaleOasi, "RSRF") || StringUtils.equals(causaleOasi, "RSFO") || StringUtils.equals(causaleOasi, "VENO") || StringUtils.equals(causaleOasi, "VENC")){
+			if(StringUtils.equals(causaleOasi, "RFOR") || StringUtils.equals(causaleOasi, "RSRF") || StringUtils.equals(causaleOasi, "VENO") || StringUtils.equals(causaleOasi, "VENC")){
 				if(Integer.compare(tipoDocumento, 0) == 0){
 					vcaus = "B99";
 					segnoQty = new BigDecimal(-1);
@@ -3287,7 +3317,7 @@ public class Oasi{
 			if(StringUtils.equals(codPagamento, "C00")){
 				vcocr = "C";
 				// potrebbe essere POS, ma non so come determinarlo
-			}else if(StringUtils.equals(codPagamento, "FAGI") || StringUtils.equals(codPagamento, "FCOI") || StringUtils.equals(codPagamento, "FINI") || StringUtils.equals(codPagamento, "FPAI")){
+			}else if(StringUtils.equals(codPagamento, "FAGI") || StringUtils.equals(codPagamento, "FCOI") || StringUtils.equals(codPagamento, "FINI") || StringUtils.equals(codPagamento, "FPAI") || StringUtils.equals(codPagamento, "FFLO")){
 				vcocr = "F";
 			}else if(StringUtils.equals(codPagamento, "WW") || StringUtils.equals(codPagamento, "W3") || StringUtils.equals(codPagamento, "WT") || StringUtils.equals(codPagamento, "WV")){
 				vcocr = "M";
@@ -3556,12 +3586,13 @@ public class Oasi{
 					}
 				}
 				
-				if(StringUtils.equals(vciva, "90") || StringUtils.equals(vciva, "91")){	// reverse charge - 90 cellulari - 91 informatica
+				if(StringUtils.equals(vciva, "90") || StringUtils.equals(vciva, "91")){ // reverse charge - 90 cellulari - 91 informatica
 					// se il cliente non ha partita iva e in clcnor ne 90 e nemmeno 91, allora faccio iva ordinaria
 					AsClien00f asClien00f = asClien00fDao.getDaClccli(new BigDecimal(vcocf));
 					if((asClien00f != null) && (Integer.compare(asClien00f.getClcpiv().intValue(), 0) > 0)){
 						if(!(StringUtils.equals(StringUtils.trim(asClien00f.getClcnor()), "90") || StringUtils.equals(StringUtils.trim(asClien00f.getClcnor()), "91"))){
-							vciva = "22";
+							// vciva = "22"; se oasi l'ha aftto in reverse, non lo trasformo in 22%
+							log.warn("In oasi il cliente e' con reverse, controllare perche' in sirio non lo e'!");
 						}
 					}else{
 						vciva = "22";
@@ -3746,6 +3777,7 @@ public class Oasi{
 						asArdep0f = new AsArdep0f();
 						asArdep0f.setId(idard);
 						asArdep0f.setDgdif(new BigDecimal(0));
+						asArdep0f.setDauco(new BigDecimal(0));
 						BigDecimal qta = new BigDecimal(0);
 						switch(caus){
 							case "B":
@@ -3762,6 +3794,9 @@ public class Oasi{
 								qta = qta.subtract(vquan);
 								asArdep0f.setDatuc("0");
 								asArdep0f.setDatus(datTxt);
+								if(StringUtils.equals(caus, "S")){
+									asArdep0f.setDauco(asArdep0f.getDauco().add(vquan));
+								}
 								break;
 							default:
 								log.error(caus + " non gestita");
@@ -3792,6 +3827,9 @@ public class Oasi{
 								qta = qta.subtract(vquan);
 								asArdep0f.setDatuc(asArdep0f.getDatuc());
 								asArdep0f.setDatus(datTxt);
+								if(StringUtils.equals(caus, "S")){
+									asArdep0f.setDauco(asArdep0f.getDauco().add(vquan));
+								}
 								break;
 							default:
 								log.error(caus + " non gestita");
@@ -4309,6 +4347,7 @@ public class Oasi{
 							asArdep0f.setDatin("0");
 							asArdep0f.setDscmi(new BigDecimal(0));
 							asArdep0f.setDscma(new BigDecimal(0));
+							asArdep0f.setDauco(new BigDecimal(0));
 							asArdep0f.setDamma(new BigDecimal(0));
 							if(!(asArdep0fDao.salva(asArdep0f))){
 								chiudi();
@@ -4342,6 +4381,7 @@ public class Oasi{
 							asArdep0f.setDatin("0");
 							asArdep0f.setDscmi(new BigDecimal(0));
 							asArdep0f.setDscma(new BigDecimal(0));
+							asArdep0f.setDauco(new BigDecimal(0));
 							asArdep0f.setDamma(new BigDecimal(0));
 							if(!(asArdep0fDao.salva(asArdep0f))){
 								chiudi();
@@ -4669,6 +4709,7 @@ public class Oasi{
 						asArdep0f.setDatin("0");
 						asArdep0f.setDscmi(new BigDecimal(0));
 						asArdep0f.setDscma(new BigDecimal(0));
+						asArdep0f.setDauco(new BigDecimal(0));
 						asArdep0f.setDamma(new BigDecimal(0));
 						switch(caus){
 							case "V":
@@ -5086,6 +5127,7 @@ public class Oasi{
 						asArdep0f.setDatin("0");
 						asArdep0f.setDscmi(new BigDecimal(0));
 						asArdep0f.setDscma(new BigDecimal(0));
+						asArdep0f.setDauco(new BigDecimal(0));
 						asArdep0f.setDamma(new BigDecimal(0));
 						if(!(asArdep0fDao.salva(asArdep0f))){
 							chiudi();
@@ -5783,16 +5825,21 @@ public class Oasi{
 					}
 				}
 				
-				if(StringUtils.equals(codIva, "90") || StringUtils.equals(codIva, "91")){
+				if(StringUtils.equals(codIva, "90") || StringUtils.equals(codIva, "91")){ // reverse charge - 90 cellulari - 91 informatica
 					// se il cliente non ha partita iva e in clcnor ne 90 e nemmeno 91, allora faccio iva ordinaria
 					AsClien00f asClien00f = asClien00fDao.getDaClccli(fcocl);
 					if((asClien00f != null) && (Integer.compare(asClien00f.getClcpiv().intValue(), 0) > 0)){
 						if(!(StringUtils.equals(StringUtils.trim(asClien00f.getClcnor()), "90") || StringUtils.equals(StringUtils.trim(asClien00f.getClcnor()), "91"))){
-							codIva = "22";
+							// codIva = "22"; se oasi l'ha aftto in reverse, non lo trasformo in 22%
+							log.warn("In oasi il cliente e' con reverse, controllare perche' in sirio non lo e'!");
 						}
 					}else{
 						codIva = "22";
 					}
+					// siamo nelle fatture, e' impossibile che siano queste altre causali
+//					if(StringUtils.equals(caus, "G") || StringUtils.equals(caus, "I")){
+//						codIva = "22";
+//					}
 				}
 				
 				if(StringUtils.equals(codIva, "62")){
@@ -6055,7 +6102,7 @@ public class Oasi{
 			
 			String fPagamento = StringUtils.trim(msvOA_PrimaNota_Tes.getfPagamento());
 			Boolean finanziaria = false;
-			if(StringUtils.equals(fPagamento, "FAGI") || StringUtils.equals(fPagamento, "FCOI") || StringUtils.equals(fPagamento, "FINI") || StringUtils.equals(fPagamento, "FPAI")){
+			if(StringUtils.equals(fPagamento, "FAGI") || StringUtils.equals(fPagamento, "FCOI") || StringUtils.equals(fPagamento, "FINI") || StringUtils.equals(fPagamento, "FPAI") || StringUtils.equals(fPagamento, "FFLO")){
 				finanziaria = true;
 			}else{
 				if((StringUtils.equals(fPagamento, "055") || StringUtils.equals(fPagamento, "056")) && (!(StringUtils.isBlank(msvOA_MovimentiTestate.getNotaFN())) || !(StringUtils.isBlank(msvOA_MovimentiTestate.getNotaFZ())))){
@@ -6148,7 +6195,7 @@ public class Oasi{
 			}
 			
 			Boolean finanziaria = false;
-			if(StringUtils.equals(fPagamento, "FAGI") || StringUtils.equals(fPagamento, "FCOI") || StringUtils.equals(fPagamento, "FINI") || StringUtils.equals(fPagamento, "FPAI")){
+			if(StringUtils.equals(fPagamento, "FAGI") || StringUtils.equals(fPagamento, "FCOI") || StringUtils.equals(fPagamento, "FINI") || StringUtils.equals(fPagamento, "FPAI") || StringUtils.equals(fPagamento, "FFLO")){
 				finanziaria = true;
 			}
 			
@@ -6197,6 +6244,8 @@ public class Oasi{
 				msvOA_PrimaNota_RigheLs = msvOA_PrimaNota_RigheDao.getDaNRegElaborate(msvOA_PrimaNota_Tes.getnReg());
 			}
 			
+			Boolean gestisciTradein00174 = false;
+			
 			Iterator<MsvOA_PrimaNota_Righe> iter_msvOA_PrimaNota_RigheLs = msvOA_PrimaNota_RigheLs.iterator();
 			iter_msvOA_PrimaNota_RigheLs = msvOA_PrimaNota_RigheLs.iterator();
 			while(iter_msvOA_PrimaNota_RigheLs.hasNext()){
@@ -6237,7 +6286,12 @@ public class Oasi{
 				
 				if(StringUtils.equals(msvOA_PrimaNota_Righe.getTipoConto(), "G") && StringUtils.equals(StringUtils.trim(msvOA_PrimaNota_Righe.getCliFor()), "02290")){
 					importoAcconto = importoAcconto.add(msvOA_PrimaNota_Righe.getDare());
-					// importoAcconto = importoAcconto.add(msvOA_PrimaNota_Righe.getAvere()) ;
+					// importoAcconto = importoAcconto.add(msvOA_PrimaNota_Righe.getAvere());
+				}
+				
+				// trade in super valutazione
+				if(StringUtils.equals(msvOA_PrimaNota_Righe.getTipoConto(), "G") && StringUtils.equals(StringUtils.trim(msvOA_PrimaNota_Righe.getCliFor()), "00174")){
+					gestisciTradein00174 = true;
 				}
 				
 				// al posto di eliminare metto tipoOperazione = '*XY' (elaborata)
@@ -6268,6 +6322,9 @@ public class Oasi{
 					break;
 				case "SC14":
 					tcoel = "SCD";
+					break;
+				case "SC15":
+					tcoel = "SCE";
 					break;
 				default:
 					break;
@@ -6469,6 +6526,11 @@ public class Oasi{
 				elaboraPagamenti(msvOA_PrimaNota_Tes);
 			}
 			
+			// trade in
+			if(gestisciTradein00174){
+				elaboraPagamenti(msvOA_PrimaNota_Tes);
+			}
+			
 			// elimina dalla tabella scritta da oasi
 			// msvOA_PrimaNota_TesDao.elimina(msvOA_PrimaNota_Tes);
 			// al posto di eliminare metto tipoOperazione = '*XY' (elaborata)
@@ -6514,6 +6576,7 @@ public class Oasi{
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INL9")); // Incasso P.V. 9 - Palermo GDM
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INL6")); // Incasso P.V. 011 - Milazzo
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INL5")); // Incasso P.V. 5 - Sciacca (ex Enna)
+			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("INL7")); // Incasso P.V. 7 - Palermo Dante
 			// msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACL1"));
 			// msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACCF"));
 			// msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("ACL2"));
@@ -6524,14 +6587,19 @@ public class Oasi{
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC2")); // Fattura per Acconto PV 2 - Lascari
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC3")); // Fattura per Acconto PV 3 - Bagheria
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC4")); // Fattura per Acconto PV 4 - Brolo
-			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC4")); // Fattura per Acconto PV 4 - Brolo
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC9")); // Fattura per Acconto PV 9 - Palermo GDM
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC6")); // Fattura per Acconto PV 011 - Milazzo
 			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC5")); // Fattura per Acconto PV 5 - Sciacca (ex Enna)
+			msvOA_PrimaNota_TesLs.addAll(msvOA_PrimaNota_TesDao.getDaCausale("FAC7")); // Fattura per Acconto PV 7 - Palermo Dante
 		}else{
 			msvOA_PrimaNota_TesLs.add(o);
 		}
 		
+		// solo alcuni movimenti
+		// msvOA_PrimaNota_TesLs.clear();
+		// msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00324084")); // lo puo lanciare elaboraCrediti, per gestire 00174
+		// msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00324085")); // questo gestisce 00164
+				
 		String strTimestampAs400 = asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
 		strTimestampAs400 = StringUtils.remove(StringUtils.remove(StringUtils.remove(StringUtils.substringBefore(strTimestampAs400, "."), " "), "-"), ":");
@@ -6593,7 +6661,7 @@ public class Oasi{
 				msvOA_PrimaNota_RigheDuplicata.setId(msvOA_PrimaNota_RighePKeyDuplicata);
 				msvOA_PrimaNota_RigheDuplicata.setTipoConto(msvOA_PrimaNota_Righe.getTipoConto());
 				msvOA_PrimaNota_RigheDuplicata.setCliFor(msvOA_PrimaNota_Righe.getCliFor());
-				msvOA_PrimaNota_RigheDuplicata.setDare(msvOA_PrimaNota_Righe.getAvere());	// dare e avere invertiti
+				msvOA_PrimaNota_RigheDuplicata.setDare(msvOA_PrimaNota_Righe.getAvere()); // dare e avere invertiti
 				msvOA_PrimaNota_RigheDuplicata.setAvere(msvOA_PrimaNota_Righe.getDare());
 				msvOA_PrimaNota_RigheDuplicata.setNota1(msvOA_PrimaNota_Righe.getNota1());
 				msvOA_PrimaNota_RigheDuplicata.setNota2(StringUtils.join(msvOA_PrimaNota_Righe.getNota2(), " ", "rigo aggiunto da java"));
@@ -6710,8 +6778,8 @@ public class Oasi{
 						// enna
 						// case "00922": // cassa
 						// case "00939": // pos cassa 1
-						//	scdep = 9;
-						//	break;
+						// scdep = 9;
+						// break;
 						// palermo gdm
 						case "00929": // cassa
 						case "00944": // pos cassa 1
@@ -6731,6 +6799,11 @@ public class Oasi{
 						case "00951": // pos cassa 2
 							scdep = 14;
 							break;
+						// palermo dante
+						case "00952": // cassa
+						case "00953": // pos cassa 1
+							scdep = 15;
+							break;
 						default:
 							// non modifico scdep;
 							break;
@@ -6741,6 +6814,16 @@ public class Oasi{
 					
 					causaleContSccag = StringUtils.substring(tcomm, 68, 70); // , 76, 78);
 					
+					String contoMcoStr = StringUtils.join("cco", contoStr);	// cco=conto contabile oasi
+					if(StringUtils.equals(contoStr, "00174")){	// trade in super valutazione che e' ivato
+						contoMcoStr = "cco00164";	//  trade in esente iva
+					}
+					asTabel0f = asTabel0fDao.getDaTnotaTcom2("MCO", contoMcoStr);
+					String tcommMco = "";
+					if(asTabel0f != null){
+						tcommMco = StringUtils.trim(asTabel0f.getTcomm());
+					}
+					
 					// nuovo deposito - definire il nuovo valore
 					// Tabella Registratori Cassa 0524
 					switch(contoStr){
@@ -6749,9 +6832,10 @@ public class Oasi{
 						case "00910": // lascari
 						case "00915": // bagheria
 						case "00920": // brolo
-						case "00922": // sciacca (ex enna)
 						case "00929": // palermo gdm
 						case "00947": // milazzo
+						case "00922": // sciacca (ex enna)
+						case "00952": // palermo dante
 							cacre = StringUtils.substring(tcomm, 60, 62);
 							cacon = StringUtils.substring(tcomm, 0, 10);
 							break;
@@ -6763,6 +6847,7 @@ public class Oasi{
 						case "00944": // palermo gdm
 						case "00948": // milazzo
 						case "00939": // sciacca (ex enna)
+						case "00953": // palermo dante
 							cacre = StringUtils.substring(tcomm, 62, 64);
 							cacon = StringUtils.substring(tcomm, 30, 40);
 							switch(contoStr){
@@ -6786,6 +6871,9 @@ public class Oasi{
 									break;
 								case "00939": // sciacca
 									cadmo = "CASSA 0501";
+									break;
+								case "00953": // palermo dante
+									cadmo = "CASSA 1501";
 									break;
 								default:
 									cadmo = "CASSA INDEFINITA";
@@ -6847,38 +6935,42 @@ public class Oasi{
 							}
 							break;
 						// pos cassa 4 - dismesso e portato a milazzo
-//						case "00947": // palermo gdm
-//							cacre = StringUtils.substring(tcomm, 66, 68);
-//							cacon = StringUtils.substring(tcomm, 50, 60);
-//							switch(contoStr){
-//								case "00947": // palermo gdm
-//									cadmo = "CASSA 0904";
-//									break;
-//								default:
-//									cadmo = "CASSA INDEFINITA";
-//									break;
-//							}
-//							break;
+						// case "00947": // palermo gdm
+						// cacre = StringUtils.substring(tcomm, 66, 68);
+						// cacon = StringUtils.substring(tcomm, 50, 60);
+						// switch(contoStr){
+						// case "00947": // palermo gdm
+						// cadmo = "CASSA 0904";
+						// break;
+						// default:
+						// cadmo = "CASSA INDEFINITA";
+						// break;
+						// }
+						// break;
 						// abbuono passivo
 						case "01300":
 							cacre = "NP";
 							cacon = "6705000001";
 							break;
+						// buono reso merce 0407449 - mclin=1
+						case "00350":
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// ER
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 3210000220
+							break;
 						// gift card
 						case "08010":
-						case "00350":
 							cacre = "IH";
 							cacon = "1620060100";
 							break;
-						// gift card
+						// gift card e buono interno 0407448 - mclin=Y
 						case "00381":
-							cacre = "IH";
-							cacon = "3210000200";
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// IH
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 3210000200
 							break;
-						// bonus tv
+						// bonus tv - mclin=2
 						case "00160":
-							cacre = "F1";
-							cacon = "1620005000";
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// F1
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1620005000
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							break;
 						// bonus rottamazione tv
@@ -6894,24 +6986,47 @@ public class Oasi{
 							cadap = cadad;
 							canup = "000001";
 							break;
-						// edenred
+						// edenred - mclin=5
 						case "00163":
-							cacre = "L3";
-							cacon = "1605040010";
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// L3
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1605040010
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							canud = canup;
 							break;
 						// satispay
-						case "SATI":	// non è un conto reale passato da oasi, ma forzato manualmente più sopra
+						case "SATI": // non e' un conto reale passato da oasi, ma forzato manualmente piu' sopra
 							cacre = "L4";
 							cacon = "1605040020";
 							break;
-						// mig for you
-						case "00164":
-							cacre = "L5";
-							cacon = "1605040011";
+						// mig for you, amilon, epipoli, jakala, tre cuori - mclin=7
+						case "00168":
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// L5
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1605040011
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							canud = canup;
+							break;
+						// trade in estendo/dg esente iva - mclin=8
+						case "00164":
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// I1
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1605040009
+							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
+							canud = canup;
+							cadmo = StringUtils.left(StringUtils.join("ESENTE", " | ", cadmo), 25);
+							break;
+						// trade in estendo/dg ivato - mclin=8
+						case "00174":
+							carig = 1;
+							caimp = msvOA_PrimaNota_Righe.getDare();
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// I1
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1605040009
+							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
+							canud = canup;
+							cadmo = StringUtils.left(StringUtils.join("OLTRE IVA", " | ", cadmo), 25);
+							gestisciTradein00174(scdep, cadar, canum, carig, cadad, cadap, canup, canrp, canud, cacre, caimp, cacon, cacoa, cadmo);
+							cacon = "00174DELET";
+							canum = 9999;
+							canup = "00174D";
+							daEliminare = true;
 							break;
 						case "09999":
 							log.info("da eliminare perche' il conto e': " + contoStr);
@@ -6974,7 +7089,7 @@ public class Oasi{
 					asCcmca0fTmp.setCacre(cacre);
 					if(StringUtils.equals(cacre, "L3")){
 						asCcmca0fTmp.setCanup(canup);
-						asCcmca0fTmp.setCanud(canud);				
+						asCcmca0fTmp.setCanud(canud);
 					}
 					if(!(asCcmca0fDao.aggiorna(asCcmca0fTmp))){
 						chiudi();
@@ -7082,98 +7197,38 @@ public class Oasi{
 				fncoc = asClien00f.getClccli().intValue();
 			}
 			
-			fnnoc = StringUtils.trim(asClien00f.getCldrso());
-			String notaFN = StringUtils.upperCase(StringUtils.trim(msvOA_MovimentiTestate.getNotaFN()));
-			if(!(StringUtils.isBlank(notaFN))){
-				fnnoc = StringUtils.join(notaFN, "|", fnnoc);
-				fnnoc = StringUtils.left(fnnoc, 30);	// in tabella è 35, ma il programma usato ne visaulizza 30, quindi considero 30 
-			}
+			fncfi = transFinanziarie(msvOA_PrimaNota_Tes.getfPagamento(), "oasi2as");
+			
 			fnloc = asClien00f.getCldloc();
 			
-			fncfi = transFinanziarie(msvOA_PrimaNota_Tes.getfPagamento(), "oasi2as");
+			fnnoc = StringUtils.trim(asClien00f.getCldrso());
 			
 			fnnup = "";
 			fntab = "";
 			fnta2 = "";
+			
 			if(msvOA_MovimentiTestate != null){
-				String notaFZ = StringUtils.upperCase(StringUtils.normalizeSpace(msvOA_MovimentiTestate.getNotaFZ()));
-				if(StringUtils.isNotBlank(notaFZ)){
-					String notaFZarr[] = StringUtils.split(notaFZ, " ");
-					
-					String notaFZ1 = "";
-					String notaFZ2 = "";
-					String notaFZ3 = "";
-					// importo
-					if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZarr[0]))){
-						notaFZ1 = notaFZarr[0];
-					}
-					// codice pratica
-					if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZarr[1]))){
-						notaFZ2 = notaFZarr[1];
-					}
-					// codice tabella
-					if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZarr[2]))){
-						notaFZ3 = notaFZarr[2];
-					}
-					
-					// importo
-					if((notaFZarr.length > 0) && (StringUtils.isNotBlank(notaFZ1))){
-						BigDecimal fnifiOriginale = fnifi;
-						String notaFZimp = StringUtils.replace(notaFZ1, ".", "");
-						notaFZimp = StringUtils.replace(notaFZimp, ",", ".");
-						notaFZimp = StringUtils.replacePattern(notaFZimp, "[^\\d.-]", "");
-						try{
-							fnifi = new BigDecimal(notaFZimp);
-						}catch(NumberFormatException e){
-							log.warn("Importo: " + notaFZimp + " - non convertibile");
-							fnifi = new BigDecimal(0);
-						}
-						
-						if((fnifi.compareTo(new BigDecimal(0)) <= 0) || (fnifi.compareTo(new BigDecimal(9999999.99)) >= 0)){
-							log.warn("Nota FZ: " + notaFZ + ", sembra non formattata correttamente. Ripristino il valore finanziaria a " + fnifiOriginale);
-							fnifi = fnifiOriginale;
-							if(notaFZarr.length < 3){
-								// probabilmente manca l'importo, quindi nel primo campo presumibilmente c'e' il codice pratica
-								notaFZ3 = notaFZ2;
-								notaFZ2 = notaFZ1;
-							}
-						}
-					}
-					
-					// codice pratica
-					if((notaFZarr.length > 1) && (StringUtils.isNotBlank(notaFZ2))){
-						fnnup = StringUtils.right(notaFZ2, 15);
-						// se è compass
-						if(StringUtils.equals(fncfi, "COM")){
-							if(StringUtils.length(fnnup) == 6){
-								fnnup = StringUtils.join("000000", fnnup);
-							}else if(StringUtils.length(fnnup) == 8){
-								fnnup = StringUtils.join("CO0000", fnnup);
-							}
-							// else lascio com'è
-						}
-						// se è agos
-						if(StringUtils.equals(fncfi, "AGO")){
-							if(StringUtils.length(fnnup) == 8){
-								fnnup = StringUtils.join("0", fnnup);
-							}
-							// else lascio com'è
-						}
-					}
-					
-					// codice tabella
-					if((notaFZarr.length > 2) && (StringUtils.isNotBlank(notaFZ3))){
-						fntab = StringUtils.left(notaFZ3, 4);
-						fnta2 = fntab;
-					}
-				}
+				String notaFN = msvOA_MovimentiTestate.getNotaFN();
+				String notaFZ = msvOA_MovimentiTestate.getNotaFZ();
+				BigDecimal paramFinDecimal[] = new BigDecimal[1];
+				paramFinDecimal[0] = fnifi;
+				String paramFinString[] = new String[5];
+				paramFinString[0] = fnnoc;
+				paramFinString[1] = fnnup;
+				paramFinString[2] = fntab;
+				paramFinString[3] = fncfi;
+				paramFinString[4] = fnnum.toString();
+				decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+				fnifi = paramFinDecimal[0];
+				fnnoc = paramFinString[0];
+				fnnup = paramFinString[1];
+				fntab = paramFinString[2];
 			}
+			
+			fnta2 = fntab;
+			
 			fndep = deposito;
 			fnute = utente;
-			
-			if(StringUtils.isBlank(fnnup)){
-				fnnup = StringUtils.join("ND", fnnum, "ND");
-			}
 			
 			importoFinanziaria = fnifi;
 			paramRitorno[0] = importoFinanziaria;
@@ -7262,6 +7317,8 @@ public class Oasi{
 	private void elaboraChiusuraCassa(){
 		log.info("[" + "elaboraChiusuraCassa");
 		
+		corrispettiviDaElaborareLs = new ArrayList<String>();
+		
 		AsCcmca0fDao asCcmca0fDao = new AsCcmca0fDaoMng();
 		
 		MsvOA_PrimaNota_Tes msvOA_PrimaNota_Tes = new MsvOA_PrimaNota_Tes();
@@ -7275,7 +7332,12 @@ public class Oasi{
 		// CRL9 - Corrispettivi Contanti P.V.9 - Palermo GDM
 		// CRL6 - Corrispettivi Contanti P.V. 011 - Milazzo
 		// CRL5 - Corrispettivi Contanti P.V.5 - Sciacca (ex Enna)
-		msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesDao.getDaCausali("'CRL1', 'CRCF', 'CRL2', 'CRL4', 'CRL9', 'CRL6', 'CRL5'");
+		// CRL7 - Corrispettivi Contanti P.V.7 - Palermo Dante
+		msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesDao.getDaCausali("'CRL1', 'CRCF', 'CRL2', 'CRL4', 'CRL9', 'CRL6', 'CRL5', 'CRL7'");
+		
+		// solo alcuni movimenti
+		// msvOA_PrimaNota_TesLs.clear();
+		// msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00324206"));
 		
 		String strTimestampAs400 = asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -7304,6 +7366,11 @@ public class Oasi{
 			}
 			
 			String cadarTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_PrimaNota_Tes.getDataReg());
+			
+			String corrispettivoDaElaborare = StringUtils.join(cadarTxt, "|", msvOA_PrimaNota_Tes.getRegIva(), "|", msvOA_PrimaNota_Tes.getSezionale());
+			if(!(corrispettiviDaElaborareLs.contains(corrispettivoDaElaborare))){
+				corrispettiviDaElaborareLs.add(corrispettivoDaElaborare);				
+			}
 			
 			Integer cadar = 0;
 			Integer carig = 0;
@@ -7353,6 +7420,10 @@ public class Oasi{
 			switch(sezionaleOasi){
 				case "006": // milazzo
 					sezionaleOasi = "011";
+					break;
+				case "007": // palermo dante
+					sezionaleOasi = "012";
+					break;
 				default:
 					// gli altri sezionali, coincidono con il numero di deposito
 					break;
@@ -7370,17 +7441,33 @@ public class Oasi{
 			iter_msvOA_PrimaNota_RigheLs = msvOA_PrimaNota_RigheLs.iterator();
 			while(iter_msvOA_PrimaNota_RigheLs.hasNext()){
 				msvOA_PrimaNota_Righe = iter_msvOA_PrimaNota_RigheLs.next();
-				
+
+				log.info("Elaboro: " + msvOA_PrimaNota_Righe);
+
 				cacon = null;
 				cacoa = "";
 				
+				cadmo = StringUtils.left(msvOA_PrimaNota_Tes.getDocumento(), 25);
+				
 				if(msvOA_PrimaNota_Righe.getDare().compareTo(new BigDecimal(0)) > 0){
+					String contoStr = StringUtils.trim(msvOA_PrimaNota_Righe.getCliFor());
+					
 					AsTabel0f asTabel0f = asTabel0fDao.getDaTnotaTcoel("DEC", StringUtils.join(" ", StringUtils.leftPad(scdep.toString(), 2, "0")));
 					String tcomm = StringUtils.trim(asTabel0f.getTcomm());
 					
+					String contoMcoStr = StringUtils.join("cco", contoStr);	// cco=conto contabile oasi
+					if(StringUtils.equals(contoStr, "00174")){	// trade in super valutazione che e' al 22%
+						contoMcoStr = "cco00164";	//  trade in esente iva
+					}
+					asTabel0f = asTabel0fDao.getDaTnotaTcom2("MCO", contoMcoStr);
+					String tcommMco = "";
+					if(asTabel0f != null){
+						tcommMco = StringUtils.trim(asTabel0f.getTcomm());
+					}
+
 					// nuovo deposito - definire il nuovo valore
 					// Tabella Registratori Cassa 0524
-					switch(StringUtils.trim(msvOA_PrimaNota_Righe.getCliFor())){
+					switch(contoStr){
 						// cassa corrispettivi
 						case "00900": // termini
 						case "00910": // lascari
@@ -7389,6 +7476,7 @@ public class Oasi{
 						case "00929": // palermo gdm
 						case "00947": // milazzo
 						case "00922": // sciacca (ex enna)
+						case "00952": // palermo dante
 							cacre = "IZ";
 							cacon = StringUtils.substring(tcomm, 0, 10);
 							break;
@@ -7400,6 +7488,7 @@ public class Oasi{
 						case "00944": // palermo gdm
 						case "00948": // milazzo
 						case "00939": // sciacca (ex enna)
+						case "00953": // palermo dante
 							cacre = StringUtils.substring(tcomm, 62, 64);
 							cacon = StringUtils.substring(tcomm, 30, 40);
 							break;
@@ -7421,24 +7510,24 @@ public class Oasi{
 							cacon = StringUtils.substring(tcomm, 50, 60);
 							break;
 						// pos cassa 4
-//						case "00947": // palermo gdm
-//							cacre = StringUtils.substring(tcomm, 66, 68);
-//							cacon = StringUtils.substring(tcomm, 50, 60);
-//							break;
-						// resi rimborsi
+						// case "00947": // palermo gdm
+						// cacre = StringUtils.substring(tcomm, 66, 68);
+						// cacon = StringUtils.substring(tcomm, 50, 60);
+						// break;
+						// buono reso merce 0407449 - mclin=1
 						case "00350":
-							cacre = "ER";
-							cacon = "3210000220";
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// ER
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 3210000220
 							break;
-						// gift card
+						// gift card e buono interno 0407448 - mclin=Y
 						case "00381":
-							cacre = "IH";
-							cacon = "3210000200";
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// IH
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 3210000200
 							break;
-						// bonus tv
+						// bonus tv - mclin=2
 						case "00160":
-							cacre = "F1";
-							cacon = "1620005000";
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// F1
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1620005000
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							break;
 						// bonus rottamazione tv
@@ -7453,19 +7542,39 @@ public class Oasi{
 						// cacon = "6705000050";
 						// cacoa = StringUtils.substring(tcomm, 20, 27);
 						// break;
-						// edenred
+						// edenred - mclin=5
 						case "00163":
-							cacre = "L3";
-							cacon = "1605040010";
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// L3
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1605040010
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							canud = canup;
 							break;
-						// mig for you
-						case "00164":
-							cacre = "L5";
-							cacon = "1605040011";
+						// mig for you, amilon, epipoli, jakala, tre cuori - mclin=7
+						case "00168":
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// L5
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1605040011
 							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
 							canud = canup;
+							break;
+						// trade in estendo/dg esente iva - mclin=8
+						case "00164":
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// I1
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1605040009
+							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
+							canud = canup;
+							cadmo = StringUtils.left(StringUtils.join("ESENTE", " | ", cadmo), 25);
+							break;
+						// trade in estendo/dg ivato - mclin=8
+						case "00174":
+							carig = 1;
+							caimp = msvOA_PrimaNota_Righe.getDare();
+							cacre = StringUtils.substring(tcommMco, 22, 24);	// I1
+							cacon = StringUtils.substring(tcommMco, 0, 10);		// 1605040009
+							canup = StringUtils.substring(Integer.toString(cadad), 4, 6);
+							canud = canup;
+							cadmo = StringUtils.left(StringUtils.join("OLTRE IVA", " | ", cadmo), 25);
+							gestisciTradein00174(scdep, cadar, canum + 1, carig, cadad, cadap, canup, canrp, canud, cacre, caimp, cacon, cacoa, cadmo);
+							cacon = "";	// continue
 							break;
 						default:
 							break;
@@ -7718,6 +7827,143 @@ public class Oasi{
 		asCcmca0fDao.close();
 		
 		log.info("]" + "elaboraChiusuraCassa");
+		
+		elaboraCorrispettiviContabilizzazione();
+	}
+
+	private void elaboraCorrispettiviContabilizzazione(){
+		log.info("[" + "elaboraCorrispettiviContabilizzazione");
+		
+		Integer codat = 0;
+		Integer codep = 0;
+		String coiva = "";
+		BigDecimal coimp = new BigDecimal(0);
+		BigDecimal coimi = new BigDecimal(0);
+		String cofla = "";
+		
+		// solo alcuni movimenti
+//		corrispettiviDaElaborareLs = new ArrayList<String>();
+//		corrispettiviDaElaborareLs.clear();
+//		corrispettiviDaElaborareLs.add("20240528|03|01"); // termini
+//		corrispettiviDaElaborareLs.add("20240528|03|02"); // lascari
+//		corrispettiviDaElaborareLs.add("20240528|03|03"); // bagheria
+//		corrispettiviDaElaborareLs.add("20240528|03|04"); // brolo
+//		corrispettiviDaElaborareLs.add("20240528|03|06"); // milazzo
+//		corrispettiviDaElaborareLs.add("20240528|03|09"); // palermo gdm
+//		corrispettiviDaElaborareLs.add("20240528|03|05"); // sciacca (ex enna)
+//		corrispettiviDaElaborareLs.add("20240528|03|07"); // palermo dante
+		
+		Iterator<String> iter_corrispettiviDaElaborareLs = corrispettiviDaElaborareLs.iterator();
+		while(iter_corrispettiviDaElaborareLs.hasNext()){
+			String corrispettivoDaElaborare = iter_corrispettiviDaElaborareLs.next();
+			
+			log.info("Elaboro: " + corrispettivoDaElaborare);
+			
+			String corrispettivoDaElaborareArr[] = StringUtils.split(corrispettivoDaElaborare, "|");
+			
+			MsvOA_PrimaNota_Tes msvOA_PrimaNota_Tes = new MsvOA_PrimaNota_Tes();
+			
+			codat = Integer.parseInt(corrispettivoDaElaborareArr[0]);
+			
+			DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+			Date codatDate = null;
+			Timestamp codatTimestamp = null;
+			try{
+				codatDate = formatter.parse(codat.toString());
+			}catch(ParseException e){
+				log.error("eccezione in conversione data");
+				chiudi();
+			}
+			codatTimestamp = new Timestamp(codatDate.getTime());
+			
+			msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesDao.getDaDataRegRegIvaSezionale(codatTimestamp, corrispettivoDaElaborareArr[1], corrispettivoDaElaborareArr[2]);
+			
+			Iterator<MsvOA_PrimaNota_Tes> iter_msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesLs.iterator();
+			iter_msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesLs.iterator();
+			while(iter_msvOA_PrimaNota_TesLs.hasNext()){
+				msvOA_PrimaNota_Tes = iter_msvOA_PrimaNota_TesLs.next();
+				
+				log.info("Elaboro: " + msvOA_PrimaNota_Tes);
+
+				// nuovo deposito - definire il nuovo valore
+				String sezionaleOasi = StringUtils.leftPad(msvOA_PrimaNota_Tes.getSezionale(), 3, "0");
+				switch(sezionaleOasi){
+					case "006": // milazzo
+						sezionaleOasi = "011";
+						break;
+					case "007": // palermo dante
+						sezionaleOasi = "012";
+						break;
+					default:
+						// gli altri sezionali, coincidono con il numero di deposito
+						break;
+				}
+				codep = Integer.parseInt(transDeposito(sezionaleOasi, "oasi2as"));
+		
+				MsvOA_PrimaNota_Iva msvOA_PrimaNota_Iva = new MsvOA_PrimaNota_Iva();
+				
+				msvOA_PrimaNota_IvaLs = msvOA_PrimaNota_IvaDao.getDaNRegNoTipoOperazione(msvOA_PrimaNota_Tes.getnReg());
+				
+				Iterator<MsvOA_PrimaNota_Iva> iter_msvOA_PrimaNota_IvaLs = msvOA_PrimaNota_IvaLs.iterator();
+				while(iter_msvOA_PrimaNota_IvaLs.hasNext()){
+					msvOA_PrimaNota_Iva = iter_msvOA_PrimaNota_IvaLs.next();
+					
+					log.info("Elaboro: " + msvOA_PrimaNota_Iva);
+					
+					coimp = msvOA_PrimaNota_Iva.getImponibile().multiply(new BigDecimal(msvOA_PrimaNota_Tes.getSegnoDoc()));
+					coimi = msvOA_PrimaNota_Iva.getImposta().multiply(new BigDecimal(msvOA_PrimaNota_Tes.getSegnoDoc()));
+					
+					String codIva = "";
+					codIva = StringUtils.trim(msvOA_PrimaNota_Iva.getCodIva());
+					if(StringUtils.endsWith(codIva, ".") && !(StringUtils.equals(codIva, "BU."))){
+						codIva = StringUtils.removeEnd(codIva, ".");
+					}else{
+						codIva = transCodiciIva(codIva, "oasi2as");
+						if(StringUtils.isBlank(codIva)){
+							log.error("Codice: " + msvOA_PrimaNota_Iva.getCodIva() + " non gestito");
+							codIva = "22";
+						}
+					}
+					if(StringUtils.equals(codIva, "Y5")){
+						codIva = "22";
+					}
+					coiva = codIva;
+					
+					AsCorri0fPKey idC = new AsCorri0fPKey();
+					idC.setCodat(codat);
+					idC.setCodep(codep);
+					idC.setCoiva(coiva);
+					AsCorri0f asCorri0f = new AsCorri0f();
+					asCorri0f.setId(idC);
+					asCorri0f.setCoimp(coimp);
+					asCorri0f.setCoimi(coimi);
+					asCorri0f.setCofla(cofla);
+					
+					AsCorri0f asCorri0fTmp = asCorri0fDao.getDaId(codat, codep, coiva);
+					if(asCorri0fTmp == null){ // nuova quindi insert
+						if(!(asCorri0fDao.salva(asCorri0f))){
+							chiudi();
+						}
+					}else{ // gia' presente, quindi update
+						BigDecimal coimpVecchio = asCorri0fTmp.getCoimp();
+						BigDecimal coimiVecchio = asCorri0fTmp.getCoimi();
+						
+						asCorri0f.setCoimp(coimpVecchio.add(coimp));
+						asCorri0f.setCoimi(coimiVecchio.add(coimi));
+						
+						if(!(asCorri0fDao.aggiorna(asCorri0f))){
+							chiudi();
+						}
+						asCorri0fDao.detach(asCorri0fTmp);
+					}
+					asCorri0fDao.detach(asCorri0f);
+				}
+			}			
+		}
+		
+		asCorri0fDao.close();
+		
+		log.info("]" + "elaboraCorrispettiviContabilizzazione");
 	}
 	
 	private void elaboraAssistenzeInterne(){
@@ -7734,8 +7980,8 @@ public class Oasi{
 		
 		// solo alcuni movimenti
 		// msvOA_MovimentiTestateLs.clear();
-		// msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C03860509"));
-		// msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C03860518"));
+		// msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C05318168"));
+		// msvOA_MovimentiTestateLs.addAll(msvOA_MovimentiTestateDao.getDaIdUnivocoTes("C05318173"));
 		
 		String strTimestampAs400 = asNativeQueryDao.getDaSysdummy1_TimestampAs400().toString();
 		// e' in formato "yyyy-MM-dd HH:mm:ss.SSSSSS"
@@ -7756,7 +8002,7 @@ public class Oasi{
 			BigDecimal vcost = new BigDecimal(0);
 			String vtimo = "";
 			
-			String tipoAssistenzaInternaConSenzaGaranzia = "NonAncoraDeterminato";
+			String tipoAssistenzaInternaConOSenzaGaranzia = "NonAncoraDeterminato";
 			BigDecimal valDiff = new BigDecimal(0);
 			
 			Object[] asMov = null;
@@ -7779,6 +8025,11 @@ public class Oasi{
 					vcoda = StringUtils.join("OA", StringUtils.trim(msvOA_MovimentiRighe.getCodArticoloOasi()));
 				}
 				
+				// non c'e' bisogno, gia' nella getDaIdUnivocoTesElaborateGaranzia viene esclusa la riga RIPARAZIONE
+				// if(StringUtils.equals(vcoda, "OAG0008") && StringUtils.equals(StringUtils.trim(msvOA_MovimentiRighe.getCodArticoloOasi()), "RIPARAZIONE")){
+				// continue;
+				// }
+				
 				vprez = msvOA_MovimentiRighe.getPrezzoNetto();
 				try{
 					vprez = vprez.divide(new BigDecimal(1.22), 4, RoundingMode.HALF_UP);
@@ -7790,18 +8041,18 @@ public class Oasi{
 				vcost = msvOA_MovimentiRighe.getCosto();
 				
 				vdesc = null;
-				if(StringUtils.equals(vcoda, "OAG0004")){
+				if(StringUtils.equals(vcoda, "OAG0004") || StringUtils.equals(vcoda, "OAG0008")){
 					log.info("articolo riparazione");
 					if(vprez.compareTo(new BigDecimal(0)) == 0){ // se prezzo e' 0 -> Garanzia Interna
 						log.info("riparazione in garanzia");
-						tipoAssistenzaInternaConSenzaGaranzia = "Garanzia";
+						tipoAssistenzaInternaConOSenzaGaranzia = "Garanzia";
 						vcoda = "OAG0004INT";
 						vdesc = "RIPARAZIONE INTERNA CASCINO";
 						vcost = vprez; // pure a 0
 					}else if(vprez.compareTo(new BigDecimal(0)) > 0){ // se prezzo e' definito -> Senza Garanzia, quindi il cliente paga
 						log.info("riparazione a pagamento fuori garanzia");
-						tipoAssistenzaInternaConSenzaGaranzia = "SenzaGaranzia";
-						// rimane vcoda = "OAG0004";
+						tipoAssistenzaInternaConOSenzaGaranzia = "SenzaGaranzia";
+						vcoda = "OAG0004";
 						vdesc = "RIPARAZIONE";
 						// ancora qui non posso sapere a quanto deve essere sia il prezzo che il costo, perche' dipende dall'articolo ricambio
 					}else{
@@ -7809,16 +8060,16 @@ public class Oasi{
 					}
 				}else{
 					log.info("articolo ricambio");
-					if(StringUtils.equals(tipoAssistenzaInternaConSenzaGaranzia, "Garanzia")){
+					if(StringUtils.equals(tipoAssistenzaInternaConOSenzaGaranzia, "Garanzia")){
 						vprez = vcost; // il prezzo da 0 viene portato al costo e trasformato in autoconsumo
 						vcaus = "S0R";
 						vtimo = "A";
-					}else if(StringUtils.equals(tipoAssistenzaInternaConSenzaGaranzia, "SenzaGaranzia")){
+					}else if(StringUtils.equals(tipoAssistenzaInternaConOSenzaGaranzia, "SenzaGaranzia")){
 						valDiff = valDiff.add(vprez.subtract(vcost));
 						vprez = vcost; // il prezzo dal suo valore viene portato al costo
 						log.info("valDiff: " + valDiff);
 					}else{
-						log.warn("non e' possibile: " + tipoAssistenzaInternaConSenzaGaranzia);
+						log.warn("non e' possibile: " + tipoAssistenzaInternaConOSenzaGaranzia);
 					}
 				}
 				
@@ -7838,11 +8089,18 @@ public class Oasi{
 				msvOA_MovimentiRigheDao.detach(msvOA_MovimentiRighe);
 			}
 			
+			Boolean primoOAG0008 = true;
+			
 			AsMovma0f asMovma0f = null;
 			List<AsMovma0f> asMovma0fLs = asMovma0fDao.getDaVidoa(vidoa);
 			Iterator<AsMovma0f> iter_asMovma0fLs = asMovma0fLs.iterator();
 			while(iter_asMovma0fLs.hasNext()){
 				asMovma0f = iter_asMovma0fLs.next();
+				
+				if(StringUtils.equals(StringUtils.trim(asMovma0f.getVcoda()), "OAG0008") && primoOAG0008){
+					primoOAG0008 = false;
+					continue;
+				}
 				
 				Object[] asMovArr = null;
 				Iterator<Object[]> iter_asMovLs = asMovLs.iterator();
@@ -7850,20 +8108,29 @@ public class Oasi{
 					asMovArr = iter_asMovLs.next();
 					
 					String vcodaMov = StringUtils.trim(asMovma0f.getVcoda());
+					if(StringUtils.equals(vcodaMov, "OAG0008")){
+						vcodaMov = "OAG0004";
+					}
 					String vcodaArr = String.valueOf(asMovArr[1]);
-					String vcodaArrOrig = vcodaArr == "OAG0004INT" ? "OAG0004" : vcodaArr;
+					String vcodaArrOrig = vcodaArr;
+					if(StringUtils.equals(vcodaArrOrig, "OAG0004INT")){
+						vcodaArrOrig = "OAG0004";
+					}
 					
 					if(StringUtils.equals(vcodaMov, vcodaArrOrig)){
 						if(StringUtils.equals(vcodaArr, "OAG0004INT")){
 							asMovma0f.setVcoda(vcodaArr);
 							asMovma0f.setVdesc(String.valueOf(asMovArr[2]));
 						}
+						
 						BigDecimal vprezArr = (BigDecimal)asMovArr[3];
 						BigDecimal vcostArr = (BigDecimal)asMovArr[4];
 						
 						if(StringUtils.equals(vcodaArr, "OAG0004")){
+							asMovma0f.setVcoda(vcodaArr);
 							vprezArr = vprezArr.add(valDiff);
 							vcostArr = vprezArr;
+							asMovma0f.setVdesc(String.valueOf(asMovArr[2]));
 						}
 						
 						asMovma0f.setVprez(vprezArr);
@@ -7874,6 +8141,10 @@ public class Oasi{
 						if(StringUtils.equals(vtimoArr, "A")){
 							asMovma0f.setVtimo(vtimoArr);
 						}
+						
+						// quando l'articolo e' G0008, c'e' in movma il vvfit = 'S' e vvkit = 'K', quindi li sbianco
+						asMovma0f.setVvfit("");
+						asMovma0f.setVvkit("");
 						
 						if(!(asMovma0fDao.aggiorna(asMovma0f))){
 							chiudi();
@@ -7896,6 +8167,252 @@ public class Oasi{
 		asMovma0fDao.close();
 		
 		log.info("]" + "elaboraAssistenzeInterne");
+	}
+	
+	
+	private void gestisciTradein00174(Integer scdep, Integer cadar, Integer canum, Integer carig, Integer cadad, Integer cadap, String canup, Integer canrp, String canud, String cacre, BigDecimal caimp, String caconDare, String cacoa, String cadmo){
+		AsCcmca0fDao asCcmca0fDao = new AsCcmca0fDaoMng();
+		
+		AsTabel0f asTabel0f = asTabel0fDao.getDaTnotaTcoel("MCO", StringUtils.join(" ", StringUtils.leftPad(scdep.toString(), 2, "0")));
+		String tcomm = StringUtils.trim(asTabel0f.getTcomm());
+
+		String caconAvere = StringUtils.substring(tcomm, 0, 10);		// conto merci
+
+		// Avere
+		AsCcmca0fPKey idCA = new AsCcmca0fPKey();
+		idCA.setCadar(cadar);
+		idCA.setCanum(canum);
+		idCA.setCarig(carig);
+		AsCcmca0f asCcmca0fA = new AsCcmca0f();
+		asCcmca0fA.setId(idCA);
+		asCcmca0fA.setCadad(cadad);
+		asCcmca0fA.setCadap(cadap);
+		asCcmca0fA.setCanup(canup);
+		asCcmca0fA.setCanrp(canrp);
+		asCcmca0fA.setCanud(canud);
+		asCcmca0fA.setCacre(cacre);
+		asCcmca0fA.setCadav("A");
+		asCcmca0fA.setCaimp(caimp);
+		asCcmca0fA.setCacon(caconAvere);
+		asCcmca0fA.setCacoa(cacoa);
+		asCcmca0fA.setCadmo(cadmo);
+		
+		AsCcmca0f asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
+		if(asCcmca0fTmp == null){ // nuova quindi insert
+			if(!(asCcmca0fDao.salva(asCcmca0fA))){
+				chiudi();
+			}
+		}else{ // gia' presente, quindi update
+			if(!(asCcmca0fDao.aggiorna(asCcmca0fA))){
+				chiudi();
+			}
+			asCcmca0fDao.detach(asCcmca0fTmp);
+		}
+		asCcmca0fDao.detach(asCcmca0fA);
+		
+		// Dare
+		carig++;
+		
+		AsCcmca0fPKey idCD = new AsCcmca0fPKey();
+		idCD.setCadar(cadar);
+		idCD.setCanum(canum);
+		idCD.setCarig(carig);
+		AsCcmca0f asCcmca0fD = new AsCcmca0f();
+		asCcmca0fD.setId(idCD);
+		asCcmca0fD.setCadad(cadad);
+		asCcmca0fD.setCadap(cadap);
+		asCcmca0fD.setCanup(canup);
+		asCcmca0fD.setCanrp(canrp);
+		asCcmca0fD.setCanud(canud);
+		asCcmca0fD.setCacre(cacre);
+		asCcmca0fD.setCadav("D");
+		asCcmca0fD.setCaimp(caimp);
+		asCcmca0fD.setCacon(caconDare);
+		asCcmca0fD.setCacoa(cacoa);
+		asCcmca0fD.setCadmo(cadmo);
+		
+		asCcmca0fTmp = asCcmca0fDao.getDaId(cadar, canum, carig);
+		if(asCcmca0fTmp == null){ // nuova quindi insert
+			if(!(asCcmca0fDao.salva(asCcmca0fD))){
+				chiudi();
+			}
+		}else{ // gia' presente, quindi update
+			if(!(asCcmca0fDao.aggiorna(asCcmca0fD))){
+				chiudi();
+			}
+			asCcmca0fDao.detach(asCcmca0fTmp);
+		}
+		asCcmca0fDao.detach(asCcmca0fD);
+	}
+	
+	
+	private void decodificaNoteTestataFinanziarieCampoFZ(String notaFN, String notaFZ, BigDecimal paramFinDecimal[], String paramFinString[]){
+		if(StringUtils.isBlank(notaFN) && StringUtils.isBlank(notaFZ)){
+			// vuote entrambe le note, se FN o FZ e' definita, non deve uscire e continuare l'elaborazione
+			return;
+		}
+		
+		notaFN = notaFN.replaceAll("\\P{Print}", "");	// toglie tutti i caratteri non ascii
+		notaFN = StringUtils.upperCase(StringUtils.trim(StringUtils.normalizeSpace(notaFN)));
+		notaFN = StringUtils.replace(notaFN, ".", "");
+		notaFN = StringUtils.replace(notaFN, ",", ".");
+		
+		notaFZ = notaFZ.replaceAll("\\P{Print}", "");	// toglie tutti i caratteri non ascii
+		notaFZ = StringUtils.upperCase(StringUtils.trim(StringUtils.normalizeSpace(notaFZ)));
+		notaFZ = StringUtils.replace(notaFZ, ".", "");
+		notaFZ = StringUtils.replace(notaFZ, ",", ".");
+		
+		notaFZ = StringUtils.replace(notaFZ, "€", "");
+		notaFZ = StringUtils.replace(notaFZ, "#", "");
+
+		Pattern patternAlfabetico = Pattern.compile("^[A-Z\\s\\']+$");
+		Pattern patternAlfanumerico = Pattern.compile("^[A-Z0-9\\.\\s\\*]*[0-9]{3,}[A-Z0-9\\.\\s\\*]*$");	// Pattern patternAlfanumerico = Pattern.compile("^[A-Z0-9\\.\\s]+[0-9]+$");
+		Pattern patternNumerico = Pattern.compile("^[0-9\\.]+$");
+		
+//		log.info(StringUtils.join("FN: ", notaFN));
+//		log.info(patternAlfabetico.matcher(notaFN).matches());
+//		log.info(patternAlfanumerico.matcher(notaFN).matches());
+//		log.info(StringUtils.join("FZ: ", notaFZ));
+//		log.info(patternAlfabetico.matcher(notaFZ).matches());
+//		log.info(patternAlfanumerico.matcher(notaFZ).matches());
+		
+		String notaTmp = "";
+		// determino se FN e FZ sono state usate invertite dall'utente per sbaglio
+		if((patternAlfabetico.matcher(notaFN).matches() && patternAlfanumerico.matcher(notaFZ).matches()) ||
+			(StringUtils.isBlank(notaFN) && patternAlfanumerico.matcher(notaFZ).matches()) ||
+			(patternAlfabetico.matcher(notaFN).matches() && StringUtils.isBlank(notaFZ))){
+			// non scambio nulla, sembra la casistica ottimale
+		}else if((StringUtils.isBlank(notaFN) && patternAlfabetico.matcher(notaFZ).matches()) ||
+				(patternAlfanumerico.matcher(notaFN).matches() && StringUtils.isBlank(notaFZ))){
+			notaTmp = notaFN;
+			notaFN = notaFZ;
+			notaFZ = notaTmp;
+			log.info("Inversione FN e FZ (con uno tra FN e FZ e' blank)");
+		}else if((patternAlfanumerico.matcher(notaFN).matches() && patternAlfabetico.matcher(notaFZ).matches())){
+			notaTmp = notaFN;
+			notaFN = notaFZ;
+			notaFZ = notaTmp;
+			log.info("Inversione FN e FZ");			
+		}else{
+			log.info(StringUtils.join("Inversione non fatta, nella FN e FZ c'e' qualche anomalia. FN e FZ: ", notaFN, ", ", notaFZ));
+		}
+		
+		BigDecimal finImporto = paramFinDecimal[0];
+		String finIntestatario = paramFinString[0];
+		String finCodPratica = paramFinString[1];
+		String finCodTab = paramFinString[2];
+		String finNome = paramFinString[3];
+		String finNumero = paramFinString[4];
+		
+		if(!(StringUtils.isBlank(notaFN))){
+			finIntestatario = StringUtils.join(notaFN, "|", finIntestatario);
+			finIntestatario = StringUtils.left(finIntestatario, 30); // in tabella e' 35, ma il programma usato ne visaulizza 30, quindi considero 30
+		}
+
+		notaFZ = StringUtils.replace(notaFZ, "COMPASS", "");
+		notaFZ = StringUtils.replace(notaFZ, "AGOS", "");
+		notaFZ = StringUtils.replace(notaFZ, "PAGOLIGHT", "PAGO");
+		notaFZ = StringUtils.replace(notaFZ, "PAGO LIGHT", "PAGO");
+		notaFZ = StringUtils.replace(notaFZ, "PASS", "PASS");
+		notaFZ = StringUtils.replace(notaFZ, "FASTLINE", "FAST");
+		notaFZ = StringUtils.replace(notaFZ, "FAST LINE", "FAST");
+		notaFZ = StringUtils.replace(notaFZ, "RATE", "");
+		notaFZ = StringUtils.replace(notaFZ, "MESI", "");
+		
+		String notaFZarr[] = StringUtils.split(notaFZ, " ");
+		String notaFZi = "";
+
+		// importo
+		Boolean finImportoTrovato = false;
+		BigDecimal fnifiOriginale = finImporto;
+		for(int i = 0; i < notaFZarr.length; i++){
+			if(!(finImportoTrovato) && StringUtils.isNotBlank(notaFZarr[i])){
+				notaFZi = notaFZarr[i];
+//				log.info(StringUtils.join("notaFZi: ", notaFZi));
+//				log.info(patternNumerico.matcher(notaFZi).matches());
+				if(patternNumerico.matcher(notaFZi).matches()){
+					try{
+						finImporto = new BigDecimal(notaFZi);
+					}catch(NumberFormatException e){
+						log.warn("Importo: " + notaFZi + " - non convertibile");
+						finImporto = new BigDecimal(0);
+					}
+					
+					if((finImporto.compareTo(new BigDecimal(0)) <= 0) || (finImporto.compareTo(new BigDecimal(9999.99)) >= 0)){
+						log.info("Mantengo il valore finanziaria a " + fnifiOriginale);
+						finImporto = fnifiOriginale;
+						finImportoTrovato = false;
+					}else{
+						finImportoTrovato = true;
+						notaFZarr[i] = "";
+					}
+				}
+			}
+		}
+		if(!(finImportoTrovato)){
+			log.warn("Importo non identificato");
+		}
+		
+		// codice pratica
+		Boolean finCodPraticaTrovato = false;
+		for(int i = 0; i < notaFZarr.length; i++){
+			if(!(finCodPraticaTrovato) && StringUtils.isNotBlank(notaFZarr[i])){
+				notaFZi = notaFZarr[i];
+//				log.info(StringUtils.join("notaFZi: ", notaFZi));
+				if(StringUtils.length(notaFZi) > 4){
+					finCodPratica = StringUtils.right(notaFZi, 15);
+					// se e' compass
+					if(StringUtils.equals(finNome, "COM")){
+						if(StringUtils.length(finCodPratica) == 6){
+							finCodPratica = StringUtils.join("000000", finCodPratica);
+						}else if(StringUtils.length(finCodPratica) == 8){
+							finCodPratica = StringUtils.join("CO0000", finCodPratica);
+						}
+						// else lascio com'e'
+					}
+					// se e' agos
+					if(StringUtils.equals(finNome, "AGO")){
+						if(StringUtils.length(finCodPratica) == 8){
+							finCodPratica = StringUtils.join("0", finCodPratica);
+						}
+						// else lascio com'e'
+					}
+					finCodPraticaTrovato = true;
+					notaFZarr[i] = "";
+				}
+			}
+		}
+		if(!(finCodPraticaTrovato)){
+			log.warn("Codice pratica non identificata");
+		}
+		if(StringUtils.isBlank(finCodPratica)){
+			finCodPratica = StringUtils.join("ND", finNumero, "ND");
+		}
+		
+		// codice tabella
+		Boolean finCodTabTrovato = false;
+		for(int i = 0; i < notaFZarr.length; i++){
+			if(!(finCodTabTrovato) && StringUtils.isNotBlank(notaFZarr[i])){
+				notaFZi = notaFZarr[i];
+//				log.info(StringUtils.join("notaFZi: ", notaFZi));
+				if(StringUtils.length(notaFZi) <= 4){
+					finCodTab = StringUtils.left(notaFZi, 4);
+					finCodTabTrovato = true;
+					notaFZarr[i] = "";
+				}
+			}
+		}
+		if(!(finCodTabTrovato)){
+			log.warn("Codice tabella non identificata");
+		}		
+		if(StringUtils.isBlank(finCodTab)){
+			finCodTab = StringUtils.join("ND", "ND");
+		}
+		
+		paramFinDecimal[0] = finImporto;
+		paramFinString[0] = finIntestatario;
+		paramFinString[1] = finCodPratica;
+		paramFinString[2] = finCodTab;
 	}
 	
 	private void initTranscodifica(){
@@ -8536,6 +9053,260 @@ public class Oasi{
 		// msvAS_ListiniDao.close();
 	}
 	
-	// private void testCodice(){
-	// }
+	@SuppressWarnings(
+		"unused"
+	)
+	private void testCodice(){
+//		corrispettiviDaElaborareLs = new ArrayList<String>();
+//		
+//		MsvOA_PrimaNota_Tes msvOA_PrimaNota_Tes = new MsvOA_PrimaNota_Tes();
+//		
+//		// nuovo deposito - definire il nuovo valore
+//		// Causali Contabili 1096
+//		// CRL1 - Corrispettivi Contanti P.V. 1 - Termini
+//		// CRCF - Corrispettivi Contanti P.V. 2 - Lascari
+//		// CRL2 - Corrispettivi Contanti P.V. 3 - Bagheria
+//		// CRL4 - Corrispettivi Contanti P.V.4 - Brolo
+//		// CRL9 - Corrispettivi Contanti P.V.9 - Palermo GDM
+//		// CRL6 - Corrispettivi Contanti P.V. 011 - Milazzo
+//		// CRL5 - Corrispettivi Contanti P.V.5 - Sciacca (ex Enna)
+//		msvOA_PrimaNota_TesLs = msvOA_PrimaNota_TesDao.getDaCausali("'CRL1', 'CRCF', 'CRL2', 'CRL4', 'CRL9', 'CRL6', 'CRL5'");
+//		// solo alcuni movimenti
+//		msvOA_PrimaNota_TesLs.clear();
+//		// SELECT * FROM OA_PrimaNota_Tes o WHERE datareg = '2024-02-20' and regiva = '03' and tipoconto = 'G'
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319537"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319538"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319539"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319540"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319541"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319542"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319543"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319544"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319545"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319546"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319547"));
+//		msvOA_PrimaNota_TesLs.add(msvOA_PrimaNota_TesDao.getDaNReg("00319548"));
+//		
+//		MsvOA_PrimaNota_Tes arrayMsvOA_PrimaNota_Tes[] = msvOA_PrimaNota_TesLs.toArray(new MsvOA_PrimaNota_Tes[msvOA_PrimaNota_TesLs.size()]);
+//		
+//		for(int i = 0; i < arrayMsvOA_PrimaNota_Tes.length; i++){
+//			msvOA_PrimaNota_Tes = arrayMsvOA_PrimaNota_Tes[i];
+//			
+//			String cadarTxt = new SimpleDateFormat("yyyyMMdd").format(msvOA_PrimaNota_Tes.getDataReg());
+//			
+//			String corrispettivoDaElaborare = StringUtils.join(cadarTxt, "|", msvOA_PrimaNota_Tes.getRegIva(), "|", msvOA_PrimaNota_Tes.getSezionale());
+//			if(!(corrispettiviDaElaborareLs.contains(corrispettivoDaElaborare))){
+//				corrispettiviDaElaborareLs.add(corrispettivoDaElaborare);				
+//			}
+//		}
+//		
+//		elaboraCorrispettiviContabilizzazione();
+		
+/*		String notaFN = null;
+		String notaFZ = null;
+
+		String fnnoc = "test nome";
+		BigDecimal fnifi = new BigDecimal(123);
+		String fnnup = "";
+		String fntab = "";
+		String fnta2 = "";
+		
+		String paramFinString[] = new String[5];
+		BigDecimal paramFinDecimal[] = new BigDecimal[1];
+
+		notaFN = "SCANDURRA SALVATORE ";
+		notaFZ = "561,00 072863534 *U2";
+		paramFinDecimal[0] = new BigDecimal(3);
+		paramFinString[0] = "test nome III";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		
+		notaFN = "MODO CORRETTO ";
+		notaFZ = "♪444,90 0000010075435973    ♫☻   VCB   ";
+		paramFinDecimal[0] = new BigDecimal(4);
+		paramFinString[0] = "test nome IV";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		notaFN = "SCAMBIO CODICE E TABELLA ";
+		notaFZ = "555,90 VCB 0000010075435973          ";
+		paramFinDecimal[0] = new BigDecimal(5);
+		paramFinString[0] = "test nome V";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		notaFN = "PRIMA TABELLA ";
+		notaFZ = "VCB 666,90 0000010075435973          ";
+		paramFinDecimal[0] = new BigDecimal(6);
+		paramFinString[0] = "test nome VI";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		notaFN = "IMPORTO SENZA DECIMALI";
+		notaFZ = "VCB 777 0000010075435973          ";
+		paramFinDecimal[0] = new BigDecimal(7);
+		paramFinString[0] = "test nome VII";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		notaFN = "IMP SENZA DEC ALLA FINE ";
+		notaFZ = "VCB  0000010075435973         888 ";
+		paramFinDecimal[0] = new BigDecimal(8);
+		paramFinString[0] = "test nome VIII";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+
+		notaFN = "SENZA IMPORTO ";
+		notaFZ = "VCB  0000010075435973          ";
+		paramFinDecimal[0] = new BigDecimal(9);
+		paramFinString[0] = "test nome IX";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		notaFN = "TABELLA mezzo";
+		notaFZ = "  0000010075435973    *U2     123 ";
+		paramFinDecimal[0] = new BigDecimal(11);
+		paramFinString[0] = "test nome X";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		notaFN = "TABELLA INIZIO";
+		notaFZ = "*U2  0000010075435973         125 ";
+		paramFinDecimal[0] = new BigDecimal(10);
+		paramFinString[0] = "test nome X";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		notaFN = "TABELLA SENZA";
+		notaFZ = "0000010075435973         128 ";
+		paramFinDecimal[0] = new BigDecimal(10);
+		paramFinString[0] = "test nome X";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		notaFN = "SOLO IMPORTO";
+		notaFZ = "         155 ";
+		paramFinDecimal[0] = new BigDecimal(10);
+		paramFinString[0] = "test nome X";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		
+		
+		notaFN = "SOLO TABELLA";
+		notaFZ = "         12356789 ";
+		paramFinDecimal[0] = new BigDecimal(10);
+		paramFinString[0] = "test nome X";
+		paramFinString[1] = "";
+		paramFinString[2] = "";
+		paramFinString[3] = "COM";
+		paramFinString[4] = "321";
+		decodificaNoteTestataFinanziarieCampoFZ(notaFN, notaFZ, paramFinDecimal, paramFinString);
+		fnifi = paramFinDecimal[0];
+		fnnoc = paramFinString[0];
+		fnnup = paramFinString[1];
+		fntab = paramFinString[2];
+		fnta2 = fntab;
+		log.info("");
+		*/
+	}
 }

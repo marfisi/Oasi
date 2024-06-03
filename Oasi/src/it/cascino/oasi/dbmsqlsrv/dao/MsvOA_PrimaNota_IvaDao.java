@@ -12,6 +12,8 @@ public interface MsvOA_PrimaNota_IvaDao{
 	
 	MsvOA_PrimaNota_Iva getDaId(String nReg, String nRiga);
 	
+	List<MsvOA_PrimaNota_Iva> getDaNRegNoTipoOperazione(String nReg);
+	
 	void detach(Object entity);
 	
 	void close();

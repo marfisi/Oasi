@@ -72,6 +72,23 @@ public class AsTabel0fDaoMng implements AsTabel0fDao, Serializable{
 		return o;
 	}
 	
+	public AsTabel0f getDaTnotaTcom2(String tnota, String tcom2){
+		AsTabel0f o = null;
+		try{
+			try{
+				Query query = em.createNamedQuery("AsTabel0f.findByTnotaTcom2");
+				query.setParameter("tnota", tnota);
+				query.setParameter("tcom2", tcom2);
+				o = (AsTabel0f)query.getSingleResult();
+			}catch(NoResultException e){
+				o = null;
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public void detach(Object entity){
 		em.detach(entity);
 		

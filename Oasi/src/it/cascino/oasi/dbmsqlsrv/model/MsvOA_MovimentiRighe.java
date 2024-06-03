@@ -30,7 +30,7 @@ import it.cascino.oasi.dbmsqlsrv.model.pkey.MsvOA_MovimentiRighePKey;
 		query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) != '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes and o.id.idUnivocoRiga = :idUnivocoRiga"
 	), @NamedQuery(
 		name = "MsvOA_MovimentiRighe.findByIdUnivocoTesElaborateGaranzia",
-		query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes order by case o.codArticoloOasi when 'G0004' then 1 else 2 end, o.id.idUnivocoRiga"
+		query = "SELECT o FROM OA_MovimentiRighe o WHERE substring(o.tipoOperazione, 1, 1) = '*' and o.tipoOperazione != 'DEL' and o.id.idUnivocoTes = :idUnivocoTes and o.codLungoOasi != 'RIPARAZIONE' order by case o.codArticoloOasi when 'G0004' then 1 when 'G0008' then 1 else 2 end, o.id.idUnivocoRiga"
 	)
 	}
 )

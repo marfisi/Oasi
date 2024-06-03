@@ -20,7 +20,7 @@ public interface AsNativeQueryDao{
 	
 	List<Object[]> getStoricoMovimenti();
 	
-	List<Object[]> getMovimentiDepIngArtDomex(Integer vdatr);
+	List<Object[]> getMovimentiDepIngArtDomex(Integer vdatr, String depIngrosso);
 	
 	List<Object[]> getChiusuraCassaSede(Integer mcdac);
 	

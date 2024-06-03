@@ -88,6 +88,25 @@ public class MsvOA_PrimaNota_IvaDaoMng implements MsvOA_PrimaNota_IvaDao, Serial
 		return o;
 	}
 	
+	@SuppressWarnings(
+		"unchecked"
+	)
+	public List<MsvOA_PrimaNota_Iva> getDaNRegNoTipoOperazione(String nReg){
+		List<MsvOA_PrimaNota_Iva> o = null;
+		try{
+			try{
+				Query query = em.createNamedQuery("MsvOA_PrimaNota_Iva.findByNRegNoTipoOperazione");
+				query.setParameter("nReg", nReg);
+				o = (List<MsvOA_PrimaNota_Iva>)query.getResultList();
+			}catch(NoResultException e){
+				o = null;
+			}
+		}catch(Exception e){
+			log.fatal(e.toString());
+		}
+		return o;
+	}
+	
 	public void detach(Object entity){
 		em.detach(entity);
 	}

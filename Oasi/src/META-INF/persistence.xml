@@ -35,7 +35,7 @@
 	
 	<persistence-unit name="MSsqlSrv" transaction-type="RESOURCE_LOCAL">
 		<properties>
-			<property name="hibernate.connection.url" value="jdbc:sqlserver://10.0.21.129\OASI\IDEA:1433;databaseName=SCAMBIODATI" />
+			<property name="hibernate.connection.url" value="jdbc:sqlserver://10.0.21.90\OASI\IDEA:1433;databaseName=SCAMBIODATI" />
 			<property name="hibernate.connection.driver_class" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
 			<property name="hibernate.connection.username" value="scambio" />
 			<property name="hibernate.connection.password" value="C4sc1n0&amp;" />
