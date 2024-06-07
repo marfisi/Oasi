@@ -49,7 +49,7 @@ public class AsClien00f implements Serializable{
 	private String clntex;
 	private String cldema;
 	private String clcag1;
-	private String clcf08;
+	private String clcf08;	// COD.USO FUTURO 08                                  A    10 (codice SDI)
 	private String clfisp;
 	private String clccme;
 	private String cldalt;
@@ -62,6 +62,7 @@ public class AsClien00f implements Serializable{
 	private BigDecimal cluins;
 	private BigDecimal clhins;
 	private String clcnor;
+	private String clfl14;	// FLAG USI FUTURI 14                                 A     1 (se e' PA)
 	
 	public AsClien00f(){
 	}
@@ -315,6 +316,14 @@ public class AsClien00f implements Serializable{
 		this.clcnor = clcnor;
 	}
 	
+	public String getClfl14(){
+		return clfl14;
+	}
+
+	public void setClfl14(String clfl14){
+		this.clfl14 = clfl14;
+	}
+
 	@Override
 	public int hashCode(){
 		final int prime = 31;
@@ -365,6 +374,6 @@ public class AsClien00f implements Serializable{
 	
 	@Override
 	public String toString(){
-		return "AsClien00f [clccli=" + clccli + ", clfann=" + clfann + ", cltcli=" + cltcli + ", cldrso=" + cldrso + ", cldrsa=" + cldrsa + ", cldind=" + cldind + ", clccap=" + clccap + ", cldloc=" + cldloc + ", clcprv=" + clcprv + ", clcfis=" + clcfis + ", clcpiv=" + clcpiv + ", clnprt=" + clnprt + ", clntel=" + clntel + ", clnprf=" + clnprf + ", clnfax=" + clnfax + ", clntex=" + clntex + ", cldema=" + cldema + ", clcag1=" + clcag1 + ", clcf08=" + clcf08 + ", clfisp=" + clfisp + ", clccme=" + clccme + ", cldalt=" + cldalt + ", clcnaz=" + clcnaz + ", clcpag=" + clcpag + ", clfasi=" + clfasi + ", cltdoc=" + cltdoc + ", clcpor=" + clcpor + ", clcusr=" + clcusr + ", cluins=" + cluins + ", clhins=" + clhins + ", clcnor=" + clcnor + "]";
+		return "AsClien00f [clccli=" + clccli + ", clfann=" + clfann + ", cltcli=" + cltcli + ", cldrso=" + cldrso + ", cldrsa=" + cldrsa + ", cldind=" + cldind + ", clccap=" + clccap + ", cldloc=" + cldloc + ", clcprv=" + clcprv + ", clcfis=" + clcfis + ", clcpiv=" + clcpiv + ", clnprt=" + clnprt + ", clntel=" + clntel + ", clnprf=" + clnprf + ", clnfax=" + clnfax + ", clntex=" + clntex + ", cldema=" + cldema + ", clcag1=" + clcag1 + ", clcf08=" + clcf08 + ", clfisp=" + clfisp + ", clccme=" + clccme + ", cldalt=" + cldalt + ", clcnaz=" + clcnaz + ", clcpag=" + clcpag + ", clfasi=" + clfasi + ", cltdoc=" + cltdoc + ", clcpor=" + clcpor + ", clcusr=" + clcusr + ", cluins=" + cluins + ", clhins=" + clhins + ", clcnor=" + clcnor + ", clfl14=" + clfl14 + "]";
 	}
 }

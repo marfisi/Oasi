@@ -809,15 +809,19 @@ public class Oasi{
 			
 			codIntermed = "";
 			codPa = "";
-			if(Integer.compare(StringUtils.length(StringUtils.trim(asClien00f.getClcf08())), 7) == 0){
-				codIntermed = StringUtils.trim(asClien00f.getClcf08());
-				codPa = "";
-			}else if(Integer.compare(StringUtils.length(StringUtils.trim(asClien00f.getClcf08())), 6) == 0){
-				codIntermed = "";
-				codPa = StringUtils.trim(asClien00f.getClcf08());
-			}else{
-				codIntermed = "";
-				codPa = "";
+			String clcf08 = StringUtils.trim(asClien00f.getClcf08());
+			if(StringUtils.isNotBlank(clcf08)){
+				if(StringUtils.equals(asClien00f.getClfl14(), " ") && Integer.compare(StringUtils.length(clcf08), 7) == 0){
+					codIntermed = clcf08;
+					codPa = "";
+				}else if(StringUtils.equals(asClien00f.getClfl14(), "*") && Integer.compare(StringUtils.length(clcf08), 6) == 0){
+					codIntermed = "";
+					codPa = clcf08;
+				}else{
+					log.warn("Problema con lunghezza codice DSI e Pubblica Amministrazione: " + clcf08);
+					codIntermed = clcf08;
+					codPa = "";
+				}
 			}
 			
 			flagSplitPaym = "0";
@@ -1042,6 +1046,7 @@ public class Oasi{
 			BigDecimal cluins = new BigDecimal(0);
 			BigDecimal clhins = new BigDecimal(0);
 			String clcnor = "";
+			String clfl14 = "";
 			
 			clccli = new BigDecimal(msvOA_Clienti.getCodice());
 			String ragSoc = StringUtils.trim(StringUtils.join(StringUtils.upperCase(StringUtils.trim(msvOA_Clienti.getRagSoc1())), " ", StringUtils.upperCase(StringUtils.trim(msvOA_Clienti.getRagSoc2()))));
@@ -1085,8 +1090,10 @@ public class Oasi{
 			clcag1 = "";
 			
 			clcf08 = StringUtils.trim(msvOA_Clienti.getCodIntermed());
+			clfl14 = "";
 			if(!(StringUtils.isBlank(msvOA_Clienti.getCodPa()))){
 				clcf08 = StringUtils.trim(msvOA_Clienti.getCodPa());
+				clfl14 = "*";
 			}
 			clcf08 = StringUtils.upperCase(clcf08);
 			
@@ -1272,6 +1279,7 @@ public class Oasi{
 			asClien00f.setCluins(cluins);
 			asClien00f.setClhins(clhins);
 			asClien00f.setClcnor(clcnor);
+			asClien00f.setClfl14(clfl14);
 			
 			AsClien00f asClien00fTmp = asClien00fDao.getDaClccli(clccli);
 			if(asClien00fTmp == null){ // nuova quindi insert
